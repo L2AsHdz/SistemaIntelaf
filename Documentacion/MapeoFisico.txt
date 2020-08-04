@@ -1,15 +1,18 @@
 CREATE SCHEMA SistemaIntelaf;
 USE SistemaIntelaf;
 
-CREATE TABLE Usuario (
-  CUI VARCHAR(13) NOT NULL,
-  Nombre VARCHAR(45) NOT NULL,
-  UserName VARCHAR(45) NOT NULL,
+CREATE TABLE Empleado (
+  Codigo INT NOT NULL,
   Password VARCHAR(30) NOT NULL,
-  Tipo INT NOT NULL,
-  Estado INT NULL DEFAULT 0,
+  CUI VARCHAR(13) NOT NULL,
+  Nit VARCHAR(10),
+  Nombre VARCHAR(45) NOT NULL,
+  Telefono VARCHAR(8),
+  Correo VARCHAR(30),
+  Direccion VARCHAR(50),
+  Estado INT NULL DEFAULT 1,
   CONSTRAINT PK_USUARIO
-    PRIMARY KEY (CUI));
+    PRIMARY KEY (Codigo));
 
 CREATE TABLE Tienda (
   Codigo VARCHAR(10) NOT NULL,
@@ -76,7 +79,7 @@ CREATE TABLE Producto (
   Fabricante VARCHAR(30) NOT NULL,
   Precio FLOAT NOT NULL,
   Descripcion VARCHAR(75) NULL,
-  Garantia INT NULL,
+  GarantiaMeses INT NULL,
   CONSTRAINT PK_PRODUCTO
     PRIMARY KEY (Codigo));
 
@@ -116,18 +119,17 @@ CREATE TABLE ExistenciaProducto (
     ON UPDATE RESTRICT);
 
 CREATE TABLE Pedido (
-  CodigoPedido VARCHAR(15) NOT NULL,
+  Codigo INT NOT NULL AUTO_INCREMENT,
   NitCliente VARCHAR(10) NOT NULL,
   CodigoTiendaOrigen VARCHAR(10) NOT NULL,
   CodigoTiendaDestino VARCHAR(10) NOT NULL,
-  TiempoTraslado INT NOT NULL,
   Fecha DATE NOT NULL,
   FechaVerificacion DATE NULL,
   FechaRetiro DATE NULL,
-  PorcentajeEfectivo FLOAT NULL,
-  PorcentajeCredito FLOAT NULL,
+  PorcentajeEfectivo FLOAT NOT NULL,
+  PorcentajeCredito FLOAT NOT NULL,
   PorcentajePagado FLOAT NOT NULL,
-  Estado INT NULL DEFAULT 0,
+  Estado INT NULL DEFAULT 1,
   CONSTRAINT PK_PEDIDO
     PRIMARY KEY (CodigoPedido),
   CONSTRAINT FK_PEDIDO_TO_CLIENTE_NIT
@@ -147,7 +149,7 @@ CREATE TABLE Pedido (
     ON UPDATE RESTRICT);
 
 CREATE TABLE ProductoPedido (
-  CodigoPedido VARCHAR(15) NOT NULL,
+  CodigoPedido INT NOT NULL,
   CodigoProducto VARCHAR(15) NOT NULL,
   Precio FLOAT NOT NULL,
   Cantidad INT NOT NULL,
