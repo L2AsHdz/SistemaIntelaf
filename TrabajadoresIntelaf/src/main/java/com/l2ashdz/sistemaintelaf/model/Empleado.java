@@ -1,7 +1,7 @@
 package com.l2ashdz.sistemaintelaf.model;
 
 public class Empleado {
-    private int codigo;
+    private String codigo;
     private String password;
     private String CUI;
     private String nitI;
@@ -14,11 +14,11 @@ public class Empleado {
     public Empleado() {
     }
 
-    public int getCodigo() {
+    public String getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(int codigo) {
+    public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
 

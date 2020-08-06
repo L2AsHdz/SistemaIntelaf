@@ -18,8 +18,6 @@ public class LoginController implements ActionListener {
     private LoginView login;
     private CRUD<Empleado> empleadoDAO;
 
-    private String codigo = "";
-
     public LoginController(LoginView log) {
         this.login = log;
         empleadoDAO = EmpleadoDAOImpl.getEmpleadoDAO();
@@ -40,10 +38,9 @@ public class LoginController implements ActionListener {
         if (login.getBtnLogin() == e.getSource()) {
             try {
                 validarLogin((ArrayList<Empleado>) empleadoDAO.getListado(),
-                        login.getTxtCodigoEmpleado().getText(), login.getTxtPassword().getText());
+                        login.getTxtCodigoEmpleado().getText());
             } catch (Exception ex) {
                 System.out.println("Error al intentar validar");
-                System.out.println(ex.getMessage());
                 ex.printStackTrace();
             }
         } else if (login.getBtnSalir() == e.getSource()) {
@@ -51,16 +48,17 @@ public class LoginController implements ActionListener {
         }
     }
 
-    private void validarLogin(ArrayList<Empleado> empleados, String codigo, String pass) {
-        if (codigo.isEmpty() || pass.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Los campos estan vacios", "Error", JOptionPane.ERROR_MESSAGE);
+    //valida que los datos ingresados correspondan a un usuario en la base de datos
+    private void validarLogin(ArrayList<Empleado> empleados, String codigo) {
+        if (codigo.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No ha ingresado ningun codigo", "Error", JOptionPane.ERROR_MESSAGE);
             System.out.println("Error! - Campos vacios");
             login.getTxtCodigoEmpleado().requestFocus();
         } else {
             int opcion = 0;
-            for (Empleado u : empleados) {
-                if (Integer.parseInt(codigo) == u.getCodigo() && pass.equals(u.getPassword())) {
-                    if (u.getEstado() == 0) {
+            for (Empleado e : empleados) {
+                if (codigo.equals(e.getCodigo())) {
+                    if (e.getEstado() == 0) {
                         opcion = 1;
                     } else {
                         opcion = 2;
@@ -69,18 +67,19 @@ public class LoginController implements ActionListener {
             }
             switch (opcion) {
                 case 0:
-                    JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrecta", 
+                    JOptionPane.showMessageDialog(null, "Codigo de empleado incorrecto", 
                     "Error login", JOptionPane.WARNING_MESSAGE);
                     limpiarCampos();
                     break;
                 case 1:
-                    JOptionPane.showMessageDialog(null, "El usuario esta deshabilitado",
+                    JOptionPane.showMessageDialog(null, "El empleado esta deshabilitado",
                             "Error", JOptionPane.ERROR_MESSAGE);
                     limpiarCampos();
                     break;
                 case 2:
-                    JOptionPane.showMessageDialog(null, "Echese unas partidas en cod perro",
+                    JOptionPane.showMessageDialog(null, "LoginCompleto",
                             "Holi", JOptionPane.INFORMATION_MESSAGE);
+                    //iniciar interfaz
                     limpiarCampos();
                     break;
             }
@@ -90,7 +89,6 @@ public class LoginController implements ActionListener {
     //Limpia los campos del login y coloca el cursor en el txtCodigoEmpleado
     private void limpiarCampos() {
         login.getTxtCodigoEmpleado().setText("");
-        login.getTxtPassword().setText("");
         login.getTxtCodigoEmpleado().requestFocus();
     }
 }

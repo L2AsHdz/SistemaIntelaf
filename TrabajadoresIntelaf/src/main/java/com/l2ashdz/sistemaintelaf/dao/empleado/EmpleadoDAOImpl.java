@@ -41,8 +41,7 @@ public class EmpleadoDAOImpl implements EmpleadoDAO{
             ResultSet rs = declaracion.executeQuery(sql);
             while (rs.next()) {
                 Empleado empleado = new Empleado();
-                empleado.setCodigo(rs.getInt("Codigo"));
-                empleado.setPassword(rs.getString("Password"));
+                empleado.setCodigo(rs.getString("Codigo"));
                 empleado.setCUI(rs.getString("CUI"));
                 empleado.setNitI(rs.getString("Nit"));
                 empleado.setNombre(rs.getString("Nombre"));
@@ -71,8 +70,7 @@ public class EmpleadoDAOImpl implements EmpleadoDAO{
             ps.setString(1, (String)codigo);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                e.setCodigo(rs.getInt("Codigo"));
-                e.setPassword(rs.getString("Password"));
+                e.setCodigo(rs.getString("Codigo"));
                 e.setCUI(rs.getString("CUI"));
                 e.setNitI(rs.getString("Nit"));
                 e.setNombre(rs.getString("Nombre"));
@@ -94,17 +92,16 @@ public class EmpleadoDAOImpl implements EmpleadoDAO{
     @Override
     public void create(Empleado e) {
         try {
-            String sql = "INSERT INTO Empleado (Codigo, Password, CUI, Nit, Nombre, "
+            String sql = "INSERT INTO Empleado (Codigo, CUI, Nit, Nombre, "
                     + "Correo, Direccion, Telefono) VALUES (?,?,?,?,?)";
             PreparedStatement ps = conexion.prepareStatement(sql);
-            ps.setInt(1, e.getCodigo());
-            ps.setString(2, e.getPassword());
-            ps.setString(3, e.getCUI());
-            ps.setString(4, e.getNitI());
-            ps.setString(5, e.getNombre());
-            ps.setString(6, e.getCorreo());
-            ps.setString(7, e.getDireccion());
-            ps.setString(8, e.getTelefono());
+            ps.setString(1, e.getCodigo());
+            ps.setString(2, e.getCUI());
+            ps.setString(3, e.getNitI());
+            ps.setString(4, e.getNombre());
+            ps.setString(5, e.getCorreo());
+            ps.setString(6, e.getDireccion());
+            ps.setString(7, e.getTelefono());
             ps.executeUpdate();
             System.out.println("Empleado Ingresado Correctamente");
             ps.close();
