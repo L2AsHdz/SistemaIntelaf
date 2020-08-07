@@ -34,21 +34,21 @@ public class EmpleadoDAOImpl implements EmpleadoDAO{
         List<Empleado> empleados = null;
         
         try {
-            String sql = "SELECT * FROM Empleado";
+            String sql = "SELECT * FROM empleado";
             Statement declaracion = conexion.createStatement();
             
             empleados = new ArrayList();
             ResultSet rs = declaracion.executeQuery(sql);
             while (rs.next()) {
                 Empleado empleado = new Empleado();
-                empleado.setCodigo(rs.getString("Codigo"));
-                empleado.setCUI(rs.getString("CUI"));
-                empleado.setNitI(rs.getString("Nit"));
-                empleado.setNombre(rs.getString("Nombre"));
-                empleado.setCorreo(rs.getString("Correo"));
-                empleado.setDireccion(rs.getString("Direccion"));
-                empleado.setTelefono(rs.getString("Telefono"));
-                empleado.setEstado(rs.getInt("Estado"));
+                empleado.setCodigo(rs.getString("codigo"));
+                empleado.setCUI(rs.getString("cui"));
+                empleado.setNitI(rs.getString("nit"));
+                empleado.setNombre(rs.getString("nombre"));
+                empleado.setCorreo(rs.getString("correo"));
+                empleado.setDireccion(rs.getString("direccion"));
+                empleado.setTelefono(rs.getString("telefono"));
+                empleado.setEstado(rs.getInt("estado"));
                 empleados.add(empleado);
             }
             System.out.println("Listado de Empleados Obtenido");
@@ -60,40 +60,12 @@ public class EmpleadoDAOImpl implements EmpleadoDAO{
         }
         return empleados;
     }
-
-    @Override
-    public Empleado getObject(Object codigo) {
-        Empleado e = new Empleado();
-        try {
-            String sql = "SELECT * FROM Empleado WHERE Codigo = ?";
-            PreparedStatement ps = conexion.prepareStatement(sql);
-            ps.setString(1, (String)codigo);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                e.setCodigo(rs.getString("Codigo"));
-                e.setCUI(rs.getString("CUI"));
-                e.setNitI(rs.getString("Nit"));
-                e.setNombre(rs.getString("Nombre"));
-                e.setCorreo(rs.getString("Correo"));
-                e.setDireccion(rs.getString("Direccion"));
-                e.setTelefono(rs.getString("Telefono"));
-                e.setEstado(rs.getInt("Estado"));
-            }
-            System.out.println("Empleado obtenido de la BD");
-            ps.close();
-            ps = null;
-        } catch (SQLException ex) {
-            System.out.println("No se pudo leer el empleado");
-            ex.printStackTrace();
-        }
-        return e;
-    }
-
+    
     @Override
     public void create(Empleado e) {
         try {
-            String sql = "INSERT INTO Empleado (Codigo, CUI, Nit, Nombre, "
-                    + "Correo, Direccion, Telefono) VALUES (?,?,?,?,?)";
+            String sql = "INSERT INTO empleado (codigo, cui, nit, nombre, "
+                    + "correo, direccion, telefono) VALUES (?,?,?,?,?,?,?)";
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.setString(1, e.getCodigo());
             ps.setString(2, e.getCUI());
@@ -113,6 +85,36 @@ public class EmpleadoDAOImpl implements EmpleadoDAO{
     }
 
     @Override
+    public Empleado getObject(Object codigo) {
+        Empleado e = new Empleado();
+        try {
+            String sql = "SELECT * FROM empleado WHERE codigo = ?";
+            PreparedStatement ps = conexion.prepareStatement(sql);
+            ps.setString(1, (String)codigo);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                e.setCodigo(rs.getString("codigo"));
+                e.setCUI(rs.getString("cui"));
+                e.setNitI(rs.getString("nit"));
+                e.setNombre(rs.getString("nombre"));
+                e.setCorreo(rs.getString("correo"));
+                e.setDireccion(rs.getString("direccion"));
+                e.setTelefono(rs.getString("telefono"));
+                e.setEstado(rs.getInt("estado"));
+            }
+            System.out.println("Empleado obtenido de la BD");
+            ps.close();
+            ps = null;
+        } catch (SQLException ex) {
+            System.out.println("No se pudo leer el empleado");
+            ex.printStackTrace();
+        }
+        return e;
+    }
+
+    
+
+    @Override
     public void update(Empleado u) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -125,7 +127,7 @@ public class EmpleadoDAOImpl implements EmpleadoDAO{
     @Override
     public void disableUser(String codigo) {
         try {
-            String sql = "UPDATE Empleado SET Estado = ? WHERE Codigo = ?";
+            String sql = "UPDATE empleado SET estado = ? WHERE codigo = ?";
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.setInt(1, 0);
             ps.setString(2, codigo);

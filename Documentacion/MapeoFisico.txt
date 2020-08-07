@@ -1,166 +1,166 @@
 CREATE SCHEMA SistemaIntelaf;
 USE SistemaIntelaf;
 
-CREATE TABLE Empleado (
-  Codigo VARCHAR(10) NOT NULL,
-  CUI VARCHAR(13) NULL,
-  Nit VARCHAR(10) NULL,
-  Nombre VARCHAR(45) NOT NULL,
-  Telefono VARCHAR(8) NOT NULL,
-  Correo VARCHAR(30) NULL,
-  Direccion VARCHAR(50) NOT NULL,
-  Estado INT NULL DEFAULT 1,
+CREATE TABLE empleado (
+  codigo VARCHAR(10) NOT NULL,
+  cui VARCHAR(13) NULL,
+  nit VARCHAR(10) NULL,
+  nombre VARCHAR(45) NOT NULL,
+  telefono VARCHAR(8) NOT NULL,
+  correo VARCHAR(30) NULL,
+  direccion VARCHAR(50) NOT NULL,
+  estado INT NULL DEFAULT 1,
   CONSTRAINT PK_USUARIO
-    PRIMARY KEY (Codigo));
+    PRIMARY KEY (codigo));
 
-CREATE TABLE Tienda (
-  Codigo VARCHAR(10) NOT NULL,
-  Nombre VARCHAR(30) NOT NULL,
-  Direccion VARCHAR(50) NOT NULL,
-  Telefono1 VARCHAR(8) NOT NULL,
-  Telefono2 VARCHAR(8) NULL,
-  Correo VARCHAR(30) NULL,
-  Horario VARCHAR(60) NULL,
+CREATE TABLE tienda (
+  codigo VARCHAR(10) NOT NULL,
+  nombre VARCHAR(30) NOT NULL,
+  direccion VARCHAR(50) NOT NULL,
+  telefono_1 VARCHAR(8) NOT NULL,
+  telefono_2 VARCHAR(8) NULL,
+  correo VARCHAR(30) NULL,
+  horario VARCHAR(60) NULL,
   CONSTRAINT PK_TIENDA
-    PRIMARY KEY (Codigo));
+    PRIMARY KEY (codigo));
 
-CREATE TABLE TiempoTraslado (
-  CodigoTienda1 VARCHAR(10) NOT NULL,
-  CodigoTienda2 VARCHAR(10) NOT NULL,
-  Tiempo INT NOT NULL,
+CREATE TABLE tiempo_traslado (
+  codigo_tienda_1 VARCHAR(10) NOT NULL,
+  codigo_tienda_2 VARCHAR(10) NOT NULL,
+  tiempo INT NOT NULL,
   CONSTRAINT PK_TIEMPOTRASLADO
-    PRIMARY KEY (CodigoTienda1, CodigoTienda2),
+    PRIMARY KEY (codigo_tienda_1, codigo_tienda_2),
   CONSTRAINT FK_TIEMPO_TO_TIENDA1_CODIGO
-    FOREIGN KEY (CodigoTienda1)
-    REFERENCES Tienda (Codigo)
+    FOREIGN KEY (codigo_tienda_1)
+    REFERENCES tienda (codigo)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT FK_TIEMPO_TO_TIENDA2_CODIGO
-    FOREIGN KEY (CodigoTienda2)
-    REFERENCES Tienda (Codigo)
+    FOREIGN KEY (codigo_tienda_2)
+    REFERENCES tienda (codigo)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT);
 
-CREATE TABLE Cliente (
-  Nit VARCHAR(10) NOT NULL,
-  Nombre VARCHAR(45) NOT NULL,
-  Telefono VARCHAR(8) NOT NULL,
-  CUI VARCHAR(13) NULL,
-  CreditoCompra FLOAT NULL,
-  Correo VARCHAR(45) NULL,
-  Direccion VARCHAR(50) NULL,
+CREATE TABLE cliente (
+  nit VARCHAR(10) NOT NULL,
+  nombre VARCHAR(45) NOT NULL,
+  telefono VARCHAR(8) NOT NULL,
+  cui VARCHAR(13) NULL,
+  credito_compra FLOAT NULL,
+  correo VARCHAR(45) NULL,
+  direccion VARCHAR(50) NULL,
   CONSTRAINT PK_CLIETE
-    PRIMARY KEY (Nit));
+    PRIMARY KEY (nit));
 
-CREATE TABLE Venta (
-  Id INT NOT NULL AUTO_INCREMENT,
-  NitCliente VARCHAR(10) NOT NULL,
-  CodigoTienda VARCHAR(10) NOT NULL,
-  Fecha DATE NOT NULL,
-  PorcentajeEfectivo FLOAT NULL,
-  PorcentajeCredito FLOAT NULL,
+CREATE TABLE venta (
+  id INT NOT NULL AUTO_INCREMENT,
+  nit_cliente VARCHAR(10) NOT NULL,
+  codigo_tienda VARCHAR(10) NOT NULL,
+  fecha DATE NOT NULL,
+  porcentaje_efectivo FLOAT NULL,
+  porcentaje_credito FLOAT NULL,
   CONSTRAINT PK_VENTA
-    PRIMARY KEY (Id),
+    PRIMARY KEY (id),
   CONSTRAINT FK_VENTA_TO_TIENDA_CODIGO
-    FOREIGN KEY (CodigoTienda)
-    REFERENCES Tienda (Codigo)
+    FOREIGN KEY (codigo_tienda)
+    REFERENCES tienda (codigo)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT FK_VENTA_TO_CLIENTE_NIT
-    FOREIGN KEY (NitCliente)
-    REFERENCES Cliente (Nit)
+    FOREIGN KEY (nit_cliente)
+    REFERENCES cliente (nit)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT);
 
-CREATE TABLE Producto (
-  Codigo VARCHAR(15) NOT NULL,
-  Nombre VARCHAR(50) NOT NULL,
-  Fabricante VARCHAR(30) NOT NULL,
-  Precio FLOAT NOT NULL,
-  Descripcion VARCHAR(75) NULL,
-  GarantiaMeses INT NULL,
+CREATE TABLE producto (
+  codigo VARCHAR(15) NOT NULL,
+  nombre VARCHAR(50) NOT NULL,
+  fabricante VARCHAR(30) NOT NULL,
+  precio FLOAT NOT NULL,
+  descripcion VARCHAR(75) NULL,
+  garantia_meses INT NULL,
   CONSTRAINT PK_PRODUCTO
-    PRIMARY KEY (Codigo));
+    PRIMARY KEY (codigo));
 
-CREATE TABLE ProductoVenta (
-  IdVenta INT NOT NULL,
-  CodigoProducto VARCHAR(15) NOT NULL,
-  Precio FLOAT NOT NULL,
-  Cantidad INT NOT NULL,
+CREATE TABLE producto_venta (
+  id_venta INT NOT NULL,
+  codigo_producto VARCHAR(15) NOT NULL,
+  precio FLOAT NOT NULL,
+  cantidad INT NOT NULL,
   CONSTRAINT PK_PRODUCTOVENTA
-    PRIMARY KEY (IdVenta, CodigoProducto),
+    PRIMARY KEY (id_venta, codigo_producto),
   CONSTRAINT FK_PRODUCTOV_TO_VENTA_ID
-    FOREIGN KEY (IdVenta)
-    REFERENCES Venta (Id)
+    FOREIGN KEY (id_venta)
+    REFERENCES venta (id)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT FK_PRODUCTOV_TO_PRODUCTO_CODIGO
-    FOREIGN KEY (CodigoProducto)
-    REFERENCES Producto (Codigo)
+    FOREIGN KEY (codigo_producto)
+    REFERENCES producto (codigo)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT);
 
-CREATE TABLE ExistenciaProducto (
-  CodigoTienda VARCHAR(10) NOT NULL,
-  CodigoProducto VARCHAR(15) NOT NULL,
-  Existencias INT NOT NULL,
+CREATE TABLE existencia_producto (
+  codigo_tienda VARCHAR(10) NOT NULL,
+  codigo_producto VARCHAR(15) NOT NULL,
+  existencias INT NOT NULL,
   CONSTRAINT PK_EXISTENCIAPRODUCTO
-    PRIMARY KEY (CodigoTienda, CodigoProducto),
+    PRIMARY KEY (codigo_tienda, codigo_producto),
   CONSTRAINT FK_EXISTENCIA_TO_TIENDA_CODIGO
-    FOREIGN KEY (CodigoTienda)
-    REFERENCES Tienda (Codigo)
+    FOREIGN KEY (codigo_tienda)
+    REFERENCES tienda (codigo)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT FK_EXISTENCIA_TO_PRODUCTO_CODIGO
-    FOREIGN KEY (CodigoProducto)
-    REFERENCES Producto (Codigo)
+    FOREIGN KEY (codigo_producto)
+    REFERENCES producto (codigo)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT);
 
-CREATE TABLE Pedido (
-  Codigo INT NOT NULL AUTO_INCREMENT,
-  NitCliente VARCHAR(10) NOT NULL,
-  CodigoTiendaOrigen VARCHAR(10) NOT NULL,
-  CodigoTiendaDestino VARCHAR(10) NOT NULL,
-  Fecha DATE NOT NULL,
-  FechaVerificacion DATE NULL,
-  FechaRetiro DATE NULL,
-  PorcentajeEfectivo FLOAT NOT NULL,
-  PorcentajeCredito FLOAT NOT NULL,
-  PorcentajePagado FLOAT NOT NULL,
-  Estado INT NULL DEFAULT 1,
+CREATE TABLE pedido (
+  codigo INT NOT NULL AUTO_INCREMENT,
+  nit_cliente VARCHAR(10) NOT NULL,
+  codigo_tienda_origen VARCHAR(10) NOT NULL,
+  codigo_tienda_destino VARCHAR(10) NOT NULL,
+  fecha DATE NOT NULL,
+  fecha_verificacion DATE NULL,
+  fecha_retiro DATE NULL,
+  porcentaje_efectivo FLOAT NOT NULL,
+  porcentaje_credito FLOAT NOT NULL,
+  porcentaje_pagado FLOAT NOT NULL,
+  estado INT NULL DEFAULT 1,
   CONSTRAINT PK_PEDIDO
-    PRIMARY KEY (Codigo),
+    PRIMARY KEY (codigo),
   CONSTRAINT FK_PEDIDO_TO_CLIENTE_NIT
-    FOREIGN KEY (NitCliente)
-    REFERENCES Cliente (Nit)
+    FOREIGN KEY (nit_cliente)
+    REFERENCES cliente (nit)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT FK_PEDIDO_TO_TIENDAO_CODIGO
-    FOREIGN KEY (CodigoTiendaOrigen)
-    REFERENCES Tienda (Codigo)
+    FOREIGN KEY (codigo_tienda_origen)
+    REFERENCES tienda (codigo)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT FK_PEDIDO_TO_TIENDAD_CODIGO
-    FOREIGN KEY (CodigoTiendaDestino)
-    REFERENCES Tienda (Codigo)
+    FOREIGN KEY (codigo_tienda_destino)
+    REFERENCES tienda (codigo)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT);
 
-CREATE TABLE ProductoPedido (
-  CodigoPedido INT NOT NULL,
-  CodigoProducto VARCHAR(15) NOT NULL,
-  Precio FLOAT NOT NULL,
-  Cantidad INT NOT NULL,
+CREATE TABLE producto_pedido (
+  codigo_pedido INT NOT NULL,
+  codigo_producto VARCHAR(15) NOT NULL,
+  precio FLOAT NOT NULL,
+  cantidad INT NOT NULL,
   CONSTRAINT PK_PRODUCTOPEDIDO
-    PRIMARY KEY (CodigoPedido, CodigoProducto),
+    PRIMARY KEY (codigo_pedido, codigo_producto),
   CONSTRAINT FK_PRODUCTOD_TO_PEDIDO_CODIGO
-    FOREIGN KEY (CodigoPedido)
-    REFERENCES Pedido (Codigo)
+    FOREIGN KEY (codigo_pedido)
+    REFERENCES pedido (codigo)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT FK_PRODUCTOD_TO_PRODUCTO_CODIGO
-    FOREIGN KEY (CodigoProducto)
-    REFERENCES Producto (Codigo)
+    FOREIGN KEY (codigo_producto)
+    REFERENCES producto (codigo)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT);

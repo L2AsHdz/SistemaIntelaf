@@ -9,7 +9,7 @@ public class Cliente {
     private String nombre;
     private String telefono;
     private String cui;
-    private int creditoCompra;
+    private float creditoCompra;
     private String correo;
     private String direccion;
 
@@ -48,11 +48,11 @@ public class Cliente {
         this.cui = cui;
     }
 
-    public int getCreditoCompra() {
+    public float getCreditoCompra() {
         return creditoCompra;
     }
 
-    public void setCreditoCompra(int creditoCompra) {
+    public void setCreditoCompra(float creditoCompra) {
         this.creditoCompra = creditoCompra;
     }
 
