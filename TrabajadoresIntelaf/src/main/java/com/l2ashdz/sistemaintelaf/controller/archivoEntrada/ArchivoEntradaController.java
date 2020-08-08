@@ -5,6 +5,9 @@ import com.l2ashdz.sistemaintelaf.dao.empleado.EmpleadoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
 import com.l2ashdz.sistemaintelaf.model.Empleado;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
+import com.l2ashdz.sistemaintelaf.ui.ArchivoEntradaView;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /*
@@ -23,7 +27,9 @@ parametros, dependiendo de ellos se ejecutaran las acciones
  *
  * @author asael
  */
-public class ArchivoEntradaController {
+public class ArchivoEntradaController implements ActionListener {
+
+    private ArchivoEntradaView archivoEVIew;
 
     private Tienda tienda;
     private CRUD<Tienda> tiendaDAO;
@@ -33,16 +39,29 @@ public class ArchivoEntradaController {
     private CRUD<Empleado> empleadoDAO;
     private List<Empleado> empleados;
 
-    public ArchivoEntradaController() {
+    public ArchivoEntradaController(ArchivoEntradaView archivoEView) {
         tiendaDAO = TiendaDAOImpl.getTiendaDAO();
         empleadoDAO = EmpleadoDAOImpl.getEmpleadoDAO();
-        iniciar();
+        this.archivoEVIew = archivoEView;
+        this.archivoEVIew.getBtnBuscar().addActionListener(this);
+        this.archivoEVIew.getBtnCancelar().addActionListener(this);
+        this.archivoEVIew.getBtnIniciar().addActionListener(this);
+
     }
 
-    private void iniciar() {
+    public void iniciar() {
+        if (verificarInfoSistema()) {
+            archivoEVIew.pack();
+            archivoEVIew.setLocationRelativeTo(null);
+            archivoEVIew.setVisible(true);
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent ae) {
         String path;
         List<String> entrada;
-        if (verificarInfoSistema()) {
+        if (archivoEVIew.getBtnBuscar() == ae.getSource()) {
             path = obtenerRutaArchivo();
             if (!path.isEmpty()) {
                 entrada = leerArchivo(path);
@@ -50,6 +69,10 @@ public class ArchivoEntradaController {
             } else {
 
             }
+        } else if (archivoEVIew.getBtnCancelar() == ae.getSource()) {
+            System.exit(0);
+        } else if (archivoEVIew.getBtnIniciar() == ae.getSource()) {
+
         }
     }
 
@@ -59,13 +82,6 @@ public class ArchivoEntradaController {
             parametros = linea.split(",");
             switch (parametros[0]) {
                 case "TIENDA":
-                    //aprender a usar el patro fabrica
-                    String nombre = parametros[1];
-                    String direccion = parametros[2];
-                    String codigo = parametros[3];
-                    String telefono = parametros[4];
-                    nuevaTienda(nombre, codigo, direccion, telefono);
-                    tiendaDAO.create(tienda);
                     break;
                 case "TIEMPO":
                     System.out.println("tiempo");
@@ -86,44 +102,6 @@ public class ArchivoEntradaController {
                     System.out.println("no hay ninguna estructura correcta");
                     break;
             }
-        }
-    }
-
-    private void nuevaTienda(String nombre, String codigo, String dir, String tel) {
-        tienda = new Tienda();
-        tienda.setCodigo(codigo);
-        tienda.setDireccion(dir);
-        tienda.setNombre(nombre);
-        tienda.setTelefono1(tel);
-    }
-
-    private void verificarDatosTienda(String[] parametros) {
-        boolean flag = false;
-        String nombre;
-        String direccion;
-        String codigo;
-        String telefono;
-        String mensajeError;
-        if (parametros.length == 5) {
-//            nombre = parametros[1];
-//            direccion = parametros[2];
-//            codigo = parametros[3];
-//            telefono = parametros[4];
-//            if (!nombre.isEmpty() || nombre.length() < 30) {
-//                if (direccion.isEmpty() || direccion.length() < 50) {
-//                    if (codigo) {
-//                        
-//                    }
-//                } else {
-//                    mensajeError = "La direccion excede el limite de caracteres o esta vacio";
-//                }
-//            } else {
-//                mensajeError = "El nombre excede el limite de caracteres o esta vacio";
-//            }
-
-        } else {
-            //posiblemente habra que crear un objeto errorLectura
-            mensajeError = "Los parametros no cumplen con la estructura definida";
         }
     }
 
@@ -190,5 +168,10 @@ public class ArchivoEntradaController {
     12. si no hay errores crear un nueva Entidad
     13. Insertar entidad en la base de datos
     
-    */
+    
+    Lista de verificaciones al leer el archivo
+    1. que sea del tipo correcto
+    2. que no se pase del limite de caracteres
+    3. que este vacio
+     */
 }
