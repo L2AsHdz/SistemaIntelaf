@@ -1,11 +1,12 @@
 package com.l2ashdz.sistemaintelaf.controller.archivoEntrada;
 
+import com.l2ashdz.sistemaintelaf.controller.LoginController;
 import com.l2ashdz.sistemaintelaf.dao.CRUD;
 import com.l2ashdz.sistemaintelaf.dao.empleado.EmpleadoDAOImpl;
-import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
 import com.l2ashdz.sistemaintelaf.model.Empleado;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
 import com.l2ashdz.sistemaintelaf.ui.ArchivoEntradaView;
+import com.l2ashdz.sistemaintelaf.ui.LoginView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -16,8 +17,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /*
 Quiza sea posible usar funciones lambdas pasando como comportamiento el Tipo y los
@@ -29,78 +30,88 @@ parametros, dependiendo de ellos se ejecutaran las acciones
  */
 public class ArchivoEntradaController implements ActionListener {
 
-    private ArchivoEntradaView archivoEVIew;
+    private ArchivoEntradaView archivoEV;
+    private LoginView loginV;
+    private LoginController loginC;
 
     private Tienda tienda;
-    private CRUD<Tienda> tiendaDAO;
-    private List<Tienda> tiendas;
 
     private Empleado empleado;
     private CRUD<Empleado> empleadoDAO;
     private List<Empleado> empleados;
 
+    private String path = "";
+    private List<String> entrada;
+
     public ArchivoEntradaController(ArchivoEntradaView archivoEView) {
-        tiendaDAO = TiendaDAOImpl.getTiendaDAO();
         empleadoDAO = EmpleadoDAOImpl.getEmpleadoDAO();
-        this.archivoEVIew = archivoEView;
-        this.archivoEVIew.getBtnBuscar().addActionListener(this);
-        this.archivoEVIew.getBtnCancelar().addActionListener(this);
-        this.archivoEVIew.getBtnIniciar().addActionListener(this);
+        loginV = new LoginView();
+        this.archivoEV = archivoEView;
+        this.archivoEV.getBtnBuscar().addActionListener(this);
+        this.archivoEV.getBtnCancelar().addActionListener(this);
+        this.archivoEV.getBtnIniciar().addActionListener(this);
+        this.archivoEV.getBtnContinuar().addActionListener(this);
 
     }
 
     public void iniciar() {
         if (verificarInfoSistema()) {
-            archivoEVIew.pack();
-            archivoEVIew.setLocationRelativeTo(null);
-            archivoEVIew.setVisible(true);
+            archivoEV.pack();
+            archivoEV.setLocationRelativeTo(null);
+            archivoEV.setVisible(true);
+        } else {
+            loginC = new LoginController(loginV);
+            loginC.iniciar();
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        String path;
-        List<String> entrada;
-        if (archivoEVIew.getBtnBuscar() == ae.getSource()) {
+        if (archivoEV.getBtnBuscar() == ae.getSource()) {
             path = obtenerRutaArchivo();
+            if (!path.isEmpty()) {
+                archivoEV.getLblNombreArchivo().setText(path);
+                archivoEV.getBtnIniciar().setEnabled(true);
+            }
+        } else if (archivoEV.getBtnCancelar() == ae.getSource()) {
+            System.exit(0);
+        } else if (archivoEV.getBtnIniciar() == ae.getSource()) {
             if (!path.isEmpty()) {
                 entrada = leerArchivo(path);
                 noseComoLlamarlo(entrada);
-            } else {
-
             }
-        } else if (archivoEVIew.getBtnCancelar() == ae.getSource()) {
-            System.exit(0);
-        } else if (archivoEVIew.getBtnIniciar() == ae.getSource()) {
+        } else if (archivoEV.getBtnContinuar() == ae.getSource()) {
 
         }
     }
 
     private void noseComoLlamarlo(List<String> entrada) {
         String[] parametros;
-        for (String linea : entrada) {
+        for (int i = 0; i < entrada.size(); i++) {
+            String linea = entrada.get(i);
             parametros = linea.split(",");
             switch (parametros[0]) {
                 case "TIENDA":
+                    archivoEV.getTxtAreaInformacion().append("tienda\n");
                     break;
                 case "TIEMPO":
-                    System.out.println("tiempo");
+                    archivoEV.getTxtAreaInformacion().append("tiempo\n");
                     break;
                 case "PRODUCTO":
-                    System.out.println("producto");
+                    archivoEV.getTxtAreaInformacion().append("producto\n");
                     break;
                 case "EMPLEADO":
-                    System.out.println("empeado");
+                    archivoEV.getTxtAreaInformacion().append("empleado\n");
                     break;
                 case "CLIENTE":
-                    System.out.println("cliente");
+                    archivoEV.getTxtAreaInformacion().append("cliente\n");
                     break;
                 case "PEDIDO":
-                    System.out.println("pedido");
+                    archivoEV.getTxtAreaInformacion().append("pedido\n");
                     break;
                 default:
-                    System.out.println("no hay ninguna estructura correcta");
-                    break;
+                    archivoEV.getTxtAreaInformacion().append("La linea no: " + (i+1)
+                            + " no coincide con " + "el inicio de alguna estructura\n");
             }
         }
     }
@@ -124,6 +135,9 @@ public class ArchivoEntradaController implements ActionListener {
     private String obtenerRutaArchivo() {
         String path = "";
         JFileChooser fc = new JFileChooser();
+        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fc.addChoosableFileFilter(new FileNameExtensionFilter("TXT Documents", "txt"));
+        fc.setAcceptAllFileFilterUsed(false);
         fc.showOpenDialog(null);
         try {
             path = fc.getSelectedFile().getAbsolutePath();
@@ -162,6 +176,7 @@ public class ArchivoEntradaController implements ActionListener {
     6.  separar linea en parametros
     7.  verificar si el primer parametro coincide con el inicio de alguna estructura
     8.  si coincide proceder de lo contrario saltar linea y reportar error
+    
     9.  verificar si los parametros coinciden con la estructura respectiva
     10. si no coinciden saltar linea y reportar error
     11. verificar que los parametros no contengan errores por parte del usuario
