@@ -9,8 +9,12 @@ import com.l2ashdz.sistemaintelaf.ui.ArchivoEntradaView;
 import com.l2ashdz.sistemaintelaf.ui.LoginView;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.*;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.EntidadFabrica.*;
+import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAOImpl;
+import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
 import com.l2ashdz.sistemaintelaf.model.Conexion;
+import com.l2ashdz.sistemaintelaf.model.Producto;
+import com.l2ashdz.sistemaintelaf.model.TiempoTraslado;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -40,6 +44,8 @@ public class ArchivoEntradaController implements ActionListener {
     private Connection conexion;
     
     private CRUD<Tienda> tiendaDAO;
+    private CRUD<TiempoTraslado> tiempoDAO;
+    private CRUD<Producto> productoDAO;
     
     private CRUD<Empleado> empleadoDAO;
     private List<Empleado> empleados;
@@ -52,12 +58,14 @@ public class ArchivoEntradaController implements ActionListener {
         conexion = Conexion.getConexion();
         empleadoDAO = EmpleadoDAOImpl.getEmpleadoDAO();
         tiendaDAO = TiendaDAOImpl.getTiendaDAO();
+        tiempoDAO = TiempoTrasladoDAOImpl.getTiempoDAO();
+        productoDAO = ProductoDAOImpl.getProductoDAO();
         loginV = new LoginView();
         this.archivoEV = archivoEView;
-        this.archivoEV.getBtnBuscar().addActionListener(null);
-        this.archivoEV.getBtnCancelar().addActionListener(null);
-        this.archivoEV.getBtnIniciar().addActionListener(null);
-        this.archivoEV.getBtnContinuar().addActionListener(null);
+        this.archivoEV.getBtnBuscar().addActionListener(this);
+        this.archivoEV.getBtnCancelar().addActionListener(this);
+        this.archivoEV.getBtnIniciar().addActionListener(this);
+        this.archivoEV.getBtnContinuar().addActionListener(this);
 
     }
 
@@ -113,12 +121,16 @@ public class ArchivoEntradaController implements ActionListener {
                         case "TIENDA":
                             if (verificarTienda(parametros)) {
                                 tiendaDAO.create(nuevaTienda(parametros));
-                                textA.append("Se ingresara la tienda: "+parametros[1]+"\n");
+                                textA.append("Se ingresara la tienda: "+parametros[3]+"\n");
                             }
                             break;
                         case "TIEMPO":
-                            mensaje = "Tiempo\n";
-                            textA.append(mensaje);
+                            if (verificarTiempo(parametros)) {
+                                tiempoDAO.create(nuevoTiempo(parametros));
+                                textA.append("Se registrara el tiempo: " +parametros[3] 
+                                        + " entre las tiendas: " +parametros[1]+" y " +
+                                        parametros[2]+ "\n");
+                            }
                             break;
                         case "PRODUCTO":
                             mensaje = "producto\n";

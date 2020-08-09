@@ -4,9 +4,9 @@ package com.l2ashdz.sistemaintelaf.excepciones;
  *
  * @author asael
  */
-public class ExcepcionPropia extends Exception{
+public class EmptyParameterException extends Exception{
 
-    public ExcepcionPropia(String message) {
+    public EmptyParameterException(String message) {
         super(message);
     }
     

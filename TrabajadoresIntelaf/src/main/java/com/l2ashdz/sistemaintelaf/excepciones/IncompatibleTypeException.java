@@ -4,9 +4,9 @@ package com.l2ashdz.sistemaintelaf.excepciones;
  *
  * @author asael
  */
-public class TipoIncompatibleException extends ExcepcionPropia{
+public class IncompatibleTypeException extends Exception{
     
-    public TipoIncompatibleException(String message) {
+    public IncompatibleTypeException(String message) {
         super(message);
     }
     

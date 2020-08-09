@@ -4,9 +4,9 @@ package com.l2ashdz.sistemaintelaf.excepciones;
  *
  * @author asael
  */
-public class ParametrosException extends ExcepcionPropia{
+public class ParameterNotFoundException extends Exception{
     
-    public ParametrosException(String mensajeError){
+    public ParameterNotFoundException(String mensajeError){
         super(mensajeError);
     }
 }

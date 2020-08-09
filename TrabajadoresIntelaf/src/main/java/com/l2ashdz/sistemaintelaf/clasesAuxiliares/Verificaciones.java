@@ -1,17 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.l2ashdz.sistemaintelaf.clasesAuxiliares;
 
 import com.l2ashdz.sistemaintelaf.dao.CRUD;
+import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAO;
+import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
-import com.l2ashdz.sistemaintelaf.excepciones.EntidadDuplicadaException;
-import com.l2ashdz.sistemaintelaf.excepciones.LimiteCaracteresException;
-import com.l2ashdz.sistemaintelaf.excepciones.ParametroVacioException;
-import com.l2ashdz.sistemaintelaf.excepciones.ParametrosException;
-import com.l2ashdz.sistemaintelaf.excepciones.TipoIncompatibleException;
+import com.l2ashdz.sistemaintelaf.excepciones.*;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
 
 /**
@@ -20,43 +13,89 @@ import com.l2ashdz.sistemaintelaf.model.Tienda;
  */
 public class Verificaciones {
 
+    private static CRUD<Tienda> tiendaDAO = TiendaDAOImpl.getTiendaDAO();
+    private static TiempoTrasladoDAO tiempoDAO = TiempoTrasladoDAOImpl.getTiempoDAO();
+
     //Realiza las verificaciones correspondientes con los paramtros obtenidos
-    public static boolean verificarTienda(String[] parametros) throws Exception{
+    public static boolean verificarTienda(String[] parametros) throws Exception {
         boolean flag = true;
-        CRUD<Tienda> tiendaDAO = TiendaDAOImpl.getTiendaDAO();
         if (parametros.length == 5) {
             String nombre = parametros[1];
             String direccion = parametros[2];
             String codigo = parametros[3];
             String telefono = parametros[4];
-            
+
             //Si algun parametro excede el limite de caracteres lanza una excepcion
             if (nombre.length() > 30 || codigo.length() > 10 || direccion.length() > 50
                     || telefono.length() > 8) {
                 flag = false;
-                throw new LimiteCaracteresException("Uno o mas parametros exceden el limite de caracteres");
+                throw new CharacterLimitException("Uno o mas parametros exceden el limite de caracteres");
 
-            //Si algun parametro es una cadena vacia lanza una exccepcion
+                //Si algun parametro es una cadena vacia lanza una exccepcion
             } else if (nombre.isEmpty() || direccion.isEmpty() || codigo.isEmpty()
                     || telefono.isEmpty()) {
                 flag = false;
-                throw new ParametroVacioException("Uno o mas parametros estan vacios");
+                throw new EmptyParameterException("Uno o mas parametros estan vacios");
 
-            //Si el telefono contiene caracteres que no son numericos lanza una excepcion
+                //Si el telefono contiene caracteres que no son numericos lanza una excepcion
             } else if (!isInt(telefono)) {
                 flag = false;
-                throw new TipoIncompatibleException("El telefono tiene que contener solo numeros");
-                
-            //Si la entidad con el codigo especificado ya esxiste lanza una excepcion
+                throw new IncompatibleTypeException("El telefono tiene que contener solo numeros");
+
+                //Si la entidad con el codigo especificado ya esxiste lanza una excepcion
             } else if (tiendaDAO.getObject(codigo) != null) {
                 flag = false;
-                throw new EntidadDuplicadaException("La tienda ya existe en la base de datos");
+                throw new DuplicateEntityException("La tienda ya existe en la base de datos");
             }
 
-        //Lanza una excepcion si los parametros no coinciden con la estructura
+            //Lanza una excepcion si los parametros no coinciden con la estructura
         } else {
             flag = false;
-            throw new ParametrosException("El numero de parametros no coincide con la estructura");
+            throw new ParameterNotFoundException("El numero de parametros no coincide con la estructura");
+        }
+        return flag;
+    }
+
+    public static boolean verificarTiempo(String[] parametros) throws Exception {
+        boolean flag = true;
+
+        if (parametros.length == 4) {
+            String codigoT1 = parametros[1];
+            String codigoT2 = parametros[2];
+            String tiempo = parametros[3];
+
+            //Si algun parametro excede el limite de caracteres lanza una excepcion
+            if (codigoT1.length() > 10 || codigoT2.length() > 10) {
+                flag = false;
+                throw new CharacterLimitException("Uno o mas parametros exceden el limite de caracteres");
+                
+                //Si algun parametro es una cadena vacia lanza una exccepcion
+            } else if (codigoT1.isEmpty() || codigoT2.isEmpty() || tiempo.isEmpty()) {
+                flag = false;
+                throw new EmptyParameterException("Uno o mas parametros estan vacios");
+            
+                //Si el tiempo no es un valor numerico lanza una excepcion
+            } else if (!isInt(tiempo)) {
+                flag = false;
+                throw new IncompatibleTypeException("El parametro tiempo debe ser un valor entero");
+            
+                //Si la entidad con los codigos especificados ya existe lanza una excepcion
+            } else if (tiempoDAO.getTiempoT(codigoT1, codigoT2) != null
+                    || tiempoDAO.getTiempoT(codigoT2, codigoT1) != null) {
+                flag = false;
+                throw new DuplicateEntityException("El tiempo ya esta registrado en la base de datos");
+            
+                //Si la entidad a la que hace referencia no existe lanza una excepcion
+            } else if (tiendaDAO.getObject(codigoT1) == null
+                    || tiendaDAO.getObject(codigoT2) == null) {
+                flag = false;
+                throw new EntityNotFoundException("La entidad a la que hace referencia no existe en la BD");
+            }
+            
+            //Lanza una excepcion si los parametros no coinciden con la estructura
+        } else {
+            flag = false;
+            throw new ParameterNotFoundException("El numero de parametros no coincide con la estructura");
         }
         return flag;
     }

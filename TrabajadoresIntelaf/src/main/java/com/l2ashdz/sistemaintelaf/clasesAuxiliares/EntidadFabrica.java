@@ -19,11 +19,11 @@ public class EntidadFabrica {
         return tienda;
     }
     
-    public static TiempoTraslado nuevoTiempo(String cod1, String cod2, int t){
+    public static TiempoTraslado nuevoTiempo(String[] parametros){
         TiempoTraslado tiempoT = new TiempoTraslado();
-        tiempoT.setCodigoTienda1(cod1);
-        tiempoT.setCodigoTienda2(cod2);
-        tiempoT.setTiempo(t);
+        tiempoT.setCodigoTienda1(parametros[1]);
+        tiempoT.setCodigoTienda2(parametros[2]);
+        tiempoT.setTiempo(Integer.parseInt(parametros[3]));
         return tiempoT;
     }
     

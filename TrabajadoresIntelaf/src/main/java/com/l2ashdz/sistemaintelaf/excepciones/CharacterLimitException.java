@@ -4,9 +4,9 @@ package com.l2ashdz.sistemaintelaf.excepciones;
  *
  * @author asael
  */
-public class ParametroVacioException extends ExcepcionPropia{
+public class CharacterLimitException extends Exception{
 
-    public ParametroVacioException(String message) {
+    public CharacterLimitException(String message) {
         super(message);
     }
     

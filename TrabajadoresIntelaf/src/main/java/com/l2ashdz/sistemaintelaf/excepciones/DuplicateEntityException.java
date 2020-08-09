@@ -4,9 +4,9 @@ package com.l2ashdz.sistemaintelaf.excepciones;
  *
  * @author asael
  */
-public class EntidadDuplicadaException extends ExcepcionPropia{
+public class DuplicateEntityException extends Exception{
     
-    public EntidadDuplicadaException(String message) {
+    public DuplicateEntityException(String message) {
         super(message);
     }
     
