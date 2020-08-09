@@ -62,7 +62,6 @@ public class TiendaDAOImpl implements TiendaDAO {
             } catch (SQLException ex) {
                 ex.printStackTrace(System.out);
             }
-
         }
         return tiendas;
     }

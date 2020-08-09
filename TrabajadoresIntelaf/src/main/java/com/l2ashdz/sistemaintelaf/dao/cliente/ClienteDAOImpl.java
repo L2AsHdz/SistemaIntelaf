@@ -29,14 +29,16 @@ public class ClienteDAOImpl implements ClienteDAO{
 
     @Override
     public List<Cliente> getListado() {
-        List<Cliente> clientes = null;
+            String sql = "SELECT * FROM cliente";
+        Statement declaracion = null;
+        ResultSet rs = null;
+            List<Cliente> clientes = null;
         
         try {
-            String sql = "SELECT * FROM cliente";
-            Statement declaracion = conexion.createStatement();
-            
+            declaracion = conexion.createStatement();
+            rs = declaracion.executeQuery(sql);
             clientes = new ArrayList();
-            ResultSet rs = declaracion.executeQuery(sql);
+
             while (rs.next()) {
                 Cliente cliente = new Cliente();
                 cliente.setNit(rs.getString("nit"));
@@ -49,21 +51,26 @@ public class ClienteDAOImpl implements ClienteDAO{
                 clientes.add(cliente);
             }
             System.out.println("Listado de clientes obtenido");
-            rs.close();
-            declaracion.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            e.printStackTrace();
+            e.printStackTrace(System.out);
+        } finally {
+            try {
+                rs.close();
+                declaracion.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
         }
         return clientes;
     }
 
     @Override
     public void create(Cliente c) {
+            String sql = "INSERT INTO cliente VALUES (?,?,?,?,?,?,?)";
+            PreparedStatement ps = null;
         try {
-            String sql = "INSERT INTO cliente (nit, nombre, telefono, cui, "
-                    + "credito_compra, correo, direccion) VALUES (?,?,?,?,?,?,?)";
-            PreparedStatement ps = conexion.prepareStatement(sql);
+            ps = conexion.prepareStatement(sql);
             ps.setString(1, c.getNit());
             ps.setString(2, c.getNombre());
             ps.setString(3, c.getTelefono());
@@ -73,17 +80,52 @@ public class ClienteDAOImpl implements ClienteDAO{
             ps.setString(7, c.getDireccion());
             ps.executeUpdate();
             System.out.println("Cliente ingresado correctamente");
-            ps.close();
-            ps = null;
         } catch (SQLException ex) {
             System.out.println("No se inserto el cliente");
-            ex.printStackTrace();
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
         }
     }
 
     @Override
-    public Cliente getObject(Object t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Cliente getObject(Object nit) {
+        String sql = "SELECT * FROM cliente WHERE nit = ?";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Cliente c = null;
+        try {
+            ps = conexion.prepareStatement(sql);
+            ps.setString(1, (String) nit);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                c = new Cliente();
+                c.setNit(rs.getString("nit"));
+                c.setNombre(rs.getString("nombre"));
+                c.setTelefono(rs.getString("telefono"));
+                c.setCui(rs.getString("cui"));
+                c.setCreditoCompra(rs.getFloat("credito_compra"));
+                c.setCorreo(rs.getString("correo"));
+                c.setDireccion(rs.getString("direccion"));
+            }
+            System.out.println("Cliente obtenido de la BD");
+        } catch (SQLException ex) {
+            System.out.println("No se pudo leer el cliente");
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            
+        }
+        return c;
     }
 
     @Override

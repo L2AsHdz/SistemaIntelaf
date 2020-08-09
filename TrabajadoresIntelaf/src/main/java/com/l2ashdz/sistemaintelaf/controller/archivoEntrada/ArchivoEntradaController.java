@@ -9,10 +9,12 @@ import com.l2ashdz.sistemaintelaf.ui.ArchivoEntradaView;
 import com.l2ashdz.sistemaintelaf.ui.LoginView;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.*;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.EntidadFabrica.*;
+import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.producto.ExistenciaProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
+import com.l2ashdz.sistemaintelaf.model.Cliente;
 import com.l2ashdz.sistemaintelaf.model.Conexion;
 import com.l2ashdz.sistemaintelaf.model.ExistenciaProducto;
 import com.l2ashdz.sistemaintelaf.model.Producto;
@@ -49,6 +51,7 @@ public class ArchivoEntradaController implements ActionListener {
     private CRUD<TiempoTraslado> tiempoDAO;
     private CRUD<Producto> productoDAO;
     private CRUD<ExistenciaProducto> existenciaPDAO;
+    private CRUD<Cliente> clienteDAO;
 
     private CRUD<Empleado> empleadoDAO;
     private List<Empleado> empleados;
@@ -64,6 +67,7 @@ public class ArchivoEntradaController implements ActionListener {
         tiempoDAO = TiempoTrasladoDAOImpl.getTiempoDAO();
         productoDAO = ProductoDAOImpl.getProductoDAO();
         existenciaPDAO = ExistenciaProductoDAOImpl.getExistenciaDAO();
+        clienteDAO = ClienteDAOImpl.getClienteDAO();
 
         loginV = new LoginView();
         this.archivoEV = archivoEView;
@@ -147,12 +151,15 @@ public class ArchivoEntradaController implements ActionListener {
                                         " en la tienda: "+parametros[6]+"\n");
                             }
                             break;
+                        case "CLIENTE":
+                            if (verificarCliente(parametros)) {
+                                clienteDAO.create(nuevoCliente(parametros));
+                                textA.append("Se registrara el cliente con el nit: "
+                                        +parametros[2]+ "\n");
+                            }
+                            break;
                         case "EMPLEADO":
                             mensaje = "empleado\n";
-                            textA.append(mensaje);
-                            break;
-                        case "CLIENTE":
-                            mensaje = "cliente\n";
                             textA.append(mensaje);
                             break;
                         case "PEDIDO":
