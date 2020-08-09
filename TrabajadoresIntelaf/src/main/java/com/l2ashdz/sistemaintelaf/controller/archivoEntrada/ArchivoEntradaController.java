@@ -9,10 +9,12 @@ import com.l2ashdz.sistemaintelaf.ui.ArchivoEntradaView;
 import com.l2ashdz.sistemaintelaf.ui.LoginView;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.*;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.EntidadFabrica.*;
+import com.l2ashdz.sistemaintelaf.dao.producto.ExistenciaProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
 import com.l2ashdz.sistemaintelaf.model.Conexion;
+import com.l2ashdz.sistemaintelaf.model.ExistenciaProducto;
 import com.l2ashdz.sistemaintelaf.model.Producto;
 import com.l2ashdz.sistemaintelaf.model.TiempoTraslado;
 import java.awt.event.ActionEvent;
@@ -42,11 +44,12 @@ public class ArchivoEntradaController implements ActionListener {
     private LoginController loginC;
 
     private Connection conexion;
-    
+
     private CRUD<Tienda> tiendaDAO;
     private CRUD<TiempoTraslado> tiempoDAO;
     private CRUD<Producto> productoDAO;
-    
+    private CRUD<ExistenciaProducto> existenciaPDAO;
+
     private CRUD<Empleado> empleadoDAO;
     private List<Empleado> empleados;
 
@@ -60,6 +63,8 @@ public class ArchivoEntradaController implements ActionListener {
         tiendaDAO = TiendaDAOImpl.getTiendaDAO();
         tiempoDAO = TiempoTrasladoDAOImpl.getTiempoDAO();
         productoDAO = ProductoDAOImpl.getProductoDAO();
+        existenciaPDAO = ExistenciaProductoDAOImpl.getExistenciaDAO();
+
         loginV = new LoginView();
         this.archivoEV = archivoEView;
         this.archivoEV.getBtnBuscar().addActionListener(this);
@@ -121,20 +126,26 @@ public class ArchivoEntradaController implements ActionListener {
                         case "TIENDA":
                             if (verificarTienda(parametros)) {
                                 tiendaDAO.create(nuevaTienda(parametros));
-                                textA.append("Se ingresara la tienda: "+parametros[3]+"\n");
+                                textA.append("Se ingresara la tienda: " + parametros[3] + "\n");
                             }
                             break;
                         case "TIEMPO":
                             if (verificarTiempo(parametros)) {
                                 tiempoDAO.create(nuevoTiempo(parametros));
-                                textA.append("Se registrara el tiempo: " +parametros[3] 
-                                        + " entre las tiendas: " +parametros[1]+" y " +
-                                        parametros[2]+ "\n");
+                                textA.append("Se registrara el tiempo: " + parametros[3]
+                                        + " entre las tiendas: " + parametros[1] + " y "
+                                        + parametros[2] + "\n");
                             }
                             break;
                         case "PRODUCTO":
-                            mensaje = "producto\n";
-                            textA.append(mensaje);
+                            if (verificarProducto(parametros)) {
+                                if (productoDAO.getObject(parametros[3]) == null) {
+                                    productoDAO.create(nuevoProducto(parametros));
+                                }
+                                existenciaPDAO.create(nuevaExistenciaProducto(parametros));
+                                textA.append("Se registrara el producto: " + parametros[1] + 
+                                        " en la tienda: "+parametros[6]+"\n");
+                            }
                             break;
                         case "EMPLEADO":
                             mensaje = "empleado\n";
@@ -149,7 +160,7 @@ public class ArchivoEntradaController implements ActionListener {
                             textA.append(mensaje);
                             break;
                         default:
-                            mensaje = "Linea " + (i + 1) + ": no coincide con el inicio de alguna estructura\n";
+                            mensaje = "Linea " + (i + 1) + ": No coincide con el inicio de alguna estructura\n";
                             errores.add(mensaje);
                     }
                 } catch (Exception e) {
@@ -195,6 +206,7 @@ public class ArchivoEntradaController implements ActionListener {
             path = fc.getSelectedFile().getAbsolutePath();
         } catch (Exception e) {
             System.out.println("se cancelo");
+            e.printStackTrace(System.out);
         }
         return path;
     }

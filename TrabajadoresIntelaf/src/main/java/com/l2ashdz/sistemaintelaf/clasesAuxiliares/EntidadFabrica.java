@@ -1,5 +1,6 @@
 package com.l2ashdz.sistemaintelaf.clasesAuxiliares;
 
+import com.l2ashdz.sistemaintelaf.model.ExistenciaProducto;
 import com.l2ashdz.sistemaintelaf.model.Producto;
 import com.l2ashdz.sistemaintelaf.model.TiempoTraslado;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
@@ -27,7 +28,20 @@ public class EntidadFabrica {
         return tiempoT;
     }
     
-//    public static Producto getProducto(String ){
-//        
-//    }
+    public static Producto nuevoProducto(String[] parametros){
+        Producto producto = new Producto();
+        producto.setCodigo(parametros[3]);
+        producto.setNombre(parametros[1]);
+        producto.setFabricante(parametros[2]);
+        producto.setPrecio(Float.parseFloat(parametros[5]));
+        return producto;
+    }
+    
+    public static ExistenciaProducto nuevaExistenciaProducto(String[] parametros){
+        ExistenciaProducto existenciaP = new ExistenciaProducto();
+        existenciaP.setCodigoProducto(parametros[3]);
+        existenciaP.setCodigoTienda(parametros[6]);
+        existenciaP.setExistencias(Integer.parseInt(parametros[4]));
+        return existenciaP;
+    }
 }
