@@ -1,0 +1,8 @@
+TIENDA,nombre A,Direccion A,ABC-1,1111222ñ
+TIENDA,nombre B,Direccion B,ABC-2,33334444
+TIENDA,nombre C,Direccion C,,55556666
+TIENDA,nombre D,Direccion D,ABC-4,77778888,fsafsdfsdf
+TIENDA,nombre E,Direccion B,ABC-5,33334444
+TIENDA,nombre F,Direccion B,ABC-6,33334444
+TIENDA,nombre G,Direccion B,ABC-7,333344444
+TIENDA,nombre H,Direccion B,ABC-8,33334444

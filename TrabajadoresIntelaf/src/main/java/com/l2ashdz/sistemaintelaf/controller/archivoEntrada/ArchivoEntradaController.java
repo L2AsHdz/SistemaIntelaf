@@ -7,6 +7,10 @@ import com.l2ashdz.sistemaintelaf.model.Empleado;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
 import com.l2ashdz.sistemaintelaf.ui.ArchivoEntradaView;
 import com.l2ashdz.sistemaintelaf.ui.LoginView;
+import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.*;
+import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.EntidadFabrica.*;
+import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
+import com.l2ashdz.sistemaintelaf.model.Conexion;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -14,16 +18,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-/*
-Quiza sea posible usar funciones lambdas pasando como comportamiento el Tipo y los
-parametros, dependiendo de ellos se ejecutaran las acciones
- */
 /**
  *
  * @author asael
@@ -34,23 +37,27 @@ public class ArchivoEntradaController implements ActionListener {
     private LoginView loginV;
     private LoginController loginC;
 
-    private Tienda tienda;
-
-    private Empleado empleado;
+    private Connection conexion;
+    
+    private CRUD<Tienda> tiendaDAO;
+    
     private CRUD<Empleado> empleadoDAO;
     private List<Empleado> empleados;
 
     private String path = "";
     private List<String> entrada;
+    private List<String> errores;
 
     public ArchivoEntradaController(ArchivoEntradaView archivoEView) {
+        conexion = Conexion.getConexion();
         empleadoDAO = EmpleadoDAOImpl.getEmpleadoDAO();
+        tiendaDAO = TiendaDAOImpl.getTiendaDAO();
         loginV = new LoginView();
         this.archivoEV = archivoEView;
-        this.archivoEV.getBtnBuscar().addActionListener(this);
-        this.archivoEV.getBtnCancelar().addActionListener(this);
-        this.archivoEV.getBtnIniciar().addActionListener(this);
-        this.archivoEV.getBtnContinuar().addActionListener(this);
+        this.archivoEV.getBtnBuscar().addActionListener(null);
+        this.archivoEV.getBtnCancelar().addActionListener(null);
+        this.archivoEV.getBtnIniciar().addActionListener(null);
+        this.archivoEV.getBtnContinuar().addActionListener(null);
 
     }
 
@@ -79,40 +86,71 @@ public class ArchivoEntradaController implements ActionListener {
             if (!path.isEmpty()) {
                 entrada = leerArchivo(path);
                 noseComoLlamarlo(entrada);
+                archivoEV.getBtnContinuar().setEnabled(true);
             }
         } else if (archivoEV.getBtnContinuar() == ae.getSource()) {
-
+            try {
+                conexion.commit();
+                conexion.setAutoCommit(true);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
         }
     }
 
     private void noseComoLlamarlo(List<String> entrada) {
         String[] parametros;
-        for (int i = 0; i < entrada.size(); i++) {
-            String linea = entrada.get(i);
-            parametros = linea.split(",");
-            switch (parametros[0]) {
-                case "TIENDA":
-                    archivoEV.getTxtAreaInformacion().append("tienda\n");
-                    break;
-                case "TIEMPO":
-                    archivoEV.getTxtAreaInformacion().append("tiempo\n");
-                    break;
-                case "PRODUCTO":
-                    archivoEV.getTxtAreaInformacion().append("producto\n");
-                    break;
-                case "EMPLEADO":
-                    archivoEV.getTxtAreaInformacion().append("empleado\n");
-                    break;
-                case "CLIENTE":
-                    archivoEV.getTxtAreaInformacion().append("cliente\n");
-                    break;
-                case "PEDIDO":
-                    archivoEV.getTxtAreaInformacion().append("pedido\n");
-                    break;
-                default:
-                    archivoEV.getTxtAreaInformacion().append("La linea no: " + (i+1)
-                            + " no coincide con " + "el inicio de alguna estructura\n");
+        errores = new ArrayList();
+        JTextArea textA = archivoEV.getTxtAreaInformacion();
+        String mensaje;
+        try {
+            conexion.setAutoCommit(false);
+            for (int i = 0; i < entrada.size(); i++) {
+                String linea = entrada.get(i);
+                parametros = linea.split(",");
+                try {
+                    switch (parametros[0]) {
+                        case "TIENDA":
+                            if (verificarTienda(parametros)) {
+                                tiendaDAO.create(nuevaTienda(parametros));
+                                textA.append("Se ingresara la tienda: "+parametros[1]+"\n");
+                            }
+                            break;
+                        case "TIEMPO":
+                            mensaje = "Tiempo\n";
+                            textA.append(mensaje);
+                            break;
+                        case "PRODUCTO":
+                            mensaje = "producto\n";
+                            textA.append(mensaje);
+                            break;
+                        case "EMPLEADO":
+                            mensaje = "empleado\n";
+                            textA.append(mensaje);
+                            break;
+                        case "CLIENTE":
+                            mensaje = "cliente\n";
+                            textA.append(mensaje);
+                            break;
+                        case "PEDIDO":
+                            mensaje = "pedido\n";
+                            textA.append(mensaje);
+                            break;
+                        default:
+                            mensaje = "Linea " + (i + 1) + ": no coincide con el inicio de alguna estructura\n";
+                            errores.add(mensaje);
+                    }
+                } catch (Exception e) {
+                    mensaje = "Linea " + (i + 1) + ": " + e.getMessage() + "\n";
+                    errores.add(mensaje);
+                }
             }
+
+            textA.append("\n\nSe detectaron los siguientes errores en el archivo: \n");
+            errores.forEach(error -> textA.append(error));
+
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
         }
     }
 
@@ -127,6 +165,8 @@ public class ArchivoEntradaController implements ActionListener {
                     "Informacion", JOptionPane.OK_CANCEL_OPTION);
             if (opcion == 0) {
                 verificacion = true;
+            } else {
+                System.exit(0);
             }
         }
         return verificacion;
@@ -167,26 +207,4 @@ public class ArchivoEntradaController implements ActionListener {
         }
         return textoArchivo;
     }
-    /* Algoritmo para la lectura del archivo
-    1.  Verificar si el sistema tiene un empleado para poder ingresar al sistema
-    2.  Mostrar interfaz donde se abrira el archivo
-    3.  Mostrar ventana para escoger el archivo
-    4.  mostrar ruta del archivo y esperar a que el user presione el boton iniciar
-    5.  leer archivo (devuelve todas las lineas)
-    6.  separar linea en parametros
-    7.  verificar si el primer parametro coincide con el inicio de alguna estructura
-    8.  si coincide proceder de lo contrario saltar linea y reportar error
-    
-    9.  verificar si los parametros coinciden con la estructura respectiva
-    10. si no coinciden saltar linea y reportar error
-    11. verificar que los parametros no contengan errores por parte del usuario
-    12. si no hay errores crear un nueva Entidad
-    13. Insertar entidad en la base de datos
-    
-    
-    Lista de verificaciones al leer el archivo
-    1. que sea del tipo correcto
-    2. que no se pase del limite de caracteres
-    3. que este vacio
-     */
 }

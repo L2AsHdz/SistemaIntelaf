@@ -1,7 +1,7 @@
-TIENDA,nombre A,Direccion A,ABC-1,11112222
+TIENDA,nombre A,Direccion A,ABC-1,1111222ñ
 TIENDA,nombre B,Direccion B,ABC-2,33334444
-TIENDA,nombre C,Direccion C,ABC-3,55556666
-TIENDA,nombre D,Direccion D,ABC-4,77778888
+TIENDA,nombre C,Direccion C,,55556666
+TIENDA,nombre D,Direccion D,ABC-4,77778888,fsafsdfsdf
 TIEMPO,ABC-1,ABC-2,4
 sadasdas
 TIEMPO,ABC-1,ABC-3,8

@@ -43,7 +43,6 @@ public class ArchivoEntradaView extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Abrir Archivo");
         setUndecorated(true);
-        setPreferredSize(null);
 
         lblNombreArchivo.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         lblNombreArchivo.setText("*no se ha escogido un archivo*");
@@ -129,7 +128,7 @@ public class ArchivoEntradaView extends javax.swing.JFrame {
     private javax.swing.JLabel lblNombreArchivo;
     private javax.swing.JTextArea txtAreaInformacion;
     // End of variables declaration//GEN-END:variables
-
+    
     public JButton getBtnBuscar() {
         return btnBuscar;
     }

@@ -1,4 +1,4 @@
-package com.l2ashdz.sistemaintelaf.ClasesAuxiliares;
+package com.l2ashdz.sistemaintelaf.clasesAuxiliares;
 
 import com.l2ashdz.sistemaintelaf.model.Producto;
 import com.l2ashdz.sistemaintelaf.model.TiempoTraslado;
@@ -8,18 +8,18 @@ import com.l2ashdz.sistemaintelaf.model.Tienda;
  *
  * @author asael
  */
-public class FabricaEntidades {
+public class EntidadFabrica {
     
-    public static Tienda getTienda(String codigo, String nombre, String dir, String tel){
+    public static Tienda nuevaTienda(String[] parametros){
         Tienda tienda = new Tienda();
-        tienda.setCodigo(codigo);
-        tienda.setNombre(nombre);
-        tienda.setDireccion(dir);
-        tienda.setTelefono1(tel);
+        tienda.setCodigo(parametros[3]);
+        tienda.setNombre(parametros[1]);
+        tienda.setDireccion(parametros[2]);
+        tienda.setTelefono1(parametros[4]);
         return tienda;
     }
     
-    public static TiempoTraslado getTiempoT(String cod1, String cod2, int t){
+    public static TiempoTraslado nuevoTiempo(String cod1, String cod2, int t){
         TiempoTraslado tiempoT = new TiempoTraslado();
         tiempoT.setCodigoTienda1(cod1);
         tiempoT.setCodigoTienda2(cod2);
