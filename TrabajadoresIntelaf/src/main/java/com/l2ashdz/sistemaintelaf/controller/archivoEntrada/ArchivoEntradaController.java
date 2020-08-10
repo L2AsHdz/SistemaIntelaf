@@ -159,8 +159,11 @@ public class ArchivoEntradaController implements ActionListener {
                             }
                             break;
                         case "EMPLEADO":
-                            mensaje = "empleado\n";
-                            textA.append(mensaje);
+                            if (verificarEmpleado(parametros)) {
+                                empleadoDAO.create(nuevoEmpleado(parametros));
+                                textA.append("Se registrara el empleado con codigo: " 
+                                        +parametros[2]+"\n");
+                            }
                             break;
                         case "PEDIDO":
                             mensaje = "pedido\n";

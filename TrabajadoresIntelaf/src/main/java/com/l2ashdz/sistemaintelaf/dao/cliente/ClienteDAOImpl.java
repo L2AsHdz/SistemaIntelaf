@@ -123,7 +123,6 @@ public class ClienteDAOImpl implements ClienteDAO{
             } catch (SQLException ex) {
                 ex.printStackTrace(System.out);
             }
-            
         }
         return c;
     }

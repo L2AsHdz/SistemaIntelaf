@@ -2,6 +2,7 @@ package com.l2ashdz.sistemaintelaf.clasesAuxiliares;
 
 import com.l2ashdz.sistemaintelaf.dao.CRUD;
 import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
+import com.l2ashdz.sistemaintelaf.dao.empleado.EmpleadoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.producto.ExistenciaProductoDAO;
 import com.l2ashdz.sistemaintelaf.dao.producto.ExistenciaProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAO;
@@ -9,6 +10,7 @@ import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
 import com.l2ashdz.sistemaintelaf.excepciones.*;
 import com.l2ashdz.sistemaintelaf.model.Cliente;
+import com.l2ashdz.sistemaintelaf.model.Empleado;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
 
 /**
@@ -21,6 +23,7 @@ public class Verificaciones {
     private static TiempoTrasladoDAO tiempoDAO = TiempoTrasladoDAOImpl.getTiempoDAO();
     private static ExistenciaProductoDAO existenciaDAO = ExistenciaProductoDAOImpl.getExistenciaDAO();
     private static CRUD<Cliente> clienteDAO = ClienteDAOImpl.getClienteDAO();
+    private static CRUD<Empleado> empleadoDAO = EmpleadoDAOImpl.getEmpleadoDAO();
 
     //Realiza las verificaciones correspondientes con los paramtros obtenidos
     public static boolean verificarTienda(String[] parametros) throws Exception {
@@ -51,7 +54,7 @@ public class Verificaciones {
                 //Si la entidad con el codigo especificado ya esxiste lanza una excepcion
             } else if (tiendaDAO.getObject(codigo) != null) {
                 flag = false;
-                throw new DuplicateEntityException("La tienda ya existe en la base de datos");
+                throw new DuplicateEntityException("La tienda ya existe en el sistema");
             }
 
             //Lanza una excepcion si los parametros no coinciden con la estructura
@@ -89,13 +92,13 @@ public class Verificaciones {
             } else if (tiempoDAO.getTiempoT(codigoT1, codigoT2) != null
                     || tiempoDAO.getTiempoT(codigoT2, codigoT1) != null) {
                 flag = false;
-                throw new DuplicateEntityException("El tiempo ya esta registrado en la base de datos");
+                throw new DuplicateEntityException("El tiempo ya esta registrado en el sistema");
 
                 //Si la entidad a la que hace referencia no existe lanza una excepcion
             } else if (tiendaDAO.getObject(codigoT1) == null
                     || tiendaDAO.getObject(codigoT2) == null) {
                 flag = false;
-                throw new EntityNotFoundException("La entidad a la que hace referencia no existe en la BD");
+                throw new EntityNotFoundException("La entidad a la que hace referencia no existe en el sistema");
             }
 
             //Lanza una excepcion si los parametros no coinciden con la estructura
@@ -142,12 +145,12 @@ public class Verificaciones {
                 //Si la entidad con el codigo especificado ya esxiste lanza una excepcion
             } else if (existenciaDAO.getExistenciasP(codTienda, codigo) != null) {
                 flag = false;
-                throw new DuplicateEntityException("El producto ya existe en la base de datos");
+                throw new DuplicateEntityException("El producto ya existe en el sistema");
 
                 //Si la entidad a la que hace referencia no existe lanza una excepcion
             } else if (tiendaDAO.getObject(codTienda) == null) {
                 flag = false;
-                throw new EntityNotFoundException("La entidad a la que hace referencia no existe en la BD");
+                throw new EntityNotFoundException("La entidad a la que hace referencia no existe en el sistema");
             }
 
             //Lanza una excepcion si los parametros no coinciden con la estructura
@@ -192,7 +195,7 @@ public class Verificaciones {
                 //Si la entidad con el codigo especificado ya esxiste lanza una excepcion
             } else if (clienteDAO.getObject(nit) != null) {
                 flag = false;
-                throw new DuplicateEntityException("El cliente ya existe en la base de datos");
+                throw new DuplicateEntityException("El cliente ya existe en el sistema");
             }
 
             //Lanza una excepcion si los parametros no coinciden con la estructura
@@ -202,7 +205,52 @@ public class Verificaciones {
         }
         return flag;
     }
+    
+    //Realiza las verificaciones correspondientes con los paramtros obtenidos
+    public static boolean verificarEmpleado(String[] parametros) throws Exception {
+        boolean flag = true;
+        if (parametros.length == 5) {
+            String nombre = parametros[1];
+            String codigo = parametros[2];
+            String telefono = parametros[3];
+            String cui = parametros[4];
 
+            //Si algun parametro excede el limite de caracteres lanza una excepcion
+            if (nombre.length() > 45 || codigo.length() > 10 || telefono.length() > 8
+                    || cui.length() > 13) {
+                flag = false;
+                throw new CharacterLimitException("Uno o mas parametros exceden el limite de caracteres");
+
+                //Si algun parametro es una cadena vacia lanza una excepcion
+            } else if (nombre.isEmpty() || codigo.isEmpty() || cui.isEmpty()
+                    || telefono.isEmpty()) {
+                flag = false;
+                throw new EmptyParameterException("Uno o mas parametros estan vacios");
+
+                //Si el telefono contiene caracteres que no son numericos lanza una excepcion
+            } else if (!isInt(telefono)) {
+                flag = false;
+                throw new IncompatibleTypeException("El telefono tiene que contener solo numeros");
+            
+                //Si el cui contiene caracteres que no son numericos lanza una excepcion
+            } else if (!isInt(cui)) {
+                flag = false;
+                throw new IncompatibleTypeException("El CUI debe ser un dato numerico");
+
+                //Si la entidad con el codigo especificado ya esxiste lanza una excepcion
+            } else if (empleadoDAO.getObject(codigo) != null) {
+                flag = false;
+                throw new DuplicateEntityException("El empleado ya existe en el sistema");
+            }
+
+            //Lanza una excepcion si los parametros no coinciden con la estructura
+        } else {
+            flag = false;
+            throw new ParameterNotFoundException("El numero de parametros no coincide con la estructura");
+        }
+        return flag;
+    }
+    
     //Verifica si la cadena es un float
     private static boolean isFloat(String s) {
         try {

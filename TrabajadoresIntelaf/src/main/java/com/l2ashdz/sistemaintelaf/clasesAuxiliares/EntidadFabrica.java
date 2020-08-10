@@ -1,6 +1,7 @@
 package com.l2ashdz.sistemaintelaf.clasesAuxiliares;
 
 import com.l2ashdz.sistemaintelaf.model.Cliente;
+import com.l2ashdz.sistemaintelaf.model.Empleado;
 import com.l2ashdz.sistemaintelaf.model.ExistenciaProducto;
 import com.l2ashdz.sistemaintelaf.model.Producto;
 import com.l2ashdz.sistemaintelaf.model.TiempoTraslado;
@@ -53,5 +54,14 @@ public class EntidadFabrica {
         cliente.setTelefono(parametros[3]);
         cliente.setCreditoCompra(Float.parseFloat(parametros[4]));
         return cliente;
+    }
+    
+    public static Empleado nuevoEmpleado(String[] parametros){
+        Empleado empleado = new Empleado();
+        empleado.setNombre(parametros[1]);
+        empleado.setCodigo(parametros[2]);
+        empleado.setTelefono(parametros[3]);
+        empleado.setCUI(parametros[4]);
+        return empleado;
     }
 }

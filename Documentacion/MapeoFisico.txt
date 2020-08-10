@@ -3,12 +3,12 @@ USE SistemaIntelaf;
 
 CREATE TABLE empleado (
   codigo VARCHAR(10) NOT NULL,
-  cui VARCHAR(13) NULL,
+  cui VARCHAR(13) NOT NULL,
   nit VARCHAR(10) NULL,
   nombre VARCHAR(45) NOT NULL,
   telefono VARCHAR(8) NOT NULL,
   correo VARCHAR(30) NULL,
-  direccion VARCHAR(50) NOT NULL,
+  direccion VARCHAR(50) NULL,
   estado INT NULL DEFAULT 1,
   CONSTRAINT PK_USUARIO
     PRIMARY KEY (codigo));

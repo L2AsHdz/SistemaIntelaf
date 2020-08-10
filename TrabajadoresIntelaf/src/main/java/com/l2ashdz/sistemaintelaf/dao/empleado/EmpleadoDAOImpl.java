@@ -15,13 +15,15 @@ import javax.swing.JOptionPane;
  *
  * @author asael
  */
-public class EmpleadoDAOImpl implements EmpleadoDAO{
+public class EmpleadoDAOImpl implements EmpleadoDAO {
+
     private static EmpleadoDAOImpl empleadoDAO = null;
     private final Connection conexion = Conexion.getConexion();
-    
-    private EmpleadoDAOImpl(){}
-    
-    public static EmpleadoDAOImpl getEmpleadoDAO(){
+
+    private EmpleadoDAOImpl() {
+    }
+
+    public static EmpleadoDAOImpl getEmpleadoDAO() {
         if (empleadoDAO == null) {
             empleadoDAO = new EmpleadoDAOImpl();
         }
@@ -31,14 +33,16 @@ public class EmpleadoDAOImpl implements EmpleadoDAO{
     //Decuelve un listado de Empleados
     @Override
     public List<Empleado> getListado() {
+        String sql = "SELECT * FROM empleado";
+        Statement declaracion = null;
+        ResultSet rs = null;
         List<Empleado> empleados = null;
-        
+
         try {
-            String sql = "SELECT * FROM empleado";
-            Statement declaracion = conexion.createStatement();
-            
+            declaracion = conexion.createStatement();
+            rs = declaracion.executeQuery(sql);
             empleados = new ArrayList();
-            ResultSet rs = declaracion.executeQuery(sql);
+
             while (rs.next()) {
                 Empleado empleado = new Empleado();
                 empleado.setCodigo(rs.getString("codigo"));
@@ -52,21 +56,27 @@ public class EmpleadoDAOImpl implements EmpleadoDAO{
                 empleados.add(empleado);
             }
             System.out.println("Listado de Empleados Obtenido");
-            rs.close();
-            declaracion.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            e.printStackTrace();
+            e.printStackTrace(System.out);
+        } finally {
+            try {
+                rs.close();
+                declaracion.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
         }
         return empleados;
     }
-    
+
     @Override
     public void create(Empleado e) {
+        String sql = "INSERT INTO empleado (codigo, cui, nit, nombre, "
+                + "correo, direccion, telefono) VALUES (?,?,?,?,?,?,?)";
+        PreparedStatement ps = null;
         try {
-            String sql = "INSERT INTO empleado (codigo, cui, nit, nombre, "
-                    + "correo, direccion, telefono) VALUES (?,?,?,?,?,?,?)";
-            PreparedStatement ps = conexion.prepareStatement(sql);
+            ps = conexion.prepareStatement(sql);
             ps.setString(1, e.getCodigo());
             ps.setString(2, e.getCUI());
             ps.setString(3, e.getNitI());
@@ -76,23 +86,31 @@ public class EmpleadoDAOImpl implements EmpleadoDAO{
             ps.setString(7, e.getTelefono());
             ps.executeUpdate();
             System.out.println("Empleado Ingresado Correctamente");
-            ps.close();
-            ps = null;
         } catch (SQLException ex) {
             System.out.println("No se inserto el empleado");
-            ex.printStackTrace();
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
         }
     }
 
     @Override
     public Empleado getObject(Object codigo) {
-        Empleado e = new Empleado();
+        String sql = "SELECT * FROM empleado WHERE codigo = ?";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Empleado e = null;
+        
         try {
-            String sql = "SELECT * FROM empleado WHERE codigo = ?";
-            PreparedStatement ps = conexion.prepareStatement(sql);
-            ps.setString(1, (String)codigo);
-            ResultSet rs = ps.executeQuery();
+            ps = conexion.prepareStatement(sql);
+            ps.setString(1, (String) codigo);
+            rs = ps.executeQuery();
             while (rs.next()) {
+                e = new Empleado();
                 e.setCodigo(rs.getString("codigo"));
                 e.setCUI(rs.getString("cui"));
                 e.setNitI(rs.getString("nit"));
@@ -103,16 +121,19 @@ public class EmpleadoDAOImpl implements EmpleadoDAO{
                 e.setEstado(rs.getInt("estado"));
             }
             System.out.println("Empleado obtenido de la BD");
-            ps.close();
-            ps = null;
         } catch (SQLException ex) {
             System.out.println("No se pudo leer el empleado");
             ex.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
         }
         return e;
     }
-
-    
 
     @Override
     public void update(Empleado u) {
@@ -133,13 +154,13 @@ public class EmpleadoDAOImpl implements EmpleadoDAO{
             ps.setString(2, codigo);
             ps.executeUpdate();
             System.out.println("Empleado deshabilitado");
-            JOptionPane.showMessageDialog(null, "Empleado con Codigo: "+codigo+
-            " fue deshabilitado", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Empleado con Codigo: " + codigo
+                    + " fue deshabilitado", "Informacion", JOptionPane.INFORMATION_MESSAGE);
             ps.close();
-            ps=null;
+            ps = null;
         } catch (SQLException ex) {
             System.out.println("No se deshabilito el empleado");
             ex.printStackTrace();
-        } 
+        }
     }
 }
