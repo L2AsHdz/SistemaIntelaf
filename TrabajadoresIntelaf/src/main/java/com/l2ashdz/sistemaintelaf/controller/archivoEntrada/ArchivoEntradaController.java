@@ -10,6 +10,8 @@ import com.l2ashdz.sistemaintelaf.ui.LoginView;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.*;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.EntidadFabrica.*;
 import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
+import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAOImpl;
+import com.l2ashdz.sistemaintelaf.dao.pedido.ProductoPedidoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.producto.ExistenciaProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAOImpl;
@@ -17,7 +19,9 @@ import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
 import com.l2ashdz.sistemaintelaf.model.Cliente;
 import com.l2ashdz.sistemaintelaf.model.Conexion;
 import com.l2ashdz.sistemaintelaf.model.ExistenciaProducto;
+import com.l2ashdz.sistemaintelaf.model.Pedido;
 import com.l2ashdz.sistemaintelaf.model.Producto;
+import com.l2ashdz.sistemaintelaf.model.ProductoPedido;
 import com.l2ashdz.sistemaintelaf.model.TiempoTraslado;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,6 +56,8 @@ public class ArchivoEntradaController implements ActionListener {
     private CRUD<Producto> productoDAO;
     private CRUD<ExistenciaProducto> existenciaPDAO;
     private CRUD<Cliente> clienteDAO;
+    private CRUD<Pedido> pedidoDAO;
+    private CRUD<ProductoPedido> productoPDAO;
 
     private CRUD<Empleado> empleadoDAO;
     private List<Empleado> empleados;
@@ -68,6 +74,8 @@ public class ArchivoEntradaController implements ActionListener {
         productoDAO = ProductoDAOImpl.getProductoDAO();
         existenciaPDAO = ExistenciaProductoDAOImpl.getExistenciaDAO();
         clienteDAO = ClienteDAOImpl.getClienteDAO();
+        pedidoDAO = PedidoDAOImpl.getPedidoDAO();
+        productoPDAO = ProductoPedidoDAOImpl.getProductoPDAO();
 
         loginV = new LoginView();
         this.archivoEV = archivoEView;
@@ -84,8 +92,11 @@ public class ArchivoEntradaController implements ActionListener {
             archivoEV.setLocationRelativeTo(null);
             archivoEV.setVisible(true);
         } else {
-            loginC = new LoginController(loginV);
-            loginC.iniciar();
+            //loginC = new LoginController(loginV);
+            //loginC.iniciar();
+            archivoEV.pack();
+            archivoEV.setLocationRelativeTo(null);
+            archivoEV.setVisible(true);
         }
     }
 
@@ -145,10 +156,11 @@ public class ArchivoEntradaController implements ActionListener {
                             if (verificarProducto(parametros)) {
                                 if (productoDAO.getObject(parametros[3]) == null) {
                                     productoDAO.create(nuevoProducto(parametros));
+                                    textA.append("Se registrara el producto: " + parametros[1]+"\n");
                                 }
                                 existenciaPDAO.create(nuevaExistenciaProducto(parametros));
-                                textA.append("Se registrara el producto: " + parametros[1] + 
-                                        " en la tienda: "+parametros[6]+"\n");
+                                textA.append("Se registraran las existencias del producto: "
+                                        + "" + parametros[1] +" en la tienda: "+parametros[6]+"\n");
                             }
                             break;
                         case "CLIENTE":
@@ -166,8 +178,15 @@ public class ArchivoEntradaController implements ActionListener {
                             }
                             break;
                         case "PEDIDO":
-                            mensaje = "pedido\n";
-                            textA.append(mensaje);
+                            if (verificarPedido(parametros)) {
+                                if (pedidoDAO.getObject(parametros[1]) == null) {
+                                    pedidoDAO.create(nuevoPedido(parametros));
+                                    textA.append("Se registrara el pedido: "+parametros[1]+"\n");
+                                }
+                                productoPDAO.create(nuevoProductoPedido(parametros));
+                                textA.append("Se registrara el producto: " +parametros[6]+
+                                        " en el pedido: " +parametros[1]+"\n");
+                            }
                             break;
                         default:
                             mensaje = "Linea " + (i + 1) + ": No coincide con el inicio de alguna estructura\n";
@@ -176,6 +195,7 @@ public class ArchivoEntradaController implements ActionListener {
                 } catch (Exception e) {
                     mensaje = "Linea " + (i + 1) + ": " + e.getMessage() + "\n";
                     errores.add(mensaje);
+                    e.printStackTrace(System.out);
                 }
             }
 

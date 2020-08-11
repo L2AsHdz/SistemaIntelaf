@@ -88,7 +88,7 @@ public class ExistenciaProductoDAOImpl implements ExistenciaProductoDAO {
     }
 
     @Override
-    public ExistenciaProducto getObject(Object t) {
+    public ExistenciaProducto getObject(String t) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -103,7 +103,7 @@ public class ExistenciaProductoDAOImpl implements ExistenciaProductoDAO {
     }
 
     @Override
-    public ExistenciaProducto getExistenciasP(String codT, String codP) {
+    public ExistenciaProducto getProductoInTienda(String codT, String codP) {
         String sql = "SELECT * FROM existencia_producto WHERE codigo_tienda = ? AND "
                 + "codigo_producto = ?";
         PreparedStatement ps = null;
@@ -134,6 +134,37 @@ public class ExistenciaProductoDAOImpl implements ExistenciaProductoDAO {
             
         }
         return ep;
+    }
+
+    @Override
+    public int getExistencias(String codT, String codP) {
+        String sql = "SELECT existencias FROM existencia_producto WHERE codigo_tienda = ? AND "
+                + "codigo_producto = ?";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int existencias = -1;
+        try {
+            ps = conexion.prepareStatement(sql);
+            ps.setString(1, (String) codT);
+            ps.setString(2, (String) codP);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                existencias = rs.getInt("existencias");
+            }
+            System.out.println("Existencias obtenidas de la BD");
+        } catch (SQLException ex) {
+            System.out.println("No se pudo leer las existencias");
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            
+        }
+        return existencias;
     }
 
 }

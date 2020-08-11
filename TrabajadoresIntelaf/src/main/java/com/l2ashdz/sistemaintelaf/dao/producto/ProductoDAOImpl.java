@@ -93,14 +93,14 @@ public class ProductoDAOImpl implements ProductoDAO {
     }
 
     @Override
-    public Producto getObject(Object codigo) {
+    public Producto getObject(String codigo) {
         String sql = "SELECT * FROM producto WHERE codigo = ?";
         PreparedStatement ps = null;
         ResultSet rs = null;
         Producto p = null;
         try {
             ps = conexion.prepareStatement(sql);
-            ps.setString(1, (String) codigo);
+            ps.setString(1, codigo);
             rs = ps.executeQuery();
             while (rs.next()) {
                 p = new Producto();

@@ -11,7 +11,7 @@ public interface CRUD<T> {
     
     public List<T> getListado();
     public void create(T t);
-    public T getObject(Object t);
+    public T getObject(String t);
     public void update(T t);
     public void delete(int t);
 }

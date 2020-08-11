@@ -93,14 +93,14 @@ public class ClienteDAOImpl implements ClienteDAO{
     }
 
     @Override
-    public Cliente getObject(Object nit) {
+    public Cliente getObject(String nit) {
         String sql = "SELECT * FROM cliente WHERE nit = ?";
         PreparedStatement ps = null;
         ResultSet rs = null;
         Cliente c = null;
         try {
             ps = conexion.prepareStatement(sql);
-            ps.setString(1, (String) nit);
+            ps.setString(1, nit);
             rs = ps.executeQuery();
             while (rs.next()) {
                 c = new Cliente();

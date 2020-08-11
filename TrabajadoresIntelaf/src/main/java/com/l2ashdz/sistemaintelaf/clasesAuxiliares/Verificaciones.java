@@ -3,15 +3,20 @@ package com.l2ashdz.sistemaintelaf.clasesAuxiliares;
 import com.l2ashdz.sistemaintelaf.dao.CRUD;
 import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.empleado.EmpleadoDAOImpl;
+import com.l2ashdz.sistemaintelaf.dao.pedido.ProductoPedidoDAO;
+import com.l2ashdz.sistemaintelaf.dao.pedido.ProductoPedidoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.producto.ExistenciaProductoDAO;
 import com.l2ashdz.sistemaintelaf.dao.producto.ExistenciaProductoDAOImpl;
+import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAO;
 import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
 import com.l2ashdz.sistemaintelaf.excepciones.*;
 import com.l2ashdz.sistemaintelaf.model.Cliente;
 import com.l2ashdz.sistemaintelaf.model.Empleado;
+import com.l2ashdz.sistemaintelaf.model.Producto;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
+import java.time.LocalDate;
 
 /**
  *
@@ -22,8 +27,10 @@ public class Verificaciones {
     private static CRUD<Tienda> tiendaDAO = TiendaDAOImpl.getTiendaDAO();
     private static TiempoTrasladoDAO tiempoDAO = TiempoTrasladoDAOImpl.getTiempoDAO();
     private static ExistenciaProductoDAO existenciaDAO = ExistenciaProductoDAOImpl.getExistenciaDAO();
+    private static CRUD<Producto> productoDAO = ProductoDAOImpl.getProductoDAO();
     private static CRUD<Cliente> clienteDAO = ClienteDAOImpl.getClienteDAO();
     private static CRUD<Empleado> empleadoDAO = EmpleadoDAOImpl.getEmpleadoDAO();
+    private static ProductoPedidoDAO productoPedDAO = ProductoPedidoDAOImpl.getProductoPDAO();
 
     //Realiza las verificaciones correspondientes con los paramtros obtenidos
     public static boolean verificarTienda(String[] parametros) throws Exception {
@@ -98,7 +105,7 @@ public class Verificaciones {
             } else if (tiendaDAO.getObject(codigoT1) == null
                     || tiendaDAO.getObject(codigoT2) == null) {
                 flag = false;
-                throw new EntityNotFoundException("La entidad a la que hace referencia no existe en el sistema");
+                throw new EntityNotFoundException("Una de las teindas a la que hace referencia no existe en el sistema");
             }
 
             //Lanza una excepcion si los parametros no coinciden con la estructura
@@ -143,14 +150,14 @@ public class Verificaciones {
                 throw new IncompatibleTypeException("El precio del producto tienen que ser un valor numerico");
 
                 //Si la entidad con el codigo especificado ya esxiste lanza una excepcion
-            } else if (existenciaDAO.getExistenciasP(codTienda, codigo) != null) {
+            } else if (existenciaDAO.getProductoInTienda(codTienda, codigo) != null) {
                 flag = false;
-                throw new DuplicateEntityException("El producto ya existe en el sistema");
+                throw new DuplicateEntityException("El producto en la tienda especificada ya existe en el sistema");
 
                 //Si la entidad a la que hace referencia no existe lanza una excepcion
             } else if (tiendaDAO.getObject(codTienda) == null) {
                 flag = false;
-                throw new EntityNotFoundException("La entidad a la que hace referencia no existe en el sistema");
+                throw new EntityNotFoundException("La tienda a la que hace referencia no existe en el sistema");
             }
 
             //Lanza una excepcion si los parametros no coinciden con la estructura
@@ -186,7 +193,7 @@ public class Verificaciones {
             } else if (!isInt(telefono)) {
                 flag = false;
                 throw new IncompatibleTypeException("El telefono tiene que contener solo numeros");
-            
+
                 //Si el credito contiene caracteres que no son numericos lanza una excepcion
             } else if (!isFloat(credito)) {
                 flag = false;
@@ -205,7 +212,7 @@ public class Verificaciones {
         }
         return flag;
     }
-    
+
     //Realiza las verificaciones correspondientes con los paramtros obtenidos
     public static boolean verificarEmpleado(String[] parametros) throws Exception {
         boolean flag = true;
@@ -231,7 +238,7 @@ public class Verificaciones {
             } else if (!isInt(telefono)) {
                 flag = false;
                 throw new IncompatibleTypeException("El telefono tiene que contener solo numeros");
-            
+
                 //Si el cui contiene caracteres que no son numericos lanza una excepcion
             } else if (!isInt(cui)) {
                 flag = false;
@@ -250,7 +257,104 @@ public class Verificaciones {
         }
         return flag;
     }
-    
+
+    public static boolean verificarPedido(String[] parametros) throws Exception {
+        boolean flag = true;
+
+        if (parametros.length == 10) {
+            String codigo = parametros[1];
+            String codTO = parametros[2];
+            String codTD = parametros[3];
+            String fecha = parametros[4];
+            String nit = parametros[5];
+            String codP = parametros[6];
+            String cantidad = parametros[7];
+            String total = parametros[8];
+            String anticipo = parametros[9];
+
+            //Si algun parametro excede el limite de caracteres lanza una excepcion
+            if (nit.length() > 10 || codTO.length() > 10 || codTD.length() > 10
+                    || codP.length() > 15) {
+                flag = false;
+                throw new CharacterLimitException("Uno o mas parametros exceden el limite de caracteres");
+
+                //Si algun parametro es una cadena vacia lanza una exccepcion
+            } else if (codigo.isEmpty() || codTO.isEmpty() || codTD.isEmpty()
+                    || fecha.isEmpty() || nit.isEmpty() || codP.isEmpty()
+                    || cantidad.isEmpty() || total.isEmpty() || anticipo.isEmpty()) {
+                flag = false;
+                throw new EmptyParameterException("Uno o mas parametros estan vacios");
+
+                //Si el codigo o la cantidad no son un valor numerico lanza una excepcion
+            } else if (!isInt(codigo) || !isInt(cantidad)) {
+                flag = false;
+                throw new IncompatibleTypeException("El codigo y la cantidad solo debe contener numeros");
+
+                //Si el total o el anticipo no es un valor numerico lanza una excepcion
+            } else if (!isFloat(total) || !isFloat(anticipo)) {
+                flag = false;
+                throw new IncompatibleTypeException("El total o anticipo ingresado no es un valor numerico");
+
+                //Si la fecha ingresada no tiene el formato correcto lanza una excepcion
+            } else if (!isFecha(fecha)) {
+                flag = false;
+                throw new IncompatibleTypeException("El formato de la fecha no es correcto (yyyy-MM-dd)");
+
+                //Si la entidad con el codigo especificado ya esxiste lanza una excepcion
+            } else if (productoPedDAO.getProductoInPedido(Integer.parseInt(codigo), codP) != null) {
+                flag = false;
+                throw new DuplicateEntityException("El producto ya esta registrado en un pedido en el sistema");
+
+                //Si la entidad a la que hace referencia no existe lanza una excepcion
+            } else if (tiendaDAO.getObject(codTD) == null || tiendaDAO.getObject(codTO) == null) {
+                flag = false;
+                throw new EntityNotFoundException("Una o ambas tiendas no existen en el sistema");
+
+                //Si el producto no existe en el sistema lanza una excepcion
+            } else if (productoDAO.getObject(codP) == null) {
+                flag = false;
+                throw new EntityNotFoundException("El producto no existe en el sistema");
+
+                //Si el producto no existe en la tienda especificada lanza una excepcion
+            } else if (existenciaDAO.getProductoInTienda(codTO, codP) == null) {
+                flag = false;
+                throw new EntityNotFoundException("El producto no existe en la tienda especificada");
+
+                //Si la entidad a la que hace referencia no existe lanza una excepcion
+            } else if (clienteDAO.getObject(nit) == null) {
+                flag = false;
+                throw new EntityNotFoundException("El cliente al que hace referencia no existe en el sistema");
+
+                //Si la cantidad excede las existencias lanza una excepcion
+            } else if (Integer.parseInt(cantidad) > existenciaDAO.getExistencias(codTO, codP)) {
+                flag = false;
+                throw new StockException("La cantidad excede las existencias disponibles en la tienda origen");
+
+                //Si la cantidad, el total o el anticipo es igual o mayor a cero lanza una excepcion
+            } else if (!isMayorACero(cantidad) || !isMayorACero(total) || !isMayorACero(anticipo)) {
+                flag = false;
+                throw new UnnaturalNumberException("La cantidad, el total y el anticipo deben ser numeros mayores a cero");
+           
+                //Si el anticipo es mayor al total lanza una excepcion
+            } else if (Float.parseFloat(anticipo) > Float.parseFloat(total)) {
+                flag = false;
+                throw new Exception("El anticipo no puede ser mayor al total");
+                
+                //Si la tienda origen es la misma que el destino lanza una excepcion
+            } else if (codTO.equals(codTD)) {
+                flag = false;
+                throw new Exception("La tienda origen no puede ser la misma que la tienda destino");
+            }
+
+            //Lanza una excepcion si los parametros no coinciden con la estructura
+        } else {
+            flag = false;
+            throw new ParameterNotFoundException("El numero de parametros no coincide con la estructura");
+
+        }
+        return flag;
+    }
+
     //Verifica si la cadena es un float
     private static boolean isFloat(String s) {
         try {
@@ -270,4 +374,19 @@ public class Verificaciones {
             return false;
         }
     }
+
+    //Verifica si el formato de la fecha es el correcto
+    public static boolean isFecha(String s) {
+        try {
+            LocalDate.parse(s);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static boolean isMayorACero(String s) {
+        return (Float.parseFloat(s) > 0);
+    }
+    // quiza sea mejor solo crear una excepcion que sea algo como Excepcion por parte del usuario
 }

@@ -99,7 +99,7 @@ public class EmpleadoDAOImpl implements EmpleadoDAO {
     }
 
     @Override
-    public Empleado getObject(Object codigo) {
+    public Empleado getObject(String codigo) {
         String sql = "SELECT * FROM empleado WHERE codigo = ?";
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -107,7 +107,7 @@ public class EmpleadoDAOImpl implements EmpleadoDAO {
         
         try {
             ps = conexion.prepareStatement(sql);
-            ps.setString(1, (String) codigo);
+            ps.setString(1, codigo);
             rs = ps.executeQuery();
             while (rs.next()) {
                 e = new Empleado();

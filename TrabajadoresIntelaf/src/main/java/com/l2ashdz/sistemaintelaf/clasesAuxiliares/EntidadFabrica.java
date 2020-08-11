@@ -1,11 +1,16 @@
 package com.l2ashdz.sistemaintelaf.clasesAuxiliares;
 
+import com.l2ashdz.sistemaintelaf.dao.CRUD;
+import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.model.Cliente;
 import com.l2ashdz.sistemaintelaf.model.Empleado;
 import com.l2ashdz.sistemaintelaf.model.ExistenciaProducto;
+import com.l2ashdz.sistemaintelaf.model.Pedido;
 import com.l2ashdz.sistemaintelaf.model.Producto;
+import com.l2ashdz.sistemaintelaf.model.ProductoPedido;
 import com.l2ashdz.sistemaintelaf.model.TiempoTraslado;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
+import java.time.LocalDate;
 
 /**
  *
@@ -63,5 +68,32 @@ public class EntidadFabrica {
         empleado.setTelefono(parametros[3]);
         empleado.setCUI(parametros[4]);
         return empleado;
+    }
+    
+    public static Pedido nuevoPedido(String[] parametros){
+        Float total = Float.parseFloat(parametros[8]);
+        Float anticipo = Float.parseFloat(parametros[9]);
+        Float porcentajeP = anticipo/total;
+        
+        Pedido pedido = new Pedido();
+        pedido.setCodigo(Integer.parseInt(parametros[1]));
+        pedido.setNitCliente(parametros[5]);
+        pedido.setCodigoTiendaOrigen(parametros[2]);
+        pedido.setCodigoTiendaDestino(parametros[3]);
+        pedido.setFecha(LocalDate.parse(parametros[4]));
+        pedido.setPorcentajePagado(porcentajeP);
+        pedido.setPorcentajeEfectivo(1);
+        pedido.setPorcentajeCredito(0);
+        return pedido;
+    }
+    
+    public static ProductoPedido nuevoProductoPedido(String[] parametros){
+        CRUD<Producto> productoDAO = ProductoDAOImpl.getProductoDAO();
+        ProductoPedido productoP = new ProductoPedido();
+        productoP.setCodigoPedido(Integer.parseInt(parametros[1]));
+        productoP.setCodigoProducto(parametros[6]);
+        productoP.setCantidad(Integer.parseInt(parametros[7]));
+        productoP.setPrecio(productoDAO.getObject(parametros[6]).getPrecio());
+        return productoP;
     }
 }

@@ -17,7 +17,7 @@ CREATE TABLE tienda (
   codigo VARCHAR(10) NOT NULL,
   nombre VARCHAR(30) NOT NULL,
   direccion VARCHAR(50) NOT NULL,
-  telefono_1 VAcodifRCHAR(8) NOT NULL,
+  telefono_1 VARCHAR(8) NOT NULL,
   telefono_2 VARCHAR(8) NULL,
   correo VARCHAR(30) NULL,
   horario VARCHAR(60) NULL,

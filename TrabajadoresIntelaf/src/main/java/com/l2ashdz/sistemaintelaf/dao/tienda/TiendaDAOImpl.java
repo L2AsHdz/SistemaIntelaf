@@ -95,14 +95,14 @@ public class TiendaDAOImpl implements TiendaDAO {
     }
 
     @Override
-    public Tienda getObject(Object codigo) {
+    public Tienda getObject(String codigo) {
         String sql = "SELECT * FROM tienda WHERE codigo = ?";
         PreparedStatement ps = null;
         ResultSet rs = null;
         Tienda t = null;
         try {
             ps = conexion.prepareStatement(sql);
-            ps.setString(1, (String) codigo);
+            ps.setString(1, codigo);
             rs = ps.executeQuery();
             while (rs.next()) {
                 t = new Tienda();
