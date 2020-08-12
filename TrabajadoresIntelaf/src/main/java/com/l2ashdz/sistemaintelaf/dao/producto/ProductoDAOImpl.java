@@ -133,7 +133,7 @@ public class ProductoDAOImpl implements ProductoDAO {
     }
 
     @Override
-    public void delete(int t) {
+    public void delete(String t) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -4,9 +4,9 @@ package com.l2ashdz.sistemaintelaf.excepciones;
  *
  * @author asael
  */
-public class UnnaturalNumberException extends Exception{
+public class NegativeNumberException extends Exception{
 
-    public UnnaturalNumberException(String message) {
+    public NegativeNumberException(String message) {
         super(message);
     }
     

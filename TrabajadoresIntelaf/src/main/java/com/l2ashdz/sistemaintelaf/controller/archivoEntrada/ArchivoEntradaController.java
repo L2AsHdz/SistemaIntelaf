@@ -11,6 +11,7 @@ import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.*;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.EntidadFabrica.*;
 import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAOImpl;
+import com.l2ashdz.sistemaintelaf.dao.pedido.ProductoPedidoDAO;
 import com.l2ashdz.sistemaintelaf.dao.pedido.ProductoPedidoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.producto.ExistenciaProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAOImpl;
@@ -51,15 +52,15 @@ public class ArchivoEntradaController implements ActionListener {
 
     private Connection conexion;
 
+    private CRUD<Empleado> empleadoDAO;
     private CRUD<Tienda> tiendaDAO;
     private CRUD<TiempoTraslado> tiempoDAO;
     private CRUD<Producto> productoDAO;
     private CRUD<ExistenciaProducto> existenciaPDAO;
     private CRUD<Cliente> clienteDAO;
     private CRUD<Pedido> pedidoDAO;
-    private CRUD<ProductoPedido> productoPDAO;
+    private ProductoPedidoDAO productoPDAO;
 
-    private CRUD<Empleado> empleadoDAO;
     private List<Empleado> empleados;
 
     private String path = "";
@@ -156,37 +157,41 @@ public class ArchivoEntradaController implements ActionListener {
                             if (verificarProducto(parametros)) {
                                 if (productoDAO.getObject(parametros[3]) == null) {
                                     productoDAO.create(nuevoProducto(parametros));
-                                    textA.append("Se registrara el producto: " + parametros[1]+"\n");
+                                    textA.append("Se registrara el producto: " + parametros[1] + "\n");
                                 }
                                 existenciaPDAO.create(nuevaExistenciaProducto(parametros));
                                 textA.append("Se registraran las existencias del producto: "
-                                        + "" + parametros[1] +" en la tienda: "+parametros[6]+"\n");
+                                        + "" + parametros[1] + " en la tienda: " + parametros[6] + "\n");
                             }
                             break;
                         case "CLIENTE":
                             if (verificarCliente(parametros)) {
                                 clienteDAO.create(nuevoCliente(parametros));
                                 textA.append("Se registrara el cliente con el nit: "
-                                        +parametros[2]+ "\n");
+                                        + parametros[2] + "\n");
                             }
                             break;
                         case "EMPLEADO":
                             if (verificarEmpleado(parametros)) {
                                 empleadoDAO.create(nuevoEmpleado(parametros));
-                                textA.append("Se registrara el empleado con codigo: " 
-                                        +parametros[2]+"\n");
+                                textA.append("Se registrara el empleado con codigo: "
+                                        + parametros[2] + "\n");
                             }
                             break;
                         case "PEDIDO":
                             if (verificarPedido(parametros)) {
                                 if (pedidoDAO.getObject(parametros[1]) == null) {
                                     pedidoDAO.create(nuevoPedido(parametros));
-                                    textA.append("Se registrara el pedido: "+parametros[1]+"\n");
+                                    textA.append("Se registrara el pedido: " + parametros[1] + "\n");
                                 }
                                 productoPDAO.create(nuevoProductoPedido(parametros));
-                                textA.append("Se registrara el producto: " +parametros[6]+
-                                        " en el pedido: " +parametros[1]+"\n");
+                                textA.append("Se registrara el producto: " + parametros[6]
+                                        + " en el pedido: " + parametros[1] + "\n");
                             }
+                            //Crear una lista de pedidos y productosPedido ir agregando objetos al
+                            //mismo tiempo que se crea en la base de datos, luego verificar si 
+                            //los datos del pedido son iguales en todos los registros, si no es asi
+                            //borrar los productos y pedidos de la base de datos
                             break;
                         default:
                             mensaje = "Linea " + (i + 1) + ": No coincide con el inicio de alguna estructura\n";
@@ -196,11 +201,20 @@ public class ArchivoEntradaController implements ActionListener {
                     mensaje = "Linea " + (i + 1) + ": " + e.getMessage() + "\n";
                     errores.add(mensaje);
                     e.printStackTrace(System.out);
+                    
+                    if (!pedidoDAO.getListado().isEmpty()) {
+                        productoPDAO.deleteProductosDePedido(parametros[1]);
+                        pedidoDAO.delete(parametros[1]);
+                        mensaje = "Se elimino el pedido: "+parametros[1]+ " y sus productos debido a errores\n";
+                        errores.add(mensaje);
+                    }
                 }
             }
 
-            textA.append("\n\nSe detectaron los siguientes errores en el archivo: \n");
-            errores.forEach(error -> textA.append(error));
+            if (!errores.isEmpty()) {
+                textA.append("\n\nSe detectaron los siguientes errores en el archivo: \n");
+                errores.forEach(error -> textA.append(error));
+            }
 
         } catch (SQLException e) {
             e.printStackTrace(System.out);

@@ -98,7 +98,7 @@ public class ExistenciaProductoDAOImpl implements ExistenciaProductoDAO {
     }
 
     @Override
-    public void delete(int t) {
+    public void delete(String t) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -9,4 +9,5 @@ import com.l2ashdz.sistemaintelaf.model.ProductoPedido;
  */
 public interface ProductoPedidoDAO extends CRUD<ProductoPedido>{
     public ProductoPedido getProductoInPedido(int codPedido, String codProducto);
+    public void deleteProductosDePedido(String codigoPedido);
 }

@@ -95,6 +95,11 @@ public class Verificaciones {
                 flag = false;
                 throw new IncompatibleTypeException("El parametro tiempo debe ser un valor entero");
 
+                //Si el tiempo es menor a cero lanza una excepcion
+            } else if (Integer.parseInt(tiempo) < 0) {
+                flag = false;
+                throw new NegativeNumberException("El tiempo no puede ser menor a cero");
+
                 //Si la entidad con los codigos especificados ya existe lanza una excepcion
             } else if (tiempoDAO.getTiempoT(codigoT1, codigoT2) != null
                     || tiempoDAO.getTiempoT(codigoT2, codigoT1) != null) {
@@ -144,10 +149,20 @@ public class Verificaciones {
                 flag = false;
                 throw new IncompatibleTypeException("Las existencias del producto tienen que ser un entero");
 
-                //Si eel precio no es un valor numerico lanza una excepcion
+                //Si las existencias son menores a cero lanza una excepcion
+            } else if (Integer.parseInt(existencias) < 0) {
+                flag = false;
+                throw new NegativeNumberException("Las existencias no pueden ser menores a cero");
+
+                //Si el precio no es un valor numerico lanza una excepcion
             } else if (!isFloat(precio)) {
                 flag = false;
                 throw new IncompatibleTypeException("El precio del producto tienen que ser un valor numerico");
+
+                //Si el precio es menor o igual a cero lanza una excepcion
+            } else if (!isMayorACero(precio)) {
+                flag = false;
+                throw new NegativeNumberException("El precio no puede ser menor o igual a cero");
 
                 //Si la entidad con el codigo especificado ya esxiste lanza una excepcion
             } else if (existenciaDAO.getProductoInTienda(codTienda, codigo) != null) {
@@ -198,6 +213,11 @@ public class Verificaciones {
             } else if (!isFloat(credito)) {
                 flag = false;
                 throw new IncompatibleTypeException("El credito de compra debe ser un dato numerico");
+
+                //Si el credito es menor a cero lanza una excepcion
+            } else if (Integer.parseInt(credito) < 0) {
+                flag = false;
+                throw new IncompatibleTypeException("El credito no puuede ser menor a cero");
 
                 //Si la entidad con el codigo especificado ya esxiste lanza una excepcion
             } else if (clienteDAO.getObject(nit) != null) {
@@ -330,16 +350,16 @@ public class Verificaciones {
                 flag = false;
                 throw new StockException("La cantidad excede las existencias disponibles en la tienda origen");
 
-                //Si la cantidad, el total o el anticipo es igual o mayor a cero lanza una excepcion
+                //Si la cantidad, el total o el anticipo es igual o menor a cero lanza una excepcion
             } else if (!isMayorACero(cantidad) || !isMayorACero(total) || !isMayorACero(anticipo)) {
                 flag = false;
-                throw new UnnaturalNumberException("La cantidad, el total y el anticipo deben ser numeros mayores a cero");
-           
-                //Si el anticipo es mayor al total lanza una excepcion
-            } else if (Float.parseFloat(anticipo) > Float.parseFloat(total)) {
+                throw new NegativeNumberException("La cantidad, el total y el anticipo deben ser datos mayores a cero");
+
+                //Si el total dado no coincide con los datos en el sistema lanza una excepcion
+            } else if (!verificarTotalProducto(codP, cantidad, total)) {
                 flag = false;
-                throw new Exception("El anticipo no puede ser mayor al total");
-                
+                throw new Exception("El total proporcionado no coincide con los datos en el sistema");
+
                 //Si la tienda origen es la misma que el destino lanza una excepcion
             } else if (codTO.equals(codTD)) {
                 flag = false;
@@ -385,8 +405,15 @@ public class Verificaciones {
         }
     }
 
+    //Verifica si el numero es mayor a cero
     public static boolean isMayorACero(String s) {
         return (Float.parseFloat(s) > 0);
     }
-    // quiza sea mejor solo crear una excepcion que sea algo como Excepcion por parte del usuario
+
+    public static boolean verificarTotalProducto(String codigo, String cantidad, String total) {
+        float precioDB = productoDAO.getObject(codigo).getPrecio();
+        float totalReal = (Integer.parseInt(cantidad) * precioDB);
+        System.out.println(total + " - "+totalReal);
+        return Float.parseFloat(total) == totalReal;
+    }
 }

@@ -13,5 +13,5 @@ public interface CRUD<T> {
     public void create(T t);
     public T getObject(String t);
     public void update(T t);
-    public void delete(int t);
+    public void delete(String t);
 }

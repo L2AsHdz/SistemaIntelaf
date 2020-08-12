@@ -99,7 +99,7 @@ public class ProductoPedidoDAOImpl implements ProductoPedidoDAO {
     }
 
     @Override
-    public void delete(int t) {
+    public void delete(String t) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -136,6 +136,28 @@ public class ProductoPedidoDAOImpl implements ProductoPedidoDAO {
             
         }
         return pp;
+    }
+
+    @Override
+    public void deleteProductosDePedido(String codigoPedido) {
+        String sql = "DELETE FROM producto_pedido WHERE codigo_pedido = ?";
+        PreparedStatement ps = null;
+        
+        try {
+            ps = conexion.prepareStatement(sql);
+            ps.setInt(1, Integer.parseInt(codigoPedido));
+            ps.executeUpdate();
+            System.out.println("se eliminaron los productos del pedido");
+        } catch (SQLException ex) {
+            System.out.println("No se eliminaron los productos del pedido");
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
     }
 
 }

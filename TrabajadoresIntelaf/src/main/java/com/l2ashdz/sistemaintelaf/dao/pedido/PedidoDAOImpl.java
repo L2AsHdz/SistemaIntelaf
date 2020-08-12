@@ -51,9 +51,9 @@ public class PedidoDAOImpl implements PedidoDAO {
                 pedido.setCodigoTiendaDestino(rs.getString("codigo_tienda_destino"));
                 pedido.setFecha(LocalDate.parse(rs.getString("fecha")));
                 fecha = rs.getString("fecha_verificacion");
-                pedido.setFechaVerificacion((fecha==null)?null:LocalDate.parse(fecha));
+                pedido.setFechaVerificacion((fecha == null) ? null : LocalDate.parse(fecha));
                 fecha = rs.getString("fecha_retiro");
-                pedido.setFechaRetiro((fecha==null)?null:LocalDate.parse(fecha));
+                pedido.setFechaRetiro((fecha == null) ? null : LocalDate.parse(fecha));
                 pedido.setPorcentajeEfectivo(rs.getFloat("porcentaje_efectivo"));
                 pedido.setPorcentajeCredito(rs.getFloat("porcentaje_credito"));
                 pedido.setPorcentajePagado(rs.getFloat("porcentaje_pagado"));
@@ -77,11 +77,11 @@ public class PedidoDAOImpl implements PedidoDAO {
 
     @Override
     public void create(Pedido p) {
-            String sql = "INSERT INTO pedido (codigo, nit_cliente, codigo_tienda_origen, "
-                    + "codigo_tienda_destino, fecha, porcentaje_efectivo, porcentaje_credito, "
-                    + "porcentaje_pagado) VALUES (?,?,?,?,?,?,?,?)";
-            PreparedStatement ps = null;
-            try {
+        String sql = "INSERT INTO pedido (codigo, nit_cliente, codigo_tienda_origen, "
+                + "codigo_tienda_destino, fecha, porcentaje_efectivo, porcentaje_credito, "
+                + "porcentaje_pagado) VALUES (?,?,?,?,?,?,?,?)";
+        PreparedStatement ps = null;
+        try {
             ps = conexion.prepareStatement(sql);
             ps.setInt(1, p.getCodigo());
             ps.setString(2, p.getNitCliente());
@@ -124,9 +124,9 @@ public class PedidoDAOImpl implements PedidoDAO {
                 p.setCodigoTiendaDestino(rs.getString("codigo_tienda_destino"));
                 p.setFecha(LocalDate.parse(rs.getString("fecha")));
                 fecha = rs.getString("fecha_verificacion");
-                p.setFechaVerificacion((fecha==null)?null:LocalDate.parse(fecha));
+                p.setFechaVerificacion((fecha == null) ? null : LocalDate.parse(fecha));
                 fecha = rs.getString("fecha_retiro");
-                p.setFechaRetiro((fecha==null)?null:LocalDate.parse(fecha));
+                p.setFechaRetiro((fecha == null) ? null : LocalDate.parse(fecha));
                 p.setPorcentajeEfectivo(rs.getFloat("porcentaje_efectivo"));
                 p.setPorcentajeCredito(rs.getFloat("porcentaje_credito"));
                 p.setPorcentajePagado(rs.getFloat("porcentaje_pagado"));
@@ -143,7 +143,7 @@ public class PedidoDAOImpl implements PedidoDAO {
             } catch (SQLException ex) {
                 ex.printStackTrace(System.out);
             }
-            
+
         }
         return p;
     }
@@ -154,8 +154,25 @@ public class PedidoDAOImpl implements PedidoDAO {
     }
 
     @Override
-    public void delete(int t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void delete(String codigo) {
+        String sql = "DELETE FROM pedido WHERE codigo = ?";
+        PreparedStatement ps = null;
+        
+        try {
+            ps = conexion.prepareStatement(sql);
+            ps.setInt(1, Integer.parseInt(codigo));
+            ps.executeUpdate();
+            System.out.println("se elimino el pedido");
+        } catch (SQLException ex) {
+            System.out.println("No se elimino el pedido");
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
     }
 
 }

@@ -136,7 +136,7 @@ public class TiendaDAOImpl implements TiendaDAO {
     }
 
     @Override
-    public void delete(int t) {
+    public void delete(String t) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

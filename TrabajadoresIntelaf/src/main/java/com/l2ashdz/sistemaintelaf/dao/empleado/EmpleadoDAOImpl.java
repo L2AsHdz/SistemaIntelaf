@@ -141,7 +141,7 @@ public class EmpleadoDAOImpl implements EmpleadoDAO {
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(String id) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
