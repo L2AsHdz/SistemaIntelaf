@@ -1,13 +1,14 @@
 package com.l2ashdz.sistemaintelaf;
 
-import com.l2ashdz.sistemaintelaf.controller.archivoEntrada.ArchivoEntradaController;
-import com.l2ashdz.sistemaintelaf.ui.ArchivoEntradaView;
+import com.l2ashdz.sistemaintelaf.controller.PrincipalUIController;
+import com.l2ashdz.sistemaintelaf.ui.Login2View;
+import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
 
 public class SistemaIntelaf {
 
     public static void main(String[] args) {
-        ArchivoEntradaView archvoView = new ArchivoEntradaView();
-        ArchivoEntradaController lecturaC = new ArchivoEntradaController(archvoView);
-        lecturaC.iniciar();
+        PrincipalView pUI = new PrincipalView();
+        PrincipalUIController pUIC = new PrincipalUIController(pUI);
+        pUIC.iniciar();
     }
 }
