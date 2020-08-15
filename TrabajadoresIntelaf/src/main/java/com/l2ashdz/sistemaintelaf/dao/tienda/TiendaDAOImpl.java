@@ -132,7 +132,30 @@ public class TiendaDAOImpl implements TiendaDAO {
 
     @Override
     public void update(Tienda t) {
-        throw new UnsupportedOperationException("Not supported yet.");
+            String sql = "UPDATE tienda SET nombre = ?, dirreccion = ?, telefono_1 = ?,"
+                    + " telefono_2 = ?, correo = ?, horario = ? WHERE codigo = ?";
+            PreparedStatement ps = null;
+        try {
+            ps = conexion.prepareStatement(sql);
+            ps.setString(11, t.getNombre());
+            ps.setString(2, t.getDireccion());
+            ps.setString(3, t.getTelefono1());
+            ps.setString(4, t.getTelefono2());
+            ps.setString(5, t.getCodigo());
+            ps.setString(6, t.getHorario());
+            ps.setString(7, t.getCodigo());
+            ps.executeUpdate();
+            System.out.println("Tienda actualizado");
+        } catch (SQLException ex) {
+            System.out.println("No se actualizo la tienda");
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
     }
 
     @Override

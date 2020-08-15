@@ -10,32 +10,43 @@ import javax.swing.JPanel;
  *
  * @author asael
  */
-public class TiendaController extends MouseAdapter{
+public class TiendaController extends MouseAdapter {
+
     private TiendaView tiendaV;
-    
-    private AddTiendaView addTiendaV;
+
+    //Vista y controlador para agregar tiendas
+    private AddTiendaView addTiendaV = new AddTiendaView();
+    private AddTiendaController addTiendaC = new AddTiendaController(addTiendaV);
 
     public TiendaController(TiendaView tiendaV) {
+
         this.tiendaV = tiendaV;
-        
         this.tiendaV.getOpTienda().addMouseListener(this);
         this.tiendaV.getOpTiempos().addMouseListener(this);
     }
-    
-    public void iniciar(JPanel parent){
-        parent.add(tiendaV);
-        
-        tiendaV.setSize(parent.getSize());
-        tiendaV.setLocation(180, 50);
-        tiendaV.setVisible(true);
+
+    //inicia la interfaz de tiendas
+    public void iniciar(JPanel parent) {
+
+        if (!tiendaV.isEnabled()) {
+            tiendaV.setSize(parent.getSize());
+            tiendaV.setVisible(true);
+            tiendaV.setEnabled(true);
+            parent.add(tiendaV);
+            parent.validate();
+            tiendaV.setColor(tiendaV.getOpTienda());
+            addTiendaC.iniciar(tiendaV.getPnlDesk());
+        }
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
+    public void mouseClicked(MouseEvent e) {
+
+        //muestra la interfaz para agregar una tienda
         if (tiendaV.getOpTienda() == e.getSource()) {
-            
+            addTiendaC.iniciar(tiendaV.getPnlDesk());
         } else if (tiendaV.getOpTiempos() == e.getSource()) {
-            
+
         }
     }
 }

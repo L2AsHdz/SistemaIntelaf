@@ -17,8 +17,8 @@ import java.time.LocalDate;
  * @author asael
  */
 public class EntidadFabrica {
-    
-    public static Tienda nuevaTienda(String[] parametros){
+
+    public static Tienda nuevaTienda(String[] parametros) {
         Tienda tienda = new Tienda();
         tienda.setCodigo(parametros[3]);
         tienda.setNombre(parametros[1]);
@@ -26,16 +26,29 @@ public class EntidadFabrica {
         tienda.setTelefono1(parametros[4]);
         return tienda;
     }
-    
-    public static TiempoTraslado nuevoTiempo(String[] parametros){
+
+    public static Tienda nuevaTienda(String[] parametros, String telefono2,
+            String correo, String horario) {
+        Tienda tienda = new Tienda();
+        tienda.setCodigo(parametros[3]);
+        tienda.setNombre(parametros[1]);
+        tienda.setDireccion(parametros[2]);
+        tienda.setTelefono1(parametros[4]);
+        tienda.setTelefono2(telefono2.isEmpty()?null:telefono2);
+        tienda.setCorreo(correo.isEmpty()?null:correo);
+        tienda.setHorario(horario.isEmpty()?null:horario);
+        return tienda;
+    }
+
+    public static TiempoTraslado nuevoTiempo(String[] parametros) {
         TiempoTraslado tiempoT = new TiempoTraslado();
         tiempoT.setCodigoTienda1(parametros[1]);
         tiempoT.setCodigoTienda2(parametros[2]);
         tiempoT.setTiempo(Integer.parseInt(parametros[3]));
         return tiempoT;
     }
-    
-    public static Producto nuevoProducto(String[] parametros){
+
+    public static Producto nuevoProducto(String[] parametros) {
         Producto producto = new Producto();
         producto.setCodigo(parametros[3]);
         producto.setNombre(parametros[1]);
@@ -43,16 +56,16 @@ public class EntidadFabrica {
         producto.setPrecio(Float.parseFloat(parametros[5]));
         return producto;
     }
-    
-    public static ExistenciaProducto nuevaExistenciaProducto(String[] parametros){
+
+    public static ExistenciaProducto nuevaExistenciaProducto(String[] parametros) {
         ExistenciaProducto existenciaP = new ExistenciaProducto();
         existenciaP.setCodigoProducto(parametros[3]);
         existenciaP.setCodigoTienda(parametros[6]);
         existenciaP.setExistencias(Integer.parseInt(parametros[4]));
         return existenciaP;
     }
-    
-    public static Cliente nuevoCliente(String[] parametros){
+
+    public static Cliente nuevoCliente(String[] parametros) {
         Cliente cliente = new Cliente();
         cliente.setNombre(parametros[1]);
         cliente.setNit(parametros[2]);
@@ -60,8 +73,8 @@ public class EntidadFabrica {
         cliente.setCreditoCompra(Float.parseFloat(parametros[4]));
         return cliente;
     }
-    
-    public static Empleado nuevoEmpleado(String[] parametros){
+
+    public static Empleado nuevoEmpleado(String[] parametros) {
         Empleado empleado = new Empleado();
         empleado.setNombre(parametros[1]);
         empleado.setCodigo(parametros[2]);
@@ -69,12 +82,12 @@ public class EntidadFabrica {
         empleado.setCUI(parametros[4]);
         return empleado;
     }
-    
-    public static Pedido nuevoPedido(String[] parametros){
+
+    public static Pedido nuevoPedido(String[] parametros) {
         Float total = Float.parseFloat(parametros[8]);
         Float anticipo = Float.parseFloat(parametros[9]);
-        Float porcentajeP = anticipo/total;
-        
+        Float porcentajeP = anticipo / total;
+
         Pedido pedido = new Pedido();
         pedido.setCodigo(Integer.parseInt(parametros[1]));
         pedido.setNitCliente(parametros[5]);
@@ -86,8 +99,8 @@ public class EntidadFabrica {
         pedido.setPorcentajeCredito(0);
         return pedido;
     }
-    
-    public static ProductoPedido nuevoProductoPedido(String[] parametros){
+
+    public static ProductoPedido nuevoProductoPedido(String[] parametros) {
         CRUD<Producto> productoDAO = ProductoDAOImpl.getProductoDAO();
         ProductoPedido productoP = new ProductoPedido();
         productoP.setCodigoPedido(Integer.parseInt(parametros[1]));

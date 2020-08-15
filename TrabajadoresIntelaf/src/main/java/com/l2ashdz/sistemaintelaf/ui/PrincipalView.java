@@ -31,7 +31,7 @@ public class PrincipalView extends javax.swing.JFrame {
     private void initComponents() {
 
         pnlPrincipal = new javax.swing.JPanel();
-        pnlInicio = new javax.swing.JPanel();
+        pnlDesk = new javax.swing.JPanel();
         pnlMenu = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
         Opciones = new javax.swing.JPanel();
@@ -68,16 +68,16 @@ public class PrincipalView extends javax.swing.JFrame {
 
         pnlPrincipal.setBackground(new java.awt.Color(39, 44, 52));
 
-        pnlInicio.setBackground(new java.awt.Color(39, 44, 52));
+        pnlDesk.setBackground(new java.awt.Color(39, 44, 52));
 
-        javax.swing.GroupLayout pnlInicioLayout = new javax.swing.GroupLayout(pnlInicio);
-        pnlInicio.setLayout(pnlInicioLayout);
-        pnlInicioLayout.setHorizontalGroup(
-            pnlInicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout pnlDeskLayout = new javax.swing.GroupLayout(pnlDesk);
+        pnlDesk.setLayout(pnlDeskLayout);
+        pnlDeskLayout.setHorizontalGroup(
+            pnlDeskLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
-        pnlInicioLayout.setVerticalGroup(
-            pnlInicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        pnlDeskLayout.setVerticalGroup(
+            pnlDeskLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
@@ -421,13 +421,14 @@ public class PrincipalView extends javax.swing.JFrame {
             pnlInfoTiendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlInfoTiendaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlInfoTiendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel15)
+                .addGroup(pnlInfoTiendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlInfoTiendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel17)
                         .addComponent(jLabel16))
-                    .addComponent(jLabel20))
+                    .addGroup(pnlInfoTiendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(jLabel15)
+                        .addComponent(jLabel20)))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
@@ -439,7 +440,7 @@ public class PrincipalView extends javax.swing.JFrame {
                 .addComponent(pnlMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlInfoTienda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(pnlDesk, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         pnlPrincipalLayout.setVerticalGroup(
             pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -447,7 +448,7 @@ public class PrincipalView extends javax.swing.JFrame {
             .addGroup(pnlPrincipalLayout.createSequentialGroup()
                 .addComponent(pnlInfoTienda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(pnlInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(pnlDesk, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -564,8 +565,8 @@ public class PrincipalView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel pnlDesk;
     private javax.swing.JPanel pnlInfoTienda;
-    private javax.swing.JPanel pnlInicio;
     private javax.swing.JPanel pnlMenu;
     private javax.swing.JPanel pnlPrincipal;
     // End of variables declaration//GEN-END:variables
@@ -602,8 +603,8 @@ public class PrincipalView extends javax.swing.JFrame {
         return btnVentas;
     }
 
-    public JPanel getPnlInicio() {
-        return pnlInicio;
+    public JPanel getPnlDesk() {
+        return pnlDesk;
     }
 
     public JPanel getPnlMenu() {

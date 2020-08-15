@@ -13,8 +13,9 @@ import java.awt.event.MouseEvent;
 public class PrincipalUIController extends MouseAdapter{
     private PrincipalView principalUI;
     
-    private TiendaController tiendaC;
-    private TiendaView tiendaV;
+    //Vista y controlador para tienda
+    private TiendaView tiendaV = new TiendaView();
+    private TiendaController tiendaC = new TiendaController(tiendaV);;
 
     public PrincipalUIController(PrincipalView principalUI) {
         this.principalUI = principalUI;
@@ -23,20 +24,16 @@ public class PrincipalUIController extends MouseAdapter{
     
     public void iniciar(){
         principalUI.pack();
-        //principalUI.setResizable(false);
+        principalUI.setResizable(false);
         principalUI.setLocationRelativeTo(null);
         principalUI.setVisible(true);
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        //Inicia la interfaz de tienda
         if (principalUI.getBtnTiendas() == e.getSource()) {
-            principalUI.getPnlInicio().setVisible(false);
-            principalUI.setColor(principalUI.getBtnTiendas());
-            
-            tiendaV = new TiendaView();
-            tiendaC = new TiendaController(tiendaV);
-            tiendaC.iniciar(principalUI.getPnlPrincipal());
+            tiendaC.iniciar(principalUI.getPnlDesk());
         }
     }
     
