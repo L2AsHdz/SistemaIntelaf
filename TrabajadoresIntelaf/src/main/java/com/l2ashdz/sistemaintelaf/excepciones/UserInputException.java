@@ -4,9 +4,9 @@ package com.l2ashdz.sistemaintelaf.excepciones;
  *
  * @author asael
  */
-public class CharacterLimitException extends Exception{
+public class UserInputException extends Exception{
 
-    public CharacterLimitException(String message) {
+    public UserInputException(String message) {
         super(message);
     }
     

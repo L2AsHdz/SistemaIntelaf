@@ -33,7 +33,7 @@ public class Verificaciones {
     private static ProductoPedidoDAO productoPedDAO = ProductoPedidoDAOImpl.getProductoPDAO();
 
     //Realiza las verificaciones correspondientes con los paramtros obtenidos
-    public static boolean verificarTienda(String[] parametros) throws Exception {
+    public static boolean verificarTienda(String[] parametros) throws UserInputException {
         boolean flag = true;
         if (parametros.length == 5) {
             String nombre = parametros[1];
@@ -45,34 +45,34 @@ public class Verificaciones {
             if (nombre.length() > 30 || codigo.length() > 10 || direccion.length() > 50
                     || telefono.length() > 8) {
                 flag = false;
-                throw new CharacterLimitException("Uno o mas parametros exceden el limite de caracteres");
+                throw new UserInputException("Uno o mas parametros exceden el limite de caracteres");
 
                 //Si algun parametro es una cadena vacia lanza una exccepcion
             } else if (nombre.isEmpty() || direccion.isEmpty() || codigo.isEmpty()
                     || telefono.isEmpty()) {
                 flag = false;
-                throw new EmptyParameterException("Uno o mas parametros estan vacios");
+                throw new UserInputException("Uno o mas parametros estan vacios");
 
                 //Si el telefono contiene caracteres que no son numericos lanza una excepcion
             } else if (!isInt(telefono)) {
                 flag = false;
-                throw new IncompatibleTypeException("El telefono tiene que contener solo numeros");
+                throw new UserInputException("El telefono tiene que contener solo numeros");
 
                 //Si la entidad con el codigo especificado ya esxiste lanza una excepcion
             } else if (tiendaDAO.getObject(codigo) != null) {
                 flag = false;
-                throw new DuplicateEntityException("La tienda ya existe en el sistema");
+                throw new UserInputException("La tienda ya existe en el sistema");
             }
 
             //Lanza una excepcion si los parametros no coinciden con la estructura
         } else {
             flag = false;
-            throw new ParameterNotFoundException("El numero de parametros no coincide con la estructura");
+            throw new UserInputException("El numero de parametros no coincide con la estructura");
         }
         return flag;
     }
 
-    public static boolean verificarTiempo(String[] parametros) throws Exception {
+    public static boolean verificarTiempo(String[] parametros) throws UserInputException {
         boolean flag = true;
 
         if (parametros.length == 4) {
@@ -83,45 +83,45 @@ public class Verificaciones {
             //Si algun parametro excede el limite de caracteres lanza una excepcion
             if (codigoT1.length() > 10 || codigoT2.length() > 10) {
                 flag = false;
-                throw new CharacterLimitException("Uno o mas parametros exceden el limite de caracteres");
+                throw new UserInputException("Uno o mas parametros exceden el limite de caracteres");
 
                 //Si algun parametro es una cadena vacia lanza una exccepcion
             } else if (codigoT1.isEmpty() || codigoT2.isEmpty() || tiempo.isEmpty()) {
                 flag = false;
-                throw new EmptyParameterException("Uno o mas parametros estan vacios");
+                throw new UserInputException("Uno o mas parametros estan vacios");
 
                 //Si el tiempo no es un valor numerico lanza una excepcion
             } else if (!isInt(tiempo)) {
                 flag = false;
-                throw new IncompatibleTypeException("El parametro tiempo debe ser un valor entero");
+                throw new UserInputException("El parametro tiempo debe ser un valor entero");
 
                 //Si el tiempo es menor a cero lanza una excepcion
             } else if (Integer.parseInt(tiempo) < 0) {
                 flag = false;
-                throw new NegativeNumberException("El tiempo no puede ser menor a cero");
+                throw new UserInputException("El tiempo no puede ser menor a cero");
 
                 //Si la entidad con los codigos especificados ya existe lanza una excepcion
             } else if (tiempoDAO.getTiempoT(codigoT1, codigoT2) != null
                     || tiempoDAO.getTiempoT(codigoT2, codigoT1) != null) {
                 flag = false;
-                throw new DuplicateEntityException("El tiempo ya esta registrado en el sistema");
+                throw new UserInputException("El tiempo ya esta registrado en el sistema");
 
                 //Si la entidad a la que hace referencia no existe lanza una excepcion
             } else if (tiendaDAO.getObject(codigoT1) == null
                     || tiendaDAO.getObject(codigoT2) == null) {
                 flag = false;
-                throw new EntityNotFoundException("Una de las teindas a la que hace referencia no existe en el sistema");
+                throw new UserInputException("Una de las teindas a la que hace referencia no existe en el sistema");
             }
 
             //Lanza una excepcion si los parametros no coinciden con la estructura
         } else {
             flag = false;
-            throw new ParameterNotFoundException("El numero de parametros no coincide con la estructura");
+            throw new UserInputException("El numero de parametros no coincide con la estructura");
         }
         return flag;
     }
 
-    public static boolean verificarProducto(String[] parametros) throws Exception {
+    public static boolean verificarProducto(String[] parametros) throws UserInputException {
         boolean flag = true;
 
         if (parametros.length == 7) {
@@ -136,56 +136,56 @@ public class Verificaciones {
             if (nombre.length() > 50 || fabricante.length() > 30 || codigo.length() > 15
                     || codTienda.length() > 10) {
                 flag = false;
-                throw new CharacterLimitException("Uno o mas parametros exceden el limite de caracteres");
+                throw new UserInputException("Uno o mas parametros exceden el limite de caracteres");
 
                 //Si algun parametro es una cadena vacia lanza una exccepcion
             } else if (nombre.isEmpty() || fabricante.isEmpty() || codigo.isEmpty()
                     || existencias.isEmpty() || precio.isEmpty() || codTienda.isEmpty()) {
                 flag = false;
-                throw new EmptyParameterException("Uno o mas parametros estan vacios");
+                throw new UserInputException("Uno o mas parametros estan vacios");
 
                 //Si las existencias no son un valor numerico lanza una excepcion
             } else if (!isInt(existencias)) {
                 flag = false;
-                throw new IncompatibleTypeException("Las existencias del producto tienen que ser un entero");
+                throw new UserInputException("Las existencias del producto tienen que ser un entero");
 
                 //Si las existencias son menores a cero lanza una excepcion
             } else if (Integer.parseInt(existencias) < 0) {
                 flag = false;
-                throw new NegativeNumberException("Las existencias no pueden ser menores a cero");
+                throw new UserInputException("Las existencias no pueden ser menores a cero");
 
                 //Si el precio no es un valor numerico lanza una excepcion
             } else if (!isFloat(precio)) {
                 flag = false;
-                throw new IncompatibleTypeException("El precio del producto tienen que ser un valor numerico");
+                throw new UserInputException("El precio del producto tienen que ser un valor numerico");
 
                 //Si el precio es menor o igual a cero lanza una excepcion
             } else if (!isMayorACero(precio)) {
                 flag = false;
-                throw new NegativeNumberException("El precio no puede ser menor o igual a cero");
+                throw new UserInputException("El precio no puede ser menor o igual a cero");
 
                 //Si la entidad con el codigo especificado ya esxiste lanza una excepcion
             } else if (existenciaDAO.getProductoInTienda(codTienda, codigo) != null) {
                 flag = false;
-                throw new DuplicateEntityException("El producto en la tienda especificada ya existe en el sistema");
+                throw new UserInputException("El producto en la tienda especificada ya existe en el sistema");
 
                 //Si la entidad a la que hace referencia no existe lanza una excepcion
             } else if (tiendaDAO.getObject(codTienda) == null) {
                 flag = false;
-                throw new EntityNotFoundException("La tienda a la que hace referencia no existe en el sistema");
+                throw new UserInputException("La tienda a la que hace referencia no existe en el sistema");
             }
 
             //Lanza una excepcion si los parametros no coinciden con la estructura
         } else {
             flag = false;
-            throw new ParameterNotFoundException("El numero de parametros no coincide con la estructura");
+            throw new UserInputException("El numero de parametros no coincide con la estructura");
 
         }
         return flag;
     }
 
     //Realiza las verificaciones correspondientes con los paramtros obtenidos
-    public static boolean verificarCliente(String[] parametros) throws Exception {
+    public static boolean verificarCliente(String[] parametros) throws UserInputException {
         boolean flag = true;
         if (parametros.length == 5) {
             String nombre = parametros[1];
@@ -196,45 +196,45 @@ public class Verificaciones {
             //Si algun parametro excede el limite de caracteres lanza una excepcion
             if (nombre.length() > 45 || nit.length() > 10 || telefono.length() > 8) {
                 flag = false;
-                throw new CharacterLimitException("Uno o mas parametros exceden el limite de caracteres");
+                throw new UserInputException("Uno o mas parametros exceden el limite de caracteres");
 
                 //Si algun parametro es una cadena vacia lanza una excepcion
             } else if (nombre.isEmpty() || nit.isEmpty() || credito.isEmpty()
                     || telefono.isEmpty()) {
                 flag = false;
-                throw new EmptyParameterException("Uno o mas parametros estan vacios");
+                throw new UserInputException("Uno o mas parametros estan vacios");
 
                 //Si el telefono contiene caracteres que no son numericos lanza una excepcion
             } else if (!isInt(telefono)) {
                 flag = false;
-                throw new IncompatibleTypeException("El telefono tiene que contener solo numeros");
+                throw new UserInputException("El telefono tiene que contener solo numeros");
 
                 //Si el credito contiene caracteres que no son numericos lanza una excepcion
             } else if (!isFloat(credito)) {
                 flag = false;
-                throw new IncompatibleTypeException("El credito de compra debe ser un dato numerico");
+                throw new UserInputException("El credito de compra debe ser un dato numerico");
 
                 //Si el credito es menor a cero lanza una excepcion
             } else if (Integer.parseInt(credito) < 0) {
                 flag = false;
-                throw new IncompatibleTypeException("El credito no puuede ser menor a cero");
+                throw new UserInputException("El credito no puuede ser menor a cero");
 
                 //Si la entidad con el codigo especificado ya esxiste lanza una excepcion
             } else if (clienteDAO.getObject(nit) != null) {
                 flag = false;
-                throw new DuplicateEntityException("El cliente ya existe en el sistema");
+                throw new UserInputException("El cliente ya existe en el sistema");
             }
 
             //Lanza una excepcion si los parametros no coinciden con la estructura
         } else {
             flag = false;
-            throw new ParameterNotFoundException("El numero de parametros no coincide con la estructura");
+            throw new UserInputException("El numero de parametros no coincide con la estructura");
         }
         return flag;
     }
 
     //Realiza las verificaciones correspondientes con los paramtros obtenidos
-    public static boolean verificarEmpleado(String[] parametros) throws Exception {
+    public static boolean verificarEmpleado(String[] parametros) throws UserInputException {
         boolean flag = true;
         if (parametros.length == 5) {
             String nombre = parametros[1];
@@ -246,39 +246,39 @@ public class Verificaciones {
             if (nombre.length() > 45 || codigo.length() > 10 || telefono.length() > 8
                     || cui.length() > 13) {
                 flag = false;
-                throw new CharacterLimitException("Uno o mas parametros exceden el limite de caracteres");
+                throw new UserInputException("Uno o mas parametros exceden el limite de caracteres");
 
                 //Si algun parametro es una cadena vacia lanza una excepcion
             } else if (nombre.isEmpty() || codigo.isEmpty() || cui.isEmpty()
                     || telefono.isEmpty()) {
                 flag = false;
-                throw new EmptyParameterException("Uno o mas parametros estan vacios");
+                throw new UserInputException("Uno o mas parametros estan vacios");
 
                 //Si el telefono contiene caracteres que no son numericos lanza una excepcion
             } else if (!isInt(telefono)) {
                 flag = false;
-                throw new IncompatibleTypeException("El telefono tiene que contener solo numeros");
+                throw new UserInputException("El telefono tiene que contener solo numeros");
 
                 //Si el cui contiene caracteres que no son numericos lanza una excepcion
             } else if (!isInt(cui)) {
                 flag = false;
-                throw new IncompatibleTypeException("El CUI debe ser un dato numerico");
+                throw new UserInputException("El CUI debe ser un dato numerico");
 
                 //Si la entidad con el codigo especificado ya esxiste lanza una excepcion
             } else if (empleadoDAO.getObject(codigo) != null) {
                 flag = false;
-                throw new DuplicateEntityException("El empleado ya existe en el sistema");
+                throw new UserInputException("El empleado ya existe en el sistema");
             }
 
             //Lanza una excepcion si los parametros no coinciden con la estructura
         } else {
             flag = false;
-            throw new ParameterNotFoundException("El numero de parametros no coincide con la estructura");
+            throw new UserInputException("El numero de parametros no coincide con la estructura");
         }
         return flag;
     }
 
-    public static boolean verificarPedido(String[] parametros) throws Exception {
+    public static boolean verificarPedido(String[] parametros) throws UserInputException {
         boolean flag = true;
 
         if (parametros.length == 10) {
@@ -296,80 +296,80 @@ public class Verificaciones {
             if (nit.length() > 10 || codTO.length() > 10 || codTD.length() > 10
                     || codP.length() > 15) {
                 flag = false;
-                throw new CharacterLimitException("Uno o mas parametros exceden el limite de caracteres");
+                throw new UserInputException("Uno o mas parametros exceden el limite de caracteres");
 
                 //Si algun parametro es una cadena vacia lanza una exccepcion
             } else if (codigo.isEmpty() || codTO.isEmpty() || codTD.isEmpty()
                     || fecha.isEmpty() || nit.isEmpty() || codP.isEmpty()
                     || cantidad.isEmpty() || total.isEmpty() || anticipo.isEmpty()) {
                 flag = false;
-                throw new EmptyParameterException("Uno o mas parametros estan vacios");
+                throw new UserInputException("Uno o mas parametros estan vacios");
 
                 //Si el codigo o la cantidad no son un valor numerico lanza una excepcion
             } else if (!isInt(codigo) || !isInt(cantidad)) {
                 flag = false;
-                throw new IncompatibleTypeException("El codigo y la cantidad solo debe contener numeros");
+                throw new UserInputException("El codigo y la cantidad solo debe contener numeros");
 
                 //Si el total o el anticipo no es un valor numerico lanza una excepcion
             } else if (!isFloat(total) || !isFloat(anticipo)) {
                 flag = false;
-                throw new IncompatibleTypeException("El total o anticipo ingresado no es un valor numerico");
+                throw new UserInputException("El total o anticipo ingresado no es un valor numerico");
 
                 //Si la fecha ingresada no tiene el formato correcto lanza una excepcion
             } else if (!isFecha(fecha)) {
                 flag = false;
-                throw new IncompatibleTypeException("El formato de la fecha no es correcto (yyyy-MM-dd)");
+                throw new UserInputException("El formato de la fecha no es correcto (yyyy-MM-dd)");
 
                 //Si la entidad con el codigo especificado ya esxiste lanza una excepcion
             } else if (productoPedDAO.getProductoInPedido(Integer.parseInt(codigo), codP) != null) {
                 flag = false;
-                throw new DuplicateEntityException("El producto ya esta registrado en un pedido en el sistema");
+                throw new UserInputException("El producto ya esta registrado en un pedido en el sistema");
 
                 //Si la entidad a la que hace referencia no existe lanza una excepcion
             } else if (tiendaDAO.getObject(codTD) == null || tiendaDAO.getObject(codTO) == null) {
                 flag = false;
-                throw new EntityNotFoundException("Una o ambas tiendas no existen en el sistema");
+                throw new UserInputException("Una o ambas tiendas no existen en el sistema");
 
                 //Si el producto no existe en el sistema lanza una excepcion
             } else if (productoDAO.getObject(codP) == null) {
                 flag = false;
-                throw new EntityNotFoundException("El producto no existe en el sistema");
+                throw new UserInputException("El producto no existe en el sistema");
 
                 //Si el producto no existe en la tienda especificada lanza una excepcion
             } else if (existenciaDAO.getProductoInTienda(codTO, codP) == null) {
                 flag = false;
-                throw new EntityNotFoundException("El producto no existe en la tienda especificada");
+                throw new UserInputException("El producto no existe en la tienda especificada");
 
                 //Si la entidad a la que hace referencia no existe lanza una excepcion
             } else if (clienteDAO.getObject(nit) == null) {
                 flag = false;
-                throw new EntityNotFoundException("El cliente al que hace referencia no existe en el sistema");
+                throw new UserInputException("El cliente al que hace referencia no existe en el sistema");
 
                 //Si la cantidad excede las existencias lanza una excepcion
             } else if (Integer.parseInt(cantidad) > existenciaDAO.getExistencias(codTO, codP)) {
                 flag = false;
-                throw new StockException("La cantidad excede las existencias disponibles en la tienda origen");
+                throw new UserInputException("La cantidad excede las existencias disponibles en la tienda origen");
 
                 //Si la cantidad, el total o el anticipo es igual o menor a cero lanza una excepcion
             } else if (!isMayorACero(cantidad) || !isMayorACero(total) || !isMayorACero(anticipo)) {
                 flag = false;
-                throw new NegativeNumberException("La cantidad, el total y el anticipo deben ser datos mayores a cero");
+                throw new UserInputException("La cantidad, el total y el anticipo deben ser datos mayores a cero");
 
                 //Si el total dado no coincide con los datos en el sistema lanza una excepcion
             } else if (!verificarTotalProducto(codP, cantidad, total)) {
                 flag = false;
-                throw new Exception("El total proporcionado no coincide con los datos en el sistema");
+                throw new UserInputException("El total proporcionado no coincide con los datos en el sistema");
 
                 //Si la tienda origen es la misma que el destino lanza una excepcion
             } else if (codTO.equals(codTD)) {
                 flag = false;
-                throw new Exception("La tienda origen no puede ser la misma que la tienda destino");
+                throw new UserInputException("La tienda origen no puede ser la misma que la tienda destino");
             }
 
             //Lanza una excepcion si los parametros no coinciden con la estructura
         } else {
             flag = false;
-            throw new ParameterNotFoundException("El numero de parametros no coincide con la estructura");
+            throw new UserInputException("El numero de parametros no coincide con la estructura");
 
         }
         return flag;

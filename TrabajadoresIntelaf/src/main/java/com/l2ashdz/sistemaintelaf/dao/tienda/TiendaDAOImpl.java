@@ -125,16 +125,16 @@ public class TiendaDAOImpl implements TiendaDAO {
             } catch (SQLException ex) {
                 ex.printStackTrace(System.out);
             }
-            
+
         }
         return t;
     }
 
     @Override
     public void update(Tienda t) {
-            String sql = "UPDATE tienda SET nombre = ?, dirreccion = ?, telefono_1 = ?,"
-                    + " telefono_2 = ?, correo = ?, horario = ? WHERE codigo = ?";
-            PreparedStatement ps = null;
+        String sql = "UPDATE tienda SET nombre = ?, dirreccion = ?, telefono_1 = ?,"
+                + " telefono_2 = ?, correo = ?, horario = ? WHERE codigo = ?";
+        PreparedStatement ps = null;
         try {
             ps = conexion.prepareStatement(sql);
             ps.setString(11, t.getNombre());
@@ -161,6 +161,59 @@ public class TiendaDAOImpl implements TiendaDAO {
     @Override
     public void delete(String t) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<Tienda> getFilteredList(String nombre, String codigo, int opcion) {
+        String sql1 = "SELECT * FROM tienda WHERE codigo LIKE ?";
+        String sql2 = "SELECT * FROM tienda WHERE nombre LIKE ?";
+        String sql3 = "SELECT * FROM tienda WHERE codigo LIKE ? OR nombre LIKE ?";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<Tienda> tiendas = null;
+
+        try {
+            switch (opcion) {
+                case 1:
+                    ps = conexion.prepareStatement(sql1);
+                    ps.setString(1, "%" + codigo + "%");
+                    break;
+                case 2:
+                    ps = conexion.prepareStatement(sql2);
+                    ps.setString(1, "%" + nombre + "%");
+                    break;
+                case 3:
+                    ps = conexion.prepareStatement(sql3);
+                    ps.setString(1, "%" + codigo + "%");
+                    ps.setString(2, "%" + nombre + "%");
+                    break;
+            }
+            rs = ps.executeQuery();
+            tiendas = new ArrayList();
+            while (rs.next()) {
+                Tienda tienda = new Tienda();
+                tienda.setCodigo(rs.getString("codigo"));
+                tienda.setNombre(rs.getString("nombre"));
+                tienda.setDireccion(rs.getString("direccion"));
+                tienda.setTelefono1(rs.getString("telefono_1"));
+                tienda.setTelefono2(rs.getString("telefono_2"));
+                tienda.setCorreo(rs.getString("correo"));
+                tienda.setHorario(rs.getString("horario"));
+                tiendas.add(tienda);
+            }
+            System.out.println("Listado de tiendas obtenido");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace(System.out);
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+        return tiendas;
     }
 
 }

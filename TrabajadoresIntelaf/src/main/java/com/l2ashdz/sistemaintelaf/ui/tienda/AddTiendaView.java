@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -64,12 +65,14 @@ public class AddTiendaView extends javax.swing.JPanel {
         txtTelefono2 = new javax.swing.JFormattedTextField();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        txtFNombre = new javax.swing.JTextField();
+        txtFiltroNombre = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
-        txtFCodigo = new javax.swing.JTextField();
+        txtFiltroCodigo = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTiendas = new javax.swing.JTable();
+        cbNombre = new javax.swing.JCheckBox();
+        cbCodigo = new javax.swing.JCheckBox();
 
         setBackground(new java.awt.Color(39, 44, 52));
         setEnabled(false);
@@ -148,7 +151,7 @@ public class AddTiendaView extends javax.swing.JPanel {
         }
 
         try {
-            txtTelefono2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("")));
+            txtTelefono2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("########")));
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
@@ -161,33 +164,15 @@ public class AddTiendaView extends javax.swing.JPanel {
         jLabel9.setForeground(new java.awt.Color(255, 255, 255));
         jLabel9.setText("Nombre");
 
-        txtFNombre.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtFNombreKeyTyped(evt);
-            }
-        });
+        txtFiltroNombre.setEditable(false);
 
         jLabel10.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(255, 255, 255));
         jLabel10.setText("Codigo");
 
-        txtFCodigo.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtFCodigoKeyTyped(evt);
-            }
-        });
+        txtFiltroCodigo.setEditable(false);
 
-        btnBuscar.setText("Ver Tiendas");
-
-        tblTiendas.setAutoCreateRowSorter(true);
-        tblTiendas.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
+        btnBuscar.setText("Buscar Tiendas");
 
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${tiendaObservableList}");
         org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, tblTiendas);
@@ -203,9 +188,39 @@ public class AddTiendaView extends javax.swing.JPanel {
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${telefono1}"));
         columnBinding.setColumnName("Telefono1");
         columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${telefono2}"));
+        columnBinding.setColumnName("Telefono2");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${correo}"));
+        columnBinding.setColumnName("Correo");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${horario}"));
+        columnBinding.setColumnName("Horario");
+        columnBinding.setColumnClass(String.class);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
+
         jScrollPane1.setViewportView(tblTiendas);
+
+        cbNombre.setBackground(new java.awt.Color(39, 44, 52));
+        cbNombre.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        cbNombre.setForeground(new java.awt.Color(255, 255, 255));
+        cbNombre.setText("Nombre");
+        cbNombre.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbNombreItemStateChanged(evt);
+            }
+        });
+
+        cbCodigo.setBackground(new java.awt.Color(39, 44, 52));
+        cbCodigo.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        cbCodigo.setForeground(new java.awt.Color(255, 255, 255));
+        cbCodigo.setText("Codigo");
+        cbCodigo.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbCodigoItemStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -213,6 +228,25 @@ public class AddTiendaView extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbCodigo)
+                            .addComponent(cbNombre))
+                        .addGap(14, 14, 14)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel10))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtFiltroNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtFiltroCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnBuscar))))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -246,27 +280,14 @@ public class AddTiendaView extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel9)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtFNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel10)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtFCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
-                                .addComponent(btnBuscar))
                             .addComponent(jSeparator5)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(34, 34, 34)
-                                .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(27, 27, 27)
-                                .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(56, 56, 56)
+                                .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(49, 49, 49)
+                                .addComponent(btnLimpiar, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)))))
                 .addGap(33, 33, 33))
         );
         layout.setVerticalGroup(
@@ -303,18 +324,21 @@ public class AddTiendaView extends javax.swing.JPanel {
                 .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel8)
-                        .addComponent(jLabel9))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel10)
-                        .addComponent(txtFNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtFCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnBuscar)))
+                    .addComponent(jLabel8)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cbNombre)
+                            .addComponent(jLabel9)
+                            .addComponent(txtFiltroNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cbCodigo)
+                            .addComponent(jLabel10)
+                            .addComponent(txtFiltroCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnBuscar))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();
@@ -340,13 +364,13 @@ public class AddTiendaView extends javax.swing.JPanel {
         limitarCaracteres(txtCorreo, evt, 30);
     }//GEN-LAST:event_txtCorreoKeyTyped
 
-    private void txtFNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFNombreKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFNombreKeyTyped
+    private void cbNombreItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbNombreItemStateChanged
+        cambioFiltro(txtFiltroNombre);
+    }//GEN-LAST:event_cbNombreItemStateChanged
 
-    private void txtFCodigoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFCodigoKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFCodigoKeyTyped
+    private void cbCodigoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbCodigoItemStateChanged
+        cambioFiltro(txtFiltroCodigo);
+    }//GEN-LAST:event_cbCodigoItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -354,6 +378,8 @@ public class AddTiendaView extends javax.swing.JPanel {
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnLimpiar;
+    private javax.swing.JCheckBox cbCodigo;
+    private javax.swing.JCheckBox cbNombre;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
@@ -370,8 +396,8 @@ public class AddTiendaView extends javax.swing.JPanel {
     private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtCorreo;
     private javax.swing.JTextField txtDireccion;
-    private javax.swing.JTextField txtFCodigo;
-    private javax.swing.JTextField txtFNombre;
+    private javax.swing.JTextField txtFiltroCodigo;
+    private javax.swing.JTextField txtFiltroNombre;
     private javax.swing.JTextField txtHorario;
     private javax.swing.JTextField txtNombre;
     private javax.swing.JFormattedTextField txtTelefono;
@@ -383,6 +409,16 @@ public class AddTiendaView extends javax.swing.JPanel {
         if (jText.getText().length() == limite) {
             e.consume();
         }
+    }
+    
+    private void cambioFiltro(JTextField jText){
+        if (jText.isEditable()) {
+            jText.setEditable(false);
+        } else {
+            jText.setEditable(true);
+            jText.requestFocus();
+        }
+        jText.setText("");
     }
 
     public JButton getBtnActualizar() {
@@ -429,16 +465,24 @@ public class AddTiendaView extends javax.swing.JPanel {
         return btnBuscar;
     }
 
-    public JTextField getTxtFCodigo() {
-        return txtFCodigo;
+    public JTextField getTxtFiltroCodigo() {
+        return txtFiltroCodigo;
     }
 
-    public JTextField getTxtFNombre() {
-        return txtFNombre;
+    public JTextField getTxtFiltroNombre() {
+        return txtFiltroNombre;
     }
 
     public JTable getTblTiendas() {
         return tblTiendas;
+    }
+
+    public JCheckBox getCbCodigo() {
+        return cbCodigo;
+    }
+
+    public JCheckBox getCbNombre() {
+        return cbNombre;
     }
 
     public ObservableList<Tienda> getTiendaObservableList() {

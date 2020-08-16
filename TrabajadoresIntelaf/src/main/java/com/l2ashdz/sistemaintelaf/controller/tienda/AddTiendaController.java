@@ -3,13 +3,14 @@ package com.l2ashdz.sistemaintelaf.controller.tienda;
 import com.l2ashdz.sistemaintelaf.ui.tienda.AddTiendaView;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.*;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.EntidadFabrica.*;
-import com.l2ashdz.sistemaintelaf.dao.CRUD;
+import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAO;
 import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -20,9 +21,9 @@ import javax.swing.JPanel;
 public class AddTiendaController extends MouseAdapter implements ActionListener {
 
     private AddTiendaView addTiendaV;
-
-    private CRUD<Tienda> tiendaDAO;
     private Tienda tienda;
+    private List<Tienda> tiendas;
+    private TiendaDAO tiendaDAO;
 
     private String[] parametros = new String[5];
     private String tel2;
@@ -58,7 +59,7 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
             obtenerDatos();
             try {
                 if (verificarTienda(parametros)) {
-                    tiendaDAO.create(nuevaTienda(parametros, tel2, correo, horario));
+                    //tiendaDAO.create(nuevaTienda(parametros, tel2, correo, horario));
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
@@ -69,7 +70,7 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
             obtenerDatos();
             try {
                 if (verificarTienda(parametros)) {
-                    tiendaDAO.update(nuevaTienda(parametros, tel2, correo, horario));
+                    //tiendaDAO.update(nuevaTienda(parametros, tel2, correo, horario));
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
@@ -77,8 +78,22 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
         } else if (addTiendaV.getBtnLimpiar() == e.getSource()) {
             limpiarCampos();
         } else if (addTiendaV.getBtnBuscar()== e.getSource()) {
+            String codigo = addTiendaV.getTxtFiltroCodigo().getText();
+            String nombre = addTiendaV.getTxtFiltroNombre().getText();
+            if (addTiendaV.getCbCodigo().isSelected()
+                    && !addTiendaV.getCbNombre().isSelected()) {
+                tiendas = tiendaDAO.getFilteredList(nombre, codigo, 1);
+            } else if (addTiendaV.getCbNombre().isSelected()
+                    && !addTiendaV.getCbCodigo().isSelected()) {
+                tiendas = tiendaDAO.getFilteredList(nombre, codigo, 2);
+            } else if (addTiendaV.getCbCodigo().isSelected()
+                    && addTiendaV.getCbNombre().isSelected()) {
+                tiendas = tiendaDAO.getFilteredList(nombre, codigo, 3);
+            } else {
+                tiendas = tiendaDAO.getFilteredList(nombre, codigo, 3);
+            }
             addTiendaV.getTiendaObservableList().clear();
-            addTiendaV.getTiendaObservableList().addAll(tiendaDAO.getListado());
+            addTiendaV.getTiendaObservableList().addAll(tiendas);
             
         }
     }

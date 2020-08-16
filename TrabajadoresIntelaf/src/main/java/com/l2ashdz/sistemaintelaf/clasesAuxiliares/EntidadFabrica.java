@@ -27,14 +27,14 @@ public class EntidadFabrica {
         return tienda;
     }
 
-    public static Tienda nuevaTienda(String[] parametros, String telefono2,
-            String correo, String horario) {
+    public static Tienda nuevaTienda(String codigo, String nombre, String tel1, String dir,
+            String tel2, String correo, String horario) {
         Tienda tienda = new Tienda();
-        tienda.setCodigo(parametros[3]);
-        tienda.setNombre(parametros[1]);
-        tienda.setDireccion(parametros[2]);
-        tienda.setTelefono1(parametros[4]);
-        tienda.setTelefono2(telefono2.isEmpty()?null:telefono2);
+        tienda.setCodigo(codigo);
+        tienda.setNombre(nombre);
+        tienda.setDireccion(dir);
+        tienda.setTelefono1(tel1);
+        tienda.setTelefono2(tel2.isEmpty()?null:tel2);
         tienda.setCorreo(correo.isEmpty()?null:correo);
         tienda.setHorario(horario.isEmpty()?null:horario);
         return tienda;
