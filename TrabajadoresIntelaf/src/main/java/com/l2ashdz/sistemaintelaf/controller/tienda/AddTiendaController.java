@@ -6,7 +6,11 @@ import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.EntidadFabrica.*;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.ValidacionesInterfaz.*;
+import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.isInt;
+import com.l2ashdz.sistemaintelaf.dao.CRUD;
+import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAOImpl;
 import com.l2ashdz.sistemaintelaf.excepciones.UserInputException;
+import com.l2ashdz.sistemaintelaf.model.TiempoTraslado;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -26,6 +30,10 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
     private List<Tienda> tiendas;
     private TiendaDAO tiendaDAO;
 
+    private TiempoTraslado tiempoT;
+    private List<TiempoTraslado> tiempos;
+    private CRUD<TiempoTraslado> tiempoDAO;
+
     private String codigo;
     private String nombre;
     private String direccion;
@@ -36,6 +44,7 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
 
     public AddTiendaController(AddTiendaView addTiendaView) {
         tiendaDAO = TiendaDAOImpl.getTiendaDAO();
+        tiempoDAO = TiempoTrasladoDAOImpl.getTiempoDAO();
         this.addTiendaV = addTiendaView;
         this.addTiendaV.getBtnAgregar().addActionListener(this);
         this.addTiendaV.getBtnActualizar().addActionListener(this);
@@ -49,11 +58,11 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
         if (!addTiendaV.isEnabled()) {
             parent.removeAll();
             addTiendaV.setSize(parent.getSize());
-            limpiarCampos();
             addTiendaV.setEnabled(true);
             addTiendaV.setVisible(true);
             parent.add(addTiendaV);
             parent.validate();
+            limpiarCampos();
         }
     }
 
@@ -67,12 +76,13 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
                 if (validarAddTienda(codigo, nombre, direccion, tel1)) {
                     tiendaDAO.create(nuevaTienda(codigo, nombre, tel1, direccion, tel2, correo, horario));
                 }
-                JOptionPane.showMessageDialog(null, "Tienda regstrada", "Info", JOptionPane.INFORMATION_MESSAGE);
+                registrarTiempos();
+                JOptionPane.showMessageDialog(null, "Tienda registrada", "Info", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
             } catch (UserInputException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
             }
-            
+
             //Valida los datos y actualiza los datos de una tienda
         } else if (addTiendaV.getBtnActualizar() == e.getSource()) {
 
@@ -83,6 +93,7 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
                 }
                 JOptionPane.showMessageDialog(null, "Tienda actualizada", "Info", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
+                addTiendaV.getBtnActualizar().setEnabled(false);
             } catch (UserInputException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
             }
@@ -90,7 +101,7 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
             //Limpia los campos
         } else if (addTiendaV.getBtnLimpiar() == e.getSource()) {
             limpiarCampos();
-            
+
             //Filtra las tiendas por codigo y/o nombre
         } else if (addTiendaV.getBtnBuscar() == e.getSource()) {
             codigo = addTiendaV.getTxtFiltroCodigo().getText();
@@ -107,11 +118,29 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
             } else {
                 tiendas = tiendaDAO.getFilteredList(nombre, codigo, 3);
             }
-            
+
             //actualiza los datos de la tabla
             addTiendaV.getTiendaObservableList().clear();
             addTiendaV.getTiendaObservableList().addAll(tiendas);
 
+        }
+    }
+
+    private void registrarTiempos() {
+        String mensaje = "Ingrese el tiempo de traslado hacia la tienda: ";
+        String tiempo;
+        tiendas = tiendaDAO.getListado();
+        for (Tienda t : tiendas) {
+            if (!t.getCodigo().equals(codigo)) {
+                tiempo = JOptionPane.showInputDialog(null, mensaje + t.getNombre(), "Tiempo traslado",
+                        JOptionPane.QUESTION_MESSAGE);
+                while (!isInt(tiempo)) {
+                    tiempo = JOptionPane.showInputDialog(null, "Debe ser un dato numerico\n"
+                            + mensaje + t.getNombre(), "Tiempo traslado", JOptionPane.ERROR_MESSAGE);
+                }
+
+                tiempoDAO.create(nuevoTiempo(codigo, t.getCodigo(), Integer.parseInt(tiempo)));
+            }
         }
     }
 

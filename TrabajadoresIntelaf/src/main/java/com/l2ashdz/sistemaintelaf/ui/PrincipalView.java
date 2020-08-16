@@ -544,10 +544,10 @@ public class PrincipalView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JLabel lblCodigo;
-    private javax.swing.JLabel lblNombreT;
+    public static javax.swing.JLabel lblCodigo;
+    public static javax.swing.JLabel lblNombreT;
     private javax.swing.JPanel pnlDesk;
-    private javax.swing.JPanel pnlInfoTienda;
+    public static javax.swing.JPanel pnlInfoTienda;
     private javax.swing.JPanel pnlMenu;
     private javax.swing.JPanel pnlPrincipal;
     // End of variables declaration//GEN-END:variables

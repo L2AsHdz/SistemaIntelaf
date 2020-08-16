@@ -47,6 +47,14 @@ public class EntidadFabrica {
         tiempoT.setTiempo(Integer.parseInt(parametros[3]));
         return tiempoT;
     }
+    
+    public static TiempoTraslado nuevoTiempo(String codT1, String codT2, int t){
+        TiempoTraslado tiempoT = new TiempoTraslado();
+        tiempoT.setCodigoTienda1(codT1);
+        tiempoT.setCodigoTienda2(codT2);
+        tiempoT.setTiempo(t);
+        return tiempoT;
+    }
 
     public static Producto nuevoProducto(String[] parametros) {
         Producto producto = new Producto();

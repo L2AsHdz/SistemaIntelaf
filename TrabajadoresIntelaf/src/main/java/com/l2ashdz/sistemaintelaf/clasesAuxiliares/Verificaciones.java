@@ -376,7 +376,7 @@ public class Verificaciones {
     }
 
     //Verifica si la cadena es un float
-    private static boolean isFloat(String s) {
+    public static boolean isFloat(String s) {
         try {
             Float.parseFloat(s);
             return true;
@@ -386,7 +386,7 @@ public class Verificaciones {
     }
 
     //Verifica si la cadena es un entero
-    private static boolean isInt(String s) {
+    public static boolean isInt(String s) {
         try {
             Float.parseFloat(s);
             return true;
