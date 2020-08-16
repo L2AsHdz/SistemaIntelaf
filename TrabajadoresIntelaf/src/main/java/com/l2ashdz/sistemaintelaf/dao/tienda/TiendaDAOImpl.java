@@ -132,20 +132,20 @@ public class TiendaDAOImpl implements TiendaDAO {
 
     @Override
     public void update(Tienda t) {
-        String sql = "UPDATE tienda SET nombre = ?, dirreccion = ?, telefono_1 = ?,"
+        String sql = "UPDATE tienda SET nombre = ?, direccion = ?, telefono_1 = ?,"
                 + " telefono_2 = ?, correo = ?, horario = ? WHERE codigo = ?";
         PreparedStatement ps = null;
         try {
             ps = conexion.prepareStatement(sql);
-            ps.setString(11, t.getNombre());
+            ps.setString(1, t.getNombre());
             ps.setString(2, t.getDireccion());
             ps.setString(3, t.getTelefono1());
             ps.setString(4, t.getTelefono2());
-            ps.setString(5, t.getCodigo());
+            ps.setString(5, t.getCorreo());
             ps.setString(6, t.getHorario());
             ps.setString(7, t.getCodigo());
             ps.executeUpdate();
-            System.out.println("Tienda actualizado");
+            System.out.println("Tienda actualizada");
         } catch (SQLException ex) {
             System.out.println("No se actualizo la tienda");
             ex.printStackTrace(System.out);
@@ -165,9 +165,9 @@ public class TiendaDAOImpl implements TiendaDAO {
 
     @Override
     public List<Tienda> getFilteredList(String nombre, String codigo, int opcion) {
-        String sql1 = "SELECT * FROM tienda WHERE codigo LIKE ?";
-        String sql2 = "SELECT * FROM tienda WHERE nombre LIKE ?";
-        String sql3 = "SELECT * FROM tienda WHERE codigo LIKE ? OR nombre LIKE ?";
+        String sql1 = "SELECT * FROM tienda WHERE codigo LIKE ? ORDER BY nombre";
+        String sql2 = "SELECT * FROM tienda WHERE nombre LIKE ? ORDER BY nombre";
+        String sql3 = "SELECT * FROM tienda WHERE codigo LIKE ? OR nombre LIKE ? ORDER BY nombre";
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<Tienda> tiendas = null;

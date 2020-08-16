@@ -45,8 +45,7 @@ public class ValidacionesInterfaz {
         return flag;
     }
     
-    public static boolean validarUpdateTienda(String nombre, String direccion,String tel1, 
-            String tel2, String correo, String horario) throws UserInputException{
+    public static boolean validarUpdateTienda(String nombre, String direccion,String tel1) throws UserInputException{
         
         boolean flag = true;
         if (nombre.isEmpty() || tel1.isEmpty() || direccion.isEmpty()) {
