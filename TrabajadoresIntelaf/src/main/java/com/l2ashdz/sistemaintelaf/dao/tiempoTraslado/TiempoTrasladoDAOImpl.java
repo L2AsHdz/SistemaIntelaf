@@ -31,7 +31,10 @@ public class TiempoTrasladoDAOImpl implements TiempoTrasladoDAO {
 
     @Override
     public List<TiempoTraslado> getListado() {
-        String sql = "SELECT * FROM tiempo_traslado";
+        String sql = "SELECT tt.codigo_tienda_1, t1.nombre nombreT1, t1.telefono_1 telT1, tt.codigo_tienda_2, "
+                + "t2.nombre nombreT2, t2.telefono_1 telT2,  tt.tiempo FROM tiempo_traslado tt INNER JOIN "
+                + "tienda t1 ON tt.codigo_tienda_1 = t1.codigo INNER JOIN tienda t2 ON "
+                + "tt.codigo_tienda_2 = t2.codigo ORDER BY tiempo";
         Statement declaracion = null;
         ResultSet rs = null;
         List<TiempoTraslado> tiempos = null;
@@ -42,8 +45,12 @@ public class TiempoTrasladoDAOImpl implements TiempoTrasladoDAO {
             tiempos = new ArrayList();
             while (rs.next()) {
                 TiempoTraslado tiempo = new TiempoTraslado();
-                tiempo.setCodigoTienda1(rs.getString("codigo_tienda_1"));
-                tiempo.setCodigoTienda2(rs.getString("codigo_tienda_2"));
+                tiempo.setCodigoT1(rs.getString("codigo_tienda_1"));
+                tiempo.setNombreT1(rs.getString("nombreT1"));
+                tiempo.setTelT1(rs.getString("telT1"));
+                tiempo.setCodigoT2(rs.getString("codigo_tienda_2"));
+                tiempo.setNombreT2(rs.getString("nombreT2"));
+                tiempo.setTelT2(rs.getString("telT2"));
                 tiempo.setTiempo(rs.getInt("tiempo"));
                 tiempos.add(tiempo);
             }
@@ -68,8 +75,8 @@ public class TiempoTrasladoDAOImpl implements TiempoTrasladoDAO {
         PreparedStatement ps = null;
         try {
             ps = conexion.prepareStatement(sql);
-            ps.setString(1, t.getCodigoTienda1());
-            ps.setString(2, t.getCodigoTienda2());
+            ps.setString(1, t.getCodigoT1());
+            ps.setString(2, t.getCodigoT2());
             ps.setInt(3, t.getTiempo());
             ps.executeUpdate();
             System.out.println("Tiempo ingresado Correctamente");
@@ -92,7 +99,25 @@ public class TiempoTrasladoDAOImpl implements TiempoTrasladoDAO {
 
     @Override
     public void update(TiempoTraslado t) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String sql = "UPDATE tiempo_traslado SET tiempo = ? WHERE codigo_tienda_1 = ? AND codigo_tienda_2 = ?";
+        PreparedStatement ps = null;
+        try {
+            ps = conexion.prepareStatement(sql);
+            ps.setInt(1, t.getTiempo());
+            ps.setString(2, t.getCodigoT1());
+            ps.setString(3, t.getCodigoT2());
+            ps.executeUpdate();
+            System.out.println("Tiempo actualizado");
+        } catch (SQLException ex) {
+            System.out.println("No se actualizo el tiempo");
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
     }
 
     @Override
@@ -114,8 +139,8 @@ public class TiempoTrasladoDAOImpl implements TiempoTrasladoDAO {
             rs = ps.executeQuery();
             while (rs.next()) {
                 t = new TiempoTraslado();
-                t.setCodigoTienda1(rs.getString("codigo_tienda_1"));
-                t.setCodigoTienda2(rs.getString("codigo_tienda_2"));
+                t.setCodigoT1(rs.getString("codigo_tienda_1"));
+                t.setCodigoT2(rs.getString("codigo_tienda_2"));
                 t.setTiempo(rs.getInt("tiempo"));
             }
             System.out.println("TiempoTraslado obtenido de la BD");
@@ -132,6 +157,48 @@ public class TiempoTrasladoDAOImpl implements TiempoTrasladoDAO {
             
         }
         return t;
+    }
+
+    @Override
+    public List<TiempoTraslado> getTiemposOfT(String codTActual) {
+        String sql = "SELECT tt.codigo_tienda_1, t1.nombre nombreT1, t1.telefono_1 telT1, tt.codigo_tienda_2, "
+                + "t2.nombre nombreT2, t2.telefono_1 telT2,  tt.tiempo FROM tiempo_traslado tt INNER JOIN "
+                + "tienda t1 ON tt.codigo_tienda_1 = t1.codigo INNER JOIN tienda t2 ON "
+                + "tt.codigo_tienda_2 = t2.codigo WHERE t1.codigo = ? OR t2.codigo = ? ORDER BY tiempo";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<TiempoTraslado> tiempos = null;
+
+        try {
+            ps = conexion.prepareStatement(sql);
+            ps.setString(1, codTActual);
+            ps.setString(2, codTActual);
+            rs = ps.executeQuery();
+            tiempos = new ArrayList();
+            while (rs.next()) {
+                TiempoTraslado tiempo = new TiempoTraslado();
+                tiempo.setCodigoT1(rs.getString("codigo_tienda_1"));
+                tiempo.setNombreT1(rs.getString("nombreT1"));
+                tiempo.setTelT1(rs.getString("telT1"));
+                tiempo.setCodigoT2(rs.getString("codigo_tienda_2"));
+                tiempo.setNombreT2(rs.getString("nombreT2"));
+                tiempo.setTelT2(rs.getString("telT2"));
+                tiempo.setTiempo(rs.getInt("tiempo"));
+                tiempos.add(tiempo);
+            }
+            System.out.println("Listado de tiempos obtenido");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace(System.out);
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+        return tiempos;
     }
 
 }

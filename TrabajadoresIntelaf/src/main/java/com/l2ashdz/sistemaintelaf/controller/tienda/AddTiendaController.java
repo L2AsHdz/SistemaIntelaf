@@ -57,12 +57,15 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
     public void iniciar(JPanel parent) {
         if (!addTiendaV.isEnabled()) {
             parent.removeAll();
+            parent.repaint();
             addTiendaV.setSize(parent.getSize());
             addTiendaV.setEnabled(true);
             addTiendaV.setVisible(true);
             parent.add(addTiendaV);
             parent.validate();
             limpiarCampos();
+        } else {
+            System.out.println("ya esta visible");
         }
     }
 
@@ -168,7 +171,7 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
+    public void mouseClicked(MouseEvent e) {
         int fila = addTiendaV.getTblTiendas().getSelectedRow();
         codigo = addTiendaV.getTblTiendas().getValueAt(fila, 0).toString();
         tienda = tiendaDAO.getObject(codigo);

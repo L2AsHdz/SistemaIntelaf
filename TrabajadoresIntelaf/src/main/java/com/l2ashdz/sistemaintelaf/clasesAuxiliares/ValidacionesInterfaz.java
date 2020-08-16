@@ -1,5 +1,6 @@
 package com.l2ashdz.sistemaintelaf.clasesAuxiliares;
 
+import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.isInt;
 import com.l2ashdz.sistemaintelaf.dao.CRUD;
 import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.empleado.EmpleadoDAOImpl;
@@ -51,6 +52,19 @@ public class ValidacionesInterfaz {
         if (nombre.isEmpty() || tel1.isEmpty() || direccion.isEmpty()) {
             flag = false;
             throw new UserInputException("Los datos con * son obligatorios");
+        }
+        return flag;
+    }
+    
+    public static boolean validarUpdateTiempo(String tiempo) throws UserInputException{
+        
+        boolean flag = true;
+        if (tiempo.isEmpty()) {
+            flag = false;
+            throw new UserInputException("Debe ingresar un tiempo");
+        } else if (!isInt(tiempo)) {
+            flag = false;
+            throw new UserInputException("El tiempo debe ser un valor numerico");
         }
         return flag;
     }

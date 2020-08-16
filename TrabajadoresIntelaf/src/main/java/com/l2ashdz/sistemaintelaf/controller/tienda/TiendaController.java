@@ -1,6 +1,7 @@
 package com.l2ashdz.sistemaintelaf.controller.tienda;
 
 import com.l2ashdz.sistemaintelaf.ui.tienda.AddTiendaView;
+import com.l2ashdz.sistemaintelaf.ui.tienda.TiempoTrasladoView;
 import com.l2ashdz.sistemaintelaf.ui.tienda.TiendaView;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -17,6 +18,10 @@ public class TiendaController extends MouseAdapter {
     //Vista y controlador para agregar tiendas
     private AddTiendaView addTiendaV = new AddTiendaView();
     private AddTiendaController addTiendaC = new AddTiendaController(addTiendaV);
+    
+    //Vista y controlador para modificar tiempos
+    private TiempoTrasladoView tiempoV = new TiempoTrasladoView();
+    private TiempoTrasladoController tiempoC = new TiempoTrasladoController(tiempoV);
 
     public TiendaController(TiendaView tiendaV) {
 
@@ -44,9 +49,11 @@ public class TiendaController extends MouseAdapter {
 
         //muestra la interfaz para agregar una tienda
         if (tiendaV.getOpTienda() == e.getSource()) {
+            addTiendaV.setEnabled(false);
             addTiendaC.iniciar(tiendaV.getPnlDesk());
         } else if (tiendaV.getOpTiempos() == e.getSource()) {
-
+            tiempoV.setEnabled(false);
+            tiempoC.iniciar(tiendaV.getPnlDesk());
         }
     }
 }

@@ -42,16 +42,16 @@ public class EntidadFabrica {
 
     public static TiempoTraslado nuevoTiempo(String[] parametros) {
         TiempoTraslado tiempoT = new TiempoTraslado();
-        tiempoT.setCodigoTienda1(parametros[1]);
-        tiempoT.setCodigoTienda2(parametros[2]);
+        tiempoT.setCodigoT1(parametros[1]);
+        tiempoT.setCodigoT2(parametros[2]);
         tiempoT.setTiempo(Integer.parseInt(parametros[3]));
         return tiempoT;
     }
     
     public static TiempoTraslado nuevoTiempo(String codT1, String codT2, int t){
         TiempoTraslado tiempoT = new TiempoTraslado();
-        tiempoT.setCodigoTienda1(codT1);
-        tiempoT.setCodigoTienda2(codT2);
+        tiempoT.setCodigoT1(codT1);
+        tiempoT.setCodigoT2(codT2);
         tiempoT.setTiempo(t);
         return tiempoT;
     }

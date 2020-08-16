@@ -5,20 +5,33 @@
  */
 package com.l2ashdz.sistemaintelaf.ui.tienda;
 
+import com.l2ashdz.sistemaintelaf.model.TiempoTraslado;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
+import javax.swing.JRadioButton;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import org.jdesktop.observablecollections.ObservableCollections;
+import org.jdesktop.observablecollections.ObservableList;
 
 /**
  *
  * @author asael
  */
 public class TiempoTrasladoView extends javax.swing.JPanel {
+    
+    private List<TiempoTraslado> tiendaList;
+    private ObservableList<TiempoTraslado> tiendaObservableList;
 
     /**
      * Creates new form TiempoTrasladoView
      */
     public TiempoTrasladoView() {
+        tiendaList = new ArrayList();
+        tiendaObservableList = ObservableCollections.observableList(tiendaList);
         initComponents();
     }
 
@@ -30,44 +43,110 @@ public class TiempoTrasladoView extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
+        bgOpcionesFiltro = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTiempos = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        txtTiendaDestino = new javax.swing.JTextField();
+        txtTienda1 = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        txtTiempo = new javax.swing.JTextField();
         btnActualizar = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
+        jLabel3 = new javax.swing.JLabel();
+        txtTienda2 = new javax.swing.JTextField();
+        rbTiendaAcual = new javax.swing.JRadioButton();
+        rbTodos = new javax.swing.JRadioButton();
+        btnListarTiempos = new javax.swing.JButton();
+        txtTiempo = new javax.swing.JTextField();
 
         setBackground(new java.awt.Color(39, 44, 52));
+        setEnabled(false);
 
         tblTiempos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
+
+        org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${tiendaObservableList}");
+        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, tblTiempos);
+        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${codigoT1}"));
+        columnBinding.setColumnName("Codigo T1");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nombreT1}"));
+        columnBinding.setColumnName("Nombre T1");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${telT1}"));
+        columnBinding.setColumnName("Tel T1");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${codigoT2}"));
+        columnBinding.setColumnName("Codigo T2");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nombreT2}"));
+        columnBinding.setColumnName("Nombre T2");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${telT2}"));
+        columnBinding.setColumnName("Tel T2");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${tiempo}"));
+        columnBinding.setColumnName("Tiempo");
+        columnBinding.setColumnClass(Integer.class);
+        bindingGroup.addBinding(jTableBinding);
+        jTableBinding.bind();
         jScrollPane1.setViewportView(tblTiempos);
 
         jLabel1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Tienda destino");
+        jLabel1.setText("Tienda 1");
 
-        txtTiendaDestino.setEditable(false);
+        txtTienda1.setEditable(false);
 
         jLabel2.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Tiempo traslado");
 
         btnActualizar.setText("Actuaizar");
+        btnActualizar.setEnabled(false);
 
         btnLimpiar.setText("Limpiar");
 
         jSeparator1.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel3.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Tienda 2");
+
+        txtTienda2.setEditable(false);
+
+        rbTiendaAcual.setBackground(new java.awt.Color(39, 44, 52));
+        bgOpcionesFiltro.add(rbTiendaAcual);
+        rbTiendaAcual.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        rbTiendaAcual.setForeground(new java.awt.Color(255, 255, 255));
+        rbTiendaAcual.setText("Mostrar solo los tiempos de la tieda actual");
+        rbTiendaAcual.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rbTiendaAcualMouseClicked(evt);
+            }
+        });
+
+        rbTodos.setBackground(new java.awt.Color(39, 44, 52));
+        bgOpcionesFiltro.add(rbTodos);
+        rbTodos.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        rbTodos.setForeground(new java.awt.Color(255, 255, 255));
+        rbTodos.setText("Mostrar todos los tiempos");
+        rbTodos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rbTodosMouseClicked(evt);
+            }
+        });
+
+        btnListarTiempos.setText("Listar tiempos");
+        btnListarTiempos.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -75,22 +154,38 @@ public class TiempoTrasladoView extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtTiendaDestino, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                            .addComponent(txtTiempo))
-                        .addGap(61, 61, 61)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE))
-                .addContainerGap(35, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel1))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtTienda1, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                                    .addComponent(txtTiempo))
+                                .addGap(77, 77, 77)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txtTienda2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(rbTiendaAcual)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 580, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(66, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(rbTodos)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnListarTiempos)))
+                        .addGap(86, 86, 86))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -98,40 +193,81 @@ public class TiempoTrasladoView extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtTiendaDestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnActualizar))
+                    .addComponent(txtTienda1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(txtTienda2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtTiempo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnLimpiar))
+                    .addComponent(btnActualizar)
+                    .addComponent(btnLimpiar)
+                    .addComponent(txtTiempo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rbTiendaAcual)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(rbTodos)
+                    .addComponent(btnListarTiempos))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
+
+        bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void rbTiendaAcualMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rbTiendaAcualMouseClicked
+        if (!btnListarTiempos.isEnabled()) {
+            btnListarTiempos.setEnabled(true);
+        }
+    }//GEN-LAST:event_rbTiendaAcualMouseClicked
+
+    private void rbTodosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rbTodosMouseClicked
+        if (!btnListarTiempos.isEnabled()) {
+            btnListarTiempos.setEnabled(true);
+        }
+    }//GEN-LAST:event_rbTodosMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup bgOpcionesFiltro;
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnLimpiar;
+    private javax.swing.JButton btnListarTiempos;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JRadioButton rbTiendaAcual;
+    private javax.swing.JRadioButton rbTodos;
     private javax.swing.JTable tblTiempos;
     private javax.swing.JTextField txtTiempo;
-    private javax.swing.JTextField txtTiendaDestino;
+    private javax.swing.JTextField txtTienda1;
+    private javax.swing.JTextField txtTienda2;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
     public JButton getBtnActualizar() {
         return btnActualizar;
     }
-
+    
     public JButton getBtnLimpiar() {
         return btnLimpiar;
+    }
+
+    public JButton getBtnListarTiempos() {
+        return btnListarTiempos;
+    }
+
+    public JRadioButton getRbTiendaAcual() {
+        return rbTiendaAcual;
+    }
+
+    public JRadioButton getRbTodos() {
+        return rbTodos;
     }
 
     public JTable getTblTiempos() {
@@ -142,9 +278,23 @@ public class TiempoTrasladoView extends javax.swing.JPanel {
         return txtTiempo;
     }
 
-    public JTextField getTxtTiendaDestino() {
-        return txtTiendaDestino;
+    public JTextField getTxtTienda1() {
+        return txtTienda1;
     }
 
-    
+    public JTextField getTxtTienda2() {
+        return txtTienda2;
+    }
+
+    public ButtonGroup getBgOpcionesFiltro() {
+        return bgOpcionesFiltro;
+    }
+
+    public ObservableList<TiempoTraslado> getTiendaObservableList() {
+        return tiendaObservableList;
+    }
+
+    public void setTiendaObservableList(ObservableList<TiempoTraslado> tiendaObservableList) {
+        this.tiendaObservableList = tiendaObservableList;
+    }
 }
