@@ -47,10 +47,11 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
     //inicia la interfaz para agregar una tienda
     public void iniciar(JPanel parent) {
         if (!addTiendaV.isEnabled()) {
+            parent.removeAll();
             addTiendaV.setSize(parent.getSize());
             limpiarCampos();
-            addTiendaV.setVisible(true);
             addTiendaV.setEnabled(true);
+            addTiendaV.setVisible(true);
             parent.add(addTiendaV);
             parent.validate();
         }
@@ -64,7 +65,7 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
             obtenerDatos();
             try {
                 if (validarAddTienda(codigo, nombre, direccion, tel1)) {
-                    tiendaDAO.create(nuevaTienda(codigo, nombre, tel1, codigo, tel2, correo, horario));
+                    tiendaDAO.create(nuevaTienda(codigo, nombre, tel1, direccion, tel2, correo, horario));
                 }
                 JOptionPane.showMessageDialog(null, "Tienda regstrada", "Info", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
@@ -78,7 +79,7 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
             obtenerDatos();
             try {
                 if (validarUpdateTienda(nombre, direccion, tel1)) {
-                    tiendaDAO.update(nuevaTienda(codigo, nombre, tel1, codigo, tel2, correo, horario));
+                    tiendaDAO.update(nuevaTienda(codigo, nombre, tel1, direccion, tel2, correo, horario));
                 }
                 JOptionPane.showMessageDialog(null, "Tienda actualizada", "Info", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();

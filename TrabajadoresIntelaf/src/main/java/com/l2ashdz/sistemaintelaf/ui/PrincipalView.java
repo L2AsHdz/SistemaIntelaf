@@ -6,6 +6,7 @@
 package com.l2ashdz.sistemaintelaf.ui;
 
 import java.awt.Color;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -58,10 +59,8 @@ public class PrincipalView extends javax.swing.JFrame {
         jLabel19 = new javax.swing.JLabel();
         pnlInfoTienda = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
-        jLabel20 = new javax.swing.JLabel();
+        lblCodigo = new javax.swing.JLabel();
+        lblNombreT = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(new java.awt.Dimension(800, 500));
@@ -384,21 +383,13 @@ public class PrincipalView extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Tienda actual:");
 
-        jLabel15.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        jLabel15.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel15.setText("Codigo");
+        lblCodigo.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        lblCodigo.setForeground(new java.awt.Color(255, 255, 255));
+        lblCodigo.setText("Codigo");
 
-        jLabel16.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        jLabel16.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel16.setText("112233");
-
-        jLabel17.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        jLabel17.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel17.setText("Empleado:");
-
-        jLabel20.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        jLabel20.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel20.setText("Tienda X");
+        lblNombreT.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        lblNombreT.setForeground(new java.awt.Color(255, 255, 255));
+        lblNombreT.setText("Tienda X");
 
         javax.swing.GroupLayout pnlInfoTiendaLayout = new javax.swing.GroupLayout(pnlInfoTienda);
         pnlInfoTienda.setLayout(pnlInfoTiendaLayout);
@@ -407,28 +398,20 @@ public class PrincipalView extends javax.swing.JFrame {
             .addGroup(pnlInfoTiendaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel15)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel20)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
-                .addComponent(jLabel17)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel16)
-                .addGap(63, 63, 63))
+                .addGap(31, 31, 31)
+                .addComponent(lblCodigo)
+                .addGap(35, 35, 35)
+                .addComponent(lblNombreT)
+                .addContainerGap(277, Short.MAX_VALUE))
         );
         pnlInfoTiendaLayout.setVerticalGroup(
             pnlInfoTiendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlInfoTiendaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlInfoTiendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlInfoTiendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel17)
-                        .addComponent(jLabel16))
-                    .addGroup(pnlInfoTiendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel1)
-                        .addComponent(jLabel15)
-                        .addComponent(jLabel20)))
+                .addGroup(pnlInfoTiendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(lblCodigo)
+                    .addComponent(lblNombreT))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
@@ -551,13 +534,9 @@ public class PrincipalView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -565,6 +544,8 @@ public class PrincipalView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel lblCodigo;
+    private javax.swing.JLabel lblNombreT;
     private javax.swing.JPanel pnlDesk;
     private javax.swing.JPanel pnlInfoTienda;
     private javax.swing.JPanel pnlMenu;
@@ -613,8 +594,18 @@ public class PrincipalView extends javax.swing.JFrame {
 
     public JPanel getPnlPrincipal() {
         return pnlPrincipal;
+    }   
+
+    public JPanel getBtnPedidos() {
+        return btnPedidos;
     }
 
-    
+    public JLabel getLblCodigo() {
+        return lblCodigo;
+    }
+
+    public JLabel getLblNombreT() {
+        return lblNombreT;
+    }
     
 }

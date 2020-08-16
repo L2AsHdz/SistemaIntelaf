@@ -1,14 +1,13 @@
 package com.l2ashdz.sistemaintelaf;
 
-import com.l2ashdz.sistemaintelaf.controller.PrincipalUIController;
-import com.l2ashdz.sistemaintelaf.ui.Login2View;
-import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
+import com.l2ashdz.sistemaintelaf.controller.tienda.SeleccionTiendaController;
+import com.l2ashdz.sistemaintelaf.ui.SeleccionTiendaView;
 
 public class SistemaIntelaf {
 
     public static void main(String[] args) {
-        PrincipalView pUI = new PrincipalView();
-        PrincipalUIController pUIC = new PrincipalUIController(pUI);
-        pUIC.iniciar();
+        SeleccionTiendaView selectTienda = new SeleccionTiendaView();
+        SeleccionTiendaController selectTiendaC = new SeleccionTiendaController(selectTienda);
+        selectTiendaC.iniciar();
     }
 }
