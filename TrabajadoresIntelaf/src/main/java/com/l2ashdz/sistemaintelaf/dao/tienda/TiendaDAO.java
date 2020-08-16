@@ -9,5 +9,5 @@ import java.util.List;
  * @author asael
  */
 public interface TiendaDAO extends CRUD<Tienda>{
-    public List<Tienda> getFilteredList(String nombre, String codigo, int opcion);
+    List<Tienda> getFilteredList(String nombre, String codigo, int opcion);
 }

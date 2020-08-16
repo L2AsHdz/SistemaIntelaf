@@ -9,9 +9,9 @@ import java.util.List;
  */
 public interface CRUD<T> {
     
-    public List<T> getListado();
-    public void create(T t);
-    public T getObject(String t);
-    public void update(T t);
-    public void delete(String t);
+    List<T> getListado();
+    void create(T t);
+    T getObject(String t);
+    void update(T t);
+    void delete(String t);
 }

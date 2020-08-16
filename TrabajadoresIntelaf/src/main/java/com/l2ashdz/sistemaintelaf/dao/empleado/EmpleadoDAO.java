@@ -5,5 +5,5 @@ import com.l2ashdz.sistemaintelaf.model.Empleado;
 
 public interface EmpleadoDAO extends CRUD<Empleado>{
     
-    public void disableUser(String codigo);
+    void disableUser(String codigo);
 }

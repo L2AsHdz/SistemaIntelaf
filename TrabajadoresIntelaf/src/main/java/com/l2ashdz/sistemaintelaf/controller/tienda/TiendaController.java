@@ -49,10 +49,10 @@ public class TiendaController extends MouseAdapter {
 
         //muestra la interfaz para agregar una tienda
         if (tiendaV.getOpTienda() == e.getSource()) {
-            addTiendaV.setEnabled(false);
+            tiempoV.setEnabled(false);
             addTiendaC.iniciar(tiendaV.getPnlDesk());
         } else if (tiendaV.getOpTiempos() == e.getSource()) {
-            tiempoV.setEnabled(false);
+            addTiendaV.setEnabled(false);
             tiempoC.iniciar(tiendaV.getPnlDesk());
         }
     }

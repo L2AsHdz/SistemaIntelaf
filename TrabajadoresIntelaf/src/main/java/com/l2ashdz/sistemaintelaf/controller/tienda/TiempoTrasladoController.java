@@ -30,7 +30,6 @@ public class TiempoTrasladoController extends MouseAdapter implements ActionList
     private TiempoTraslado tiempoTraslado;
     private List<TiempoTraslado> tiempos;
     private TiempoTrasladoDAO tiempoDAO;
-    private CRUD<Tienda> tiendaDAO;
     
     private String tienda1;
     private String tienda2;
@@ -38,7 +37,6 @@ public class TiempoTrasladoController extends MouseAdapter implements ActionList
 
     public TiempoTrasladoController(TiempoTrasladoView tiempoV) {
         tiempoDAO = TiempoTrasladoDAOImpl.getTiempoDAO();
-        tiendaDAO = TiendaDAOImpl.getTiendaDAO();
         this.tiempoV = tiempoV;
         this.tiempoV.getBtnActualizar().addActionListener(this);
         this.tiempoV.getBtnLimpiar().addActionListener(this);

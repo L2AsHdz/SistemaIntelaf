@@ -9,6 +9,6 @@ import java.util.List;
  * @author asael
  */
 public interface TiempoTrasladoDAO extends CRUD<TiempoTraslado>{
-    public TiempoTraslado getTiempoT(String codT1, String codT2);
-    public List<TiempoTraslado> getTiemposOfT(String codTActual);
+    TiempoTraslado getTiempoT(String codT1, String codT2);
+    List<TiempoTraslado> getTiemposOfT(String codTActual);
 }

@@ -49,6 +49,7 @@ public class SeleccionTiendaView extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Seleccionar tienda");
         setAutoRequestFocus(false);
 
         jPanel1.setBackground(new java.awt.Color(39, 44, 52));
@@ -105,9 +106,7 @@ public class SeleccionTiendaView extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addGap(296, 296, 296))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jScrollPane1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))))
+                            .addComponent(jScrollPane1))))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(

@@ -57,5 +57,6 @@ public class SeleccionTiendaController extends MouseAdapter implements ActionLis
     public void actionPerformed(ActionEvent e) {
         principalC = new PrincipalUIController(principalV, tienda.getCodigo(), tienda.getNombre());
         principalC.iniciar();
+        selecTiendaV.dispose();
     }
 }

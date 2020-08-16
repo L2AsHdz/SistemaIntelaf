@@ -63,6 +63,7 @@ public class PrincipalView extends javax.swing.JFrame {
         lblNombreT = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Sistema Intelaf");
         setSize(new java.awt.Dimension(800, 500));
 
         pnlPrincipal.setBackground(new java.awt.Color(39, 44, 52));

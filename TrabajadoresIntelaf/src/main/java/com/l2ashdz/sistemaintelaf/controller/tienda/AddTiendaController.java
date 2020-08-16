@@ -30,8 +30,6 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
     private List<Tienda> tiendas;
     private TiendaDAO tiendaDAO;
 
-    private TiempoTraslado tiempoT;
-    private List<TiempoTraslado> tiempos;
     private CRUD<TiempoTraslado> tiempoDAO;
 
     private String codigo;
