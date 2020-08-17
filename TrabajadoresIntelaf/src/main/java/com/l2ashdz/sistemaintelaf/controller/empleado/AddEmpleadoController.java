@@ -67,9 +67,8 @@ public class AddEmpleadoController extends MouseAdapter implements ActionListene
 
             obtenerDatos();
             try {
-                if (validarAddEmpleado(codigo, nombre, cui, direccion, telefono, correo)) {
-                    empleadoDAO.create(nuevoEmpleado(codigo, nombre, cui, nit, correo, direccion, telefono));
-                }
+                validarAddEmpleado(codigo, nombre, cui, direccion, telefono, correo);
+                empleadoDAO.create(nuevoEmpleado(codigo, nombre, cui, nit, correo, direccion, telefono));
                 JOptionPane.showMessageDialog(null, "Empleado registrado", "Info", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
                 limpiarFiltros();
@@ -82,26 +81,25 @@ public class AddEmpleadoController extends MouseAdapter implements ActionListene
 
             obtenerDatos();
             try {
-                if (validarUpdateEmpleado(nombre, cui, direccion, telefono, correo)) {
-                    empleadoDAO.update(nuevoEmpleado(codigo, nombre, cui, nit, correo, direccion, telefono));
-                }
+                validarUpdateEmpleado(nombre, cui, direccion, telefono, correo);
+                empleadoDAO.update(nuevoEmpleado(codigo, nombre, cui, nit, correo, direccion, telefono));
                 JOptionPane.showMessageDialog(null, "Empleado actualizado", "Info", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
                 limpiarFiltros();
             } catch (UserInputException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
             }
-            
+
             //Limpia los campos
         } else if (addEmpleadoV.getBtnLimpiar() == e.getSource()) {
             limpiarCampos();
             limpiarFiltros();
-            
+
             //Lista  los empleados con o sin filtro
         } else if (addEmpleadoV.getBtnListarEmpleados() == e.getSource()) {
             codigo = addEmpleadoV.getTxtFiltroCodigo().getText();
             nombre = addEmpleadoV.getTxtFiltroNombre().getText();
-            
+
             if (addEmpleadoV.getRbFiltroCodigo().isSelected()) {
                 empleados = empleadoDAO.getFilteredList(codigo, 1);
             } else if (addEmpleadoV.getRbFiltroNombre().isSelected()) {
@@ -109,7 +107,7 @@ public class AddEmpleadoController extends MouseAdapter implements ActionListene
             } else {
                 empleados = empleadoDAO.getListado();
             }
-            
+
             //Actualiza los datos en la tabla empleados
             addEmpleadoV.getEmpleadoObservableList().clear();
             addEmpleadoV.getEmpleadoObservableList().addAll(empleados);

@@ -74,9 +74,8 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
 
             obtenerDatos();
             try {
-                if (validarAddTienda(codigo, nombre, direccion, tel1)) {
+                validarAddTienda(codigo, nombre, direccion, tel1);
                     tiendaDAO.create(nuevaTienda(codigo, nombre, tel1, direccion, tel2, correo, horario));
-                }
                 registrarTiempos();
                 JOptionPane.showMessageDialog(null, "Tienda registrada", "Info", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
@@ -89,9 +88,8 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
 
             obtenerDatos();
             try {
-                if (validarUpdateTienda(nombre, direccion, tel1)) {
+                validarUpdateTienda(nombre, direccion, tel1);
                     tiendaDAO.update(nuevaTienda(codigo, nombre, tel1, direccion, tel2, correo, horario));
-                }
                 JOptionPane.showMessageDialog(null, "Tienda actualizada", "Info", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
             } catch (UserInputException ex) {

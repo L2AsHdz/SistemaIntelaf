@@ -75,15 +75,13 @@ public class AddProductoController extends MouseAdapter implements ActionListene
 
             obtenerDatos();
             try {
-                if (validarAddProducto(codigo, nombre, fabricante, existencias, precio,
-                        garantia, codTActual)) {
+                validarAddProducto(codigo, nombre, fabricante, existencias, precio, garantia, codTActual);
                     //registra el producto en la base de datos
                     productoDAO.create(nuevoProducto(codigo, nombre, fabricante, precio,
                             existencias, descripcion, garantia, codTActual));
 
                     //registra las existencias en la base de datos
                     existenciaPDAO.create(nuevaExistenciaProducto(codTActual, codigo, existencias));
-                }
                 JOptionPane.showMessageDialog(null, "Producto registrado", "Info", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
                 limpiarFiltros();
@@ -96,11 +94,10 @@ public class AddProductoController extends MouseAdapter implements ActionListene
 
             obtenerDatos();
             try {
-                if (validarUpdateProducto(nombre, fabricante, existencias, precio, garantia)) {
+                validarUpdateProducto(nombre, fabricante, existencias, precio, garantia);
                     productoDAO.update(nuevoProducto(codigo, nombre, fabricante, precio,
                             existencias, descripcion, garantia, codTActual));
                     existenciaPDAO.update(nuevaExistenciaProducto(codTActual, codigo, existencias));
-                }
                 JOptionPane.showMessageDialog(null, "Produto actualizado", "Info", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
                 limpiarFiltros();

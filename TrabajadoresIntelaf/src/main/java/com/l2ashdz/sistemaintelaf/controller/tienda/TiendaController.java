@@ -42,6 +42,7 @@ public class TiendaController extends MouseAdapter {
             parent.add(tiendaV);
             parent.validate();
             tiendaV.setColor(tiendaV.getOpTienda());
+            tiendaV.resetColor(tiendaV.getOpTiempos());
             addTiendaC.iniciar(tiendaV.getPnlDesk());
         } else {
             System.out.println("Menu tienda visible");

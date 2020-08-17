@@ -2,13 +2,10 @@ package com.l2ashdz.sistemaintelaf.controller.tienda;
 
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.EntidadFabrica.nuevoTiempo;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.ValidacionesInterfaz.validarUpdateTiempo;
-import com.l2ashdz.sistemaintelaf.dao.CRUD;
 import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAO;
 import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAOImpl;
-import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
 import com.l2ashdz.sistemaintelaf.excepciones.UserInputException;
 import com.l2ashdz.sistemaintelaf.model.TiempoTraslado;
-import com.l2ashdz.sistemaintelaf.model.Tienda;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
 import com.l2ashdz.sistemaintelaf.ui.tienda.TiempoTrasladoView;
 import java.awt.event.ActionEvent;
@@ -74,9 +71,8 @@ public class TiempoTrasladoController extends MouseAdapter implements ActionList
             tiempo = tiempoV.getTxtTiempo().getText().trim();
             
             try {
-                if (validarUpdateTiempo(tiempo)) {
+                validarUpdateTiempo(tiempo);
                     tiempoDAO.update(nuevoTiempo(tienda1, tienda2, Integer.parseInt(tiempo)));
-                }
                 JOptionPane.showMessageDialog(null, "Tiempo actualizado", "Info", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
                 tiempoV.getBtnActualizar().setEnabled(false);
