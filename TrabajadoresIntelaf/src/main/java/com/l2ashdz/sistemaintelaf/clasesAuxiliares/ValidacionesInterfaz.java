@@ -120,29 +120,43 @@ public class ValidacionesInterfaz {
         }
         return flag;
     }
-    
+
     public static boolean validarAddEmpleado(String codigo, String nombre, String cui,
-            String direccion, String telefono, String correo) throws UserInputException{
+            String direccion, String telefono, String correo) throws UserInputException {
         boolean flag = true;
         if (codigo.isEmpty() || nombre.isEmpty() || cui.isEmpty() || correo.isEmpty()
                 || direccion.isEmpty() || telefono.isEmpty()) {
             flag = false;
             throw new UserInputException("Los datos con * son obligatorios");
-        }else if (empleadoDAO.getObject(codigo) != null) {
+        } else if (empleadoDAO.getObject(codigo) != null) {
             flag = false;
             throw new UserInputException("El empleado ya existe en el sistema");
         }
         return flag;
     }
-    
-    public static boolean validarUpdateEmpleado(String nombre, String cui, String direccion, 
-            String telefono, String correo) throws UserInputException{
+
+    public static boolean validarUpdateEmpleado(String nombre, String cui, String direccion,
+            String telefono, String correo) throws UserInputException {
         boolean flag = true;
         if (nombre.isEmpty() || cui.isEmpty() || direccion.isEmpty()
                 || telefono.isEmpty() || correo.isEmpty()) {
-             flag = false;
+            flag = false;
             throw new UserInputException("Los datos con * son obligatorios");
         }
         return flag;
+    }
+
+    public static void validarAddCliente(String nombre, String nit, String telefono) throws UserInputException {
+        if (nombre.isEmpty() || nit.isEmpty() || telefono.isEmpty()) {
+            throw new UserInputException("Los campos con * son obligatorios");
+        } else if (clienteDAO.getObject(nit) != null) {
+            throw new UserInputException("El cliente ya existe en el sistema");
+        }
+    }
+    
+    public static void validarUpdateCliente(String nombre, String telefono) throws UserInputException{
+        if (nombre.isEmpty() || telefono.isEmpty()) {
+            throw new UserInputException("Los campos con * son obligatorios");
+        }
     }
 }

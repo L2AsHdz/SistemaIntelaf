@@ -162,8 +162,8 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
         codigo = addTiendaV.getTxtCodigo().getText();
         nombre = addTiendaV.getTxtNombre().getText();
         direccion = addTiendaV.getTxtDireccion().getText();
-        tel1 = addTiendaV.getTxtTelefono().getText();
-        tel2 = addTiendaV.getTxtTelefono2().getText();
+        tel1 = addTiendaV.getTxtTelefono().getText().trim();
+        tel2 = addTiendaV.getTxtTelefono2().getText().trim();
         correo = addTiendaV.getTxtCorreo().getText();
         horario = addTiendaV.getTxtHorario().getText();
     }

@@ -103,9 +103,9 @@ public class AddEmpleadoController extends MouseAdapter implements ActionListene
             nombre = addEmpleadoV.getTxtFiltroNombre().getText();
             
             if (addEmpleadoV.getRbFiltroCodigo().isSelected()) {
-                empleados = empleadoDAO.getFilteredList(codigo, nombre, 1);
+                empleados = empleadoDAO.getFilteredList(codigo, 1);
             } else if (addEmpleadoV.getRbFiltroNombre().isSelected()) {
-                empleados = empleadoDAO.getFilteredList(codigo, nombre, 2);
+                empleados = empleadoDAO.getFilteredList(nombre, 2);
             } else {
                 empleados = empleadoDAO.getListado();
             }
@@ -118,7 +118,7 @@ public class AddEmpleadoController extends MouseAdapter implements ActionListene
 
     private void limpiarCampos() {
         addEmpleadoV.getTxtCodigo().setText("");
-        addEmpleadoV.getTxtCodigo().setEnabled(true);
+        addEmpleadoV.getTxtCodigo().setEditable(true);
         addEmpleadoV.getTxtNombre().setText("");
         addEmpleadoV.getTxtCUI().setText("");
         addEmpleadoV.getTxtNit().setText("");
@@ -139,10 +139,10 @@ public class AddEmpleadoController extends MouseAdapter implements ActionListene
     private void obtenerDatos() {
         codigo = addEmpleadoV.getTxtCodigo().getText();
         nombre = addEmpleadoV.getTxtNombre().getText();
-        cui = addEmpleadoV.getTxtCUI().getText();
+        cui = addEmpleadoV.getTxtCUI().getText().trim();
         nit = addEmpleadoV.getTxtNit().getText();
         direccion = addEmpleadoV.getTxtDireccion().getText();
-        telefono = addEmpleadoV.getTxtTelefono().getText();
+        telefono = addEmpleadoV.getTxtTelefono().getText().trim();
         correo = addEmpleadoV.getTxtCorreo().getText();
     }
 
@@ -152,7 +152,7 @@ public class AddEmpleadoController extends MouseAdapter implements ActionListene
         codigo = addEmpleadoV.getTblEmpleados().getValueAt(fila, 0).toString();
         empleado = empleadoDAO.getObject(codigo);
         addEmpleadoV.getTxtCodigo().setText(empleado.getCodigo());
-        addEmpleadoV.getTxtCodigo().setEnabled(false);
+        addEmpleadoV.getTxtCodigo().setEditable(false);
         addEmpleadoV.getTxtNombre().setText(empleado.getNombre());
         addEmpleadoV.getTxtCUI().setText(empleado.getCUI());
         addEmpleadoV.getTxtNit().setText(empleado.getNit());

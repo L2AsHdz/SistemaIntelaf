@@ -199,12 +199,14 @@ public class AddEmpleadoView extends javax.swing.JPanel {
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
+        txtTelefono.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
 
         try {
             txtCUI.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("#############")));
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
+        txtCUI.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
 
         txtNit.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {

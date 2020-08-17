@@ -188,7 +188,7 @@ public class EmpleadoDAOImpl implements EmpleadoDAO {
     }
 
     @Override
-    public List<Empleado> getFilteredList(String codigo, String nombre, int opcion) {
+    public List<Empleado> getFilteredList(String filtro, int opcion) {
         String sql1 = "SELECT * FROM empleado WHERE codigo LIKE ? ORDER BY codigo";
         String sql2 = "SELECT * FROM empleado WHERE nombre LIKE ? ORDER BY codigo";
         PreparedStatement ps = null;
@@ -199,11 +199,11 @@ public class EmpleadoDAOImpl implements EmpleadoDAO {
             switch (opcion) {
                 case 1:
                     ps = conexion.prepareStatement(sql1);
-                    ps.setString(1, "%" + codigo + "%");
+                    ps.setString(1, "%" + filtro + "%");
                     break;
                 case 2:
                     ps = conexion.prepareStatement(sql2);
-                    ps.setString(1, "%" + nombre + "%");
+                    ps.setString(1, "%" + filtro + "%");
                     break;
             }
             rs = ps.executeQuery();

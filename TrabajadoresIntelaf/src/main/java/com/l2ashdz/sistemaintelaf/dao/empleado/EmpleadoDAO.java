@@ -5,6 +5,6 @@ import com.l2ashdz.sistemaintelaf.model.Empleado;
 import java.util.List;
 
 public interface EmpleadoDAO extends CRUD<Empleado>{
-    List<Empleado> getFilteredList(String codigo, String nombre, int opcion);
+    List<Empleado> getFilteredList(String filtro, int opcion);
     void disableUser(String codigo);
 }

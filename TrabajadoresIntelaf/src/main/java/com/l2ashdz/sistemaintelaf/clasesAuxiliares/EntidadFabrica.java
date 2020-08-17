@@ -103,6 +103,18 @@ public class EntidadFabrica {
         cliente.setCreditoCompra(Float.parseFloat(parametros[4]));
         return cliente;
     }
+    
+    public static Cliente nuevoCliente(String nit, String nombre, String cui, String direccion,
+            String telefono, String correo){
+        Cliente cliente = new Cliente();
+        cliente.setNit(nit);
+        cliente.setNombre(nombre);
+        cliente.setTelefono(telefono);
+        cliente.setCui(cui.isEmpty()?null:cui);
+        cliente.setDireccion(direccion.isEmpty()?null:direccion);
+        cliente.setCorreo(correo.isEmpty()?null:correo);
+        return cliente;
+    }
 
     public static Empleado nuevoEmpleado(String[] parametros) {
         Empleado empleado = new Empleado();
