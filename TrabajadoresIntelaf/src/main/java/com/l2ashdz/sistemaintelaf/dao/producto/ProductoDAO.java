@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface ProductoDAO extends CRUD<Producto>{
     List<Producto> getFilteredList(String fitro, int opcion);
+    Producto getProducto(String codT, String codP);
 }

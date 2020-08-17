@@ -97,37 +97,7 @@ public class ProductoDAOImpl implements ProductoDAO {
 
     @Override
     public Producto getObject(String codigo) {
-        String sql = "SELECT * FROM producto WHERE codigo = ?";
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        Producto p = null;
-        try {
-            ps = conexion.prepareStatement(sql);
-            ps.setString(1, codigo);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                p = new Producto();
-                p.setCodigo(rs.getString("codigo"));
-                p.setNombre(rs.getString("nombre"));
-                p.setFabricante(rs.getString("fabricante"));
-                p.setPrecio(rs.getFloat("precio"));
-                p.setDescripcion(rs.getString("descripcion"));
-                p.setGarantiaMeses(rs.getInt("garantia_meses"));
-            }
-            System.out.println("Producto obtenido de la BD");
-        } catch (SQLException ex) {
-            System.out.println("No se pudo leer el producto");
-            ex.printStackTrace(System.out);
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
-
-        }
-        return p;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -166,7 +136,7 @@ public class ProductoDAOImpl implements ProductoDAO {
     public List<Producto> getFilteredList(String filtro, int opcion) {
         String sql = "SELECT p.*, e.codigo_tienda, e.existencias FROM producto p "
                 + "INNER JOIN existencia_producto e ON p.codigo=e.codigo_producto "
-                + "where ";
+                + "WHERE ";
         String order = "ORDER BY p.codigo";
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -217,6 +187,46 @@ public class ProductoDAOImpl implements ProductoDAO {
             }
         }
         return productos;
+    }
+
+    @Override
+    public Producto getProducto(String codT, String codP) {
+        String sql = "SELECT p.*, e.codigo_tienda, e.existencias FROM producto p "
+                + "INNER JOIN existencia_producto e ON p.codigo=e.codigo_producto "
+                + "WHERE e.codigo_tienda = ? AND p.codigo = ?";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Producto p = null;
+        try {
+            ps = conexion.prepareStatement(sql);
+            ps.setString(1, codT);
+            ps.setString(2, codP);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                p = new Producto();
+                p.setCodigo(rs.getString("codigo"));
+                p.setNombre(rs.getString("nombre"));
+                p.setFabricante(rs.getString("fabricante"));
+                p.setPrecio(rs.getFloat("precio"));
+                p.setDescripcion(rs.getString("descripcion"));
+                p.setGarantiaMeses(rs.getInt("garantia_meses"));
+                p.setExistencias(rs.getInt("existencias"));
+                p.setCodTienda(rs.getString("codigo_tienda"));
+            }
+            System.out.println("Producto obtenido de la BD");
+        } catch (SQLException ex) {
+            System.out.println("No se pudo leer el producto");
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+
+        }
+        return p;
     }
 
 }

@@ -166,6 +166,8 @@ public class AddTiendaView extends javax.swing.JPanel {
 
         btnBuscar.setText("Buscar Tiendas");
 
+        tblTiendas.getTableHeader().setReorderingAllowed(false);
+
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${tiendaObservableList}");
         org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, tblTiendas);
         org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${codigo}"));
@@ -191,7 +193,6 @@ public class AddTiendaView extends javax.swing.JPanel {
         columnBinding.setColumnClass(String.class);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
-
         jScrollPane1.setViewportView(tblTiendas);
 
         cbNombre.setBackground(new java.awt.Color(39, 44, 52));

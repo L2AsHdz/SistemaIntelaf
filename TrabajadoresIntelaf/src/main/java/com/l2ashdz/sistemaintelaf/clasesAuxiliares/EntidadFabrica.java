@@ -75,7 +75,7 @@ public class EntidadFabrica {
         producto.setCodTienda(codT);
         producto.setPrecio(Float.parseFloat(precio));
         producto.setExistencias(Integer.parseInt(existencias));
-        producto.setGarantiaMeses(garantia.isEmpty()?null:Integer.parseInt(garantia));
+        producto.setGarantiaMeses(garantia.isEmpty()?0:Integer.parseInt(garantia));
         return producto;
     }
 
