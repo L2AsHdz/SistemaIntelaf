@@ -34,6 +34,8 @@ public class TiendaController extends MouseAdapter {
     public void iniciar(JPanel parent) {
 
         if (!tiendaV.isEnabled()) {
+            parent.removeAll();
+            parent.repaint();
             tiendaV.setSize(parent.getSize());
             tiendaV.setVisible(true);
             tiendaV.setEnabled(true);
@@ -41,6 +43,8 @@ public class TiendaController extends MouseAdapter {
             parent.validate();
             tiendaV.setColor(tiendaV.getOpTienda());
             addTiendaC.iniciar(tiendaV.getPnlDesk());
+        } else {
+            System.out.println("Menu tienda visible");
         }
     }
 

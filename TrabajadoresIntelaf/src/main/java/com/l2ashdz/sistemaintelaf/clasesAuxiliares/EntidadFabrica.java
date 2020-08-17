@@ -64,6 +64,20 @@ public class EntidadFabrica {
         producto.setPrecio(Float.parseFloat(parametros[5]));
         return producto;
     }
+    
+    public static Producto nuevoProducto(String codigo, String nombre, String fabricante,
+            String precio, String existencias, String descricpion, String garantia, String codT){
+        Producto producto = new Producto();
+        producto.setCodigo(codigo);
+        producto.setNombre(nombre);
+        producto.setDescripcion(descricpion.isEmpty()?null:descricpion);
+        producto.setFabricante(fabricante);
+        producto.setCodTienda(codT);
+        producto.setPrecio(Float.parseFloat(precio));
+        producto.setExistencias(Integer.parseInt(existencias));
+        producto.setGarantiaMeses(garantia.isEmpty()?null:Integer.parseInt(garantia));
+        return producto;
+    }
 
     public static ExistenciaProducto nuevaExistenciaProducto(String[] parametros) {
         ExistenciaProducto existenciaP = new ExistenciaProducto();
@@ -71,6 +85,14 @@ public class EntidadFabrica {
         existenciaP.setCodigoTienda(parametros[6]);
         existenciaP.setExistencias(Integer.parseInt(parametros[4]));
         return existenciaP;
+    }
+    
+    public static ExistenciaProducto nuevaExistenciaProducto(String codT, String codP, String existencias){
+        ExistenciaProducto existencia = new ExistenciaProducto();
+        existencia.setCodigoProducto(codP);
+        existencia.setCodigoTienda(codT);
+        existencia.setExistencias(Integer.parseInt(existencias));
+        return existencia;
     }
 
     public static Cliente nuevoCliente(String[] parametros) {

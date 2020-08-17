@@ -11,6 +11,8 @@ public class Producto {
     private float precio;
     private String descripcion;
     private int garantiaMeses;
+    private String codTienda;
+    private int existencias;
 
     public Producto() {
     }
@@ -61,5 +63,21 @@ public class Producto {
 
     public void setGarantiaMeses(int garantiaMeses) {
         this.garantiaMeses = garantiaMeses;
+    }
+
+    public String getCodTienda() {
+        return codTienda;
+    }
+
+    public void setCodTienda(String codTienda) {
+        this.codTienda = codTienda;
+    }
+
+    public int getExistencias() {
+        return existencias;
+    }
+
+    public void setExistencias(int existencias) {
+        this.existencias = existencias;
     }
 }

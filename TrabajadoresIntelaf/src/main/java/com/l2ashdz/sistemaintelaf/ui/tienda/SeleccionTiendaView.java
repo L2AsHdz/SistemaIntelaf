@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.l2ashdz.sistemaintelaf.ui;
+package com.l2ashdz.sistemaintelaf.ui.tienda;
 
 import com.l2ashdz.sistemaintelaf.model.Tienda;
 import java.util.ArrayList;

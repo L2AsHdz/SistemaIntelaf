@@ -5,7 +5,7 @@ import com.l2ashdz.sistemaintelaf.dao.CRUD;
 import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
-import com.l2ashdz.sistemaintelaf.ui.SeleccionTiendaView;
+import com.l2ashdz.sistemaintelaf.ui.tienda.SeleccionTiendaView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;

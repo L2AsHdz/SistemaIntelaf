@@ -1,7 +1,7 @@
 package com.l2ashdz.sistemaintelaf;
 
 import com.l2ashdz.sistemaintelaf.controller.tienda.SeleccionTiendaController;
-import com.l2ashdz.sistemaintelaf.ui.SeleccionTiendaView;
+import com.l2ashdz.sistemaintelaf.ui.tienda.SeleccionTiendaView;
 
 public class SistemaIntelaf {
 

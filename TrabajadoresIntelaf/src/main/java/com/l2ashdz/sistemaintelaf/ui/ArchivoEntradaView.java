@@ -44,7 +44,10 @@ public class ArchivoEntradaView extends javax.swing.JFrame {
         setTitle("Abrir Archivo");
         setUndecorated(true);
 
+        jPanel1.setBackground(new java.awt.Color(39, 44, 52));
+
         lblNombreArchivo.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        lblNombreArchivo.setForeground(new java.awt.Color(255, 255, 255));
         lblNombreArchivo.setText("*no se ha escogido un archivo*");
 
         btnBuscar.setText("Buscar Archivo");

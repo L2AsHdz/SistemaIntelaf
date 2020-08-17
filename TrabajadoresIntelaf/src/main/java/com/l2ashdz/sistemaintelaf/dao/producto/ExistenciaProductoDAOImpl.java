@@ -93,8 +93,26 @@ public class ExistenciaProductoDAOImpl implements ExistenciaProductoDAO {
     }
 
     @Override
-    public void update(ExistenciaProducto t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void update(ExistenciaProducto ep) {
+        String sql = "UPDATE existencia_producto SET existencias = ? WHERE codigo_tienda = ? AND  codigo_producto = ?";
+        PreparedStatement ps = null;
+        try {
+            ps = conexion.prepareStatement(sql);
+            ps.setInt(1, ep.getExistencias());
+            ps.setString(2, ep.getCodigoTienda());
+            ps.setString(3, ep.getCodigoProducto());
+            ps.executeUpdate();
+            System.out.println("Existencia actualizada");
+        } catch (SQLException ex) {
+            System.out.println("No se actualizo la existencia");
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
     }
 
     @Override
