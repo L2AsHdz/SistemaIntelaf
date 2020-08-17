@@ -33,7 +33,7 @@ public class EmpleadoDAOImpl implements EmpleadoDAO {
     //Decuelve un listado de Empleados
     @Override
     public List<Empleado> getListado() {
-        String sql = "SELECT * FROM empleado";
+        String sql = "SELECT * FROM empleado ORDER BY codigo";
         Statement declaracion = null;
         ResultSet rs = null;
         List<Empleado> empleados = null;
@@ -47,7 +47,7 @@ public class EmpleadoDAOImpl implements EmpleadoDAO {
                 Empleado empleado = new Empleado();
                 empleado.setCodigo(rs.getString("codigo"));
                 empleado.setCUI(rs.getString("cui"));
-                empleado.setNitI(rs.getString("nit"));
+                empleado.setNit(rs.getString("nit"));
                 empleado.setNombre(rs.getString("nombre"));
                 empleado.setCorreo(rs.getString("correo"));
                 empleado.setDireccion(rs.getString("direccion"));
@@ -79,7 +79,7 @@ public class EmpleadoDAOImpl implements EmpleadoDAO {
             ps = conexion.prepareStatement(sql);
             ps.setString(1, e.getCodigo());
             ps.setString(2, e.getCUI());
-            ps.setString(3, e.getNitI());
+            ps.setString(3, e.getNit());
             ps.setString(4, e.getNombre());
             ps.setString(5, e.getCorreo());
             ps.setString(6, e.getDireccion());
@@ -113,7 +113,7 @@ public class EmpleadoDAOImpl implements EmpleadoDAO {
                 e = new Empleado();
                 e.setCodigo(rs.getString("codigo"));
                 e.setCUI(rs.getString("cui"));
-                e.setNitI(rs.getString("nit"));
+                e.setNit(rs.getString("nit"));
                 e.setNombre(rs.getString("nombre"));
                 e.setCorreo(rs.getString("correo"));
                 e.setDireccion(rs.getString("direccion"));
@@ -136,8 +136,31 @@ public class EmpleadoDAOImpl implements EmpleadoDAO {
     }
 
     @Override
-    public void update(Empleado u) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void update(Empleado e) {
+        String sql = "UPDATE empleado SET nombre = ?, cui = ?, nit = ?, direccion = ?,"
+                + "telefono = ?, correo = ? WHERE codigo = ?";
+        PreparedStatement ps = null;
+        try {
+            ps = conexion.prepareStatement(sql);
+            ps.setString(1, e.getNombre());
+            ps.setString(2, e.getCUI());
+            ps.setString(3, e.getNit());
+            ps.setString(4, e.getDireccion());
+            ps.setString(5, e.getTelefono());
+            ps.setString(6, e.getCorreo());
+            ps.setString(7, e.getCodigo());
+            ps.executeUpdate();
+            System.out.println("Empleado actualizado");
+        } catch (SQLException ex) {
+            System.out.println("No se actualizo el empleado");
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
     }
 
     @Override
@@ -162,5 +185,52 @@ public class EmpleadoDAOImpl implements EmpleadoDAO {
             System.out.println("No se deshabilito el empleado");
             ex.printStackTrace();
         }
+    }
+
+    @Override
+    public List<Empleado> getFilteredList(String codigo, String nombre, int opcion) {
+        String sql1 = "SELECT * FROM empleado WHERE codigo LIKE ? ORDER BY codigo";
+        String sql2 = "SELECT * FROM empleado WHERE nombre LIKE ? ORDER BY codigo";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<Empleado> empleados = null;
+
+        try {
+            switch (opcion) {
+                case 1:
+                    ps = conexion.prepareStatement(sql1);
+                    ps.setString(1, "%" + codigo + "%");
+                    break;
+                case 2:
+                    ps = conexion.prepareStatement(sql2);
+                    ps.setString(1, "%" + nombre + "%");
+                    break;
+            }
+            rs = ps.executeQuery();
+            empleados = new ArrayList();
+            while (rs.next()) {
+                Empleado empleado = new Empleado();
+                empleado.setCodigo(rs.getString("codigo"));
+                empleado.setNombre(rs.getString("nombre"));
+                empleado.setDireccion(rs.getString("direccion"));
+                empleado.setCorreo(rs.getString("correo"));
+                empleado.setCUI(rs.getString("cui"));
+                empleado.setNit(rs.getString("nit"));
+                empleado.setTelefono(rs.getString("telefono"));
+                empleados.add(empleado);
+            }
+            System.out.println("Listado de empleados obtenido");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace(System.out);
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+        return empleados;
     }
 }

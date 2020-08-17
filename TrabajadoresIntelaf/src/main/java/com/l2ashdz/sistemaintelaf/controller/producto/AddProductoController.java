@@ -1,4 +1,4 @@
-package com.l2ashdz.sistemaintelaf.controller.poducto;
+package com.l2ashdz.sistemaintelaf.controller.producto;
 
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.ValidacionesInterfaz.*;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.EntidadFabrica.*;
@@ -152,7 +152,6 @@ public class AddProductoController extends MouseAdapter implements ActionListene
         addProductoV.getProductoObservableList().clear();
         addProductoV.getBgFiltro().clearSelection();
         addProductoV.getTxtFiltroCodigo().setText("");
-        addProductoV.getTxtFiltroCodigo().setText("");
         addProductoV.getTxtFiltroTienda().setText("");
         addProductoV.getTxtFiltroNombre().setText("");
     }
@@ -177,6 +176,7 @@ public class AddProductoController extends MouseAdapter implements ActionListene
         if (codTienda.equals(codTActual)) {
             producto = productoDAO.getProducto(codTienda, codigo);
             addProductoV.getTxtCodigo().setText(producto.getCodigo());
+            addProductoV.getTxtCodigo().setEnabled(false);
             addProductoV.getTxtNombre().setText(producto.getNombre());
             addProductoV.getTxtFabricante().setText(producto.getFabricante());
             addProductoV.getTxtExistencias().setText(String.valueOf(producto.getExistencias()));

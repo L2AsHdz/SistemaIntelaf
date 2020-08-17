@@ -5,19 +5,33 @@
  */
 package com.l2ashdz.sistemaintelaf.ui.empleado;
 
+import com.l2ashdz.sistemaintelaf.model.Empleado;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JRadioButton;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import org.jdesktop.observablecollections.ObservableCollections;
+import org.jdesktop.observablecollections.ObservableList;
 
 /**
  *
  * @author asael
  */
 public class AddEmpleadoView extends javax.swing.JPanel {
+    
+    private List<Empleado> empleadoList;
+    private ObservableList<Empleado> empleadoObservableList;
 
     /**
      * Creates new form EmpleadoView
      */
     public AddEmpleadoView() {
+        empleadoList = new ArrayList();
+        empleadoObservableList = ObservableCollections.observableList(empleadoList);
         initComponents();
     }
 
@@ -29,17 +43,16 @@ public class AddEmpleadoView extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
+        bgFiltro = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
         txtCodigo = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        txtTelefono = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        txtCUI = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        txtNit = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         txtCorreo = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
@@ -48,15 +61,40 @@ public class AddEmpleadoView extends javax.swing.JPanel {
         btnAgregar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
-        btnListado = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        rbFiltroCodigo = new javax.swing.JRadioButton();
+        rbFiltroNombre = new javax.swing.JRadioButton();
+        txtFiltroCodigo = new javax.swing.JTextField();
+        txtFiltroNombre = new javax.swing.JTextField();
+        btnListarEmpleados = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblEmpleados = new javax.swing.JTable();
+        txtTelefono = new javax.swing.JFormattedTextField();
+        txtCUI = new javax.swing.JFormattedTextField();
+        txtNit = new javax.swing.JTextField();
+
+        setBackground(new java.awt.Color(39, 44, 52));
+        setEnabled(false);
 
         jLabel1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("*Codigo");
 
+        txtCodigo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCodigoKeyTyped(evt);
+            }
+        });
+
         jLabel2.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("*Nombre");
+
+        txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreKeyTyped(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
@@ -74,19 +112,105 @@ public class AddEmpleadoView extends javax.swing.JPanel {
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("*Correo");
 
+        txtCorreo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCorreoKeyTyped(evt);
+            }
+        });
+
         jLabel7.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("*Direccion");
+
+        txtDireccion.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtDireccionKeyTyped(evt);
+            }
+        });
 
         jSeparator1.setBackground(new java.awt.Color(255, 255, 255));
 
         btnAgregar.setText("Agregar");
 
         btnActualizar.setText("Actualizar");
+        btnActualizar.setEnabled(false);
 
         btnLimpiar.setText("Limpiar");
 
-        btnListado.setText("MostrarListado");
+        jLabel8.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel8.setText("Filtrar por:");
+
+        rbFiltroCodigo.setBackground(new java.awt.Color(39, 44, 52));
+        bgFiltro.add(rbFiltroCodigo);
+        rbFiltroCodigo.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        rbFiltroCodigo.setForeground(new java.awt.Color(255, 255, 255));
+        rbFiltroCodigo.setText("Codigo");
+        rbFiltroCodigo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rbFiltroCodigoMouseClicked(evt);
+            }
+        });
+
+        rbFiltroNombre.setBackground(new java.awt.Color(39, 44, 52));
+        bgFiltro.add(rbFiltroNombre);
+        rbFiltroNombre.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        rbFiltroNombre.setForeground(new java.awt.Color(255, 255, 255));
+        rbFiltroNombre.setText("Nombre");
+        rbFiltroNombre.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rbFiltroNombreMouseClicked(evt);
+            }
+        });
+
+        btnListarEmpleados.setText("Listar empleados");
+
+        tblEmpleados.getTableHeader().setReorderingAllowed(false);
+
+        org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${empleadoObservableList}");
+        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, tblEmpleados);
+        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${codigo}"));
+        columnBinding.setColumnName("Codigo");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nombre}"));
+        columnBinding.setColumnName("Nombre");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${CUI}"));
+        columnBinding.setColumnName("CUI");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${telefono}"));
+        columnBinding.setColumnName("Telefono");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${correo}"));
+        columnBinding.setColumnName("Correo");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${direccion}"));
+        columnBinding.setColumnName("Direccion");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nit}"));
+        columnBinding.setColumnName("Nit");
+        columnBinding.setColumnClass(String.class);
+        bindingGroup.addBinding(jTableBinding);
+        jTableBinding.bind();
+        jScrollPane1.setViewportView(tblEmpleados);
+
+        try {
+            txtTelefono.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("########")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+
+        try {
+            txtCUI.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("#############")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+
+        txtNit.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNitKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -94,58 +218,73 @@ public class AddEmpleadoView extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel2)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(txtNombre))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jLabel5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(txtCUI, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jLabel4)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(txtNit, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(45, 45, 45)
-                                        .addComponent(btnActualizar)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(btnLimpiar)
-                                        .addGap(226, 226, 226))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel7)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(txtDireccion))))))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAgregar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnListado)))
-                .addContainerGap(48, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(rbFiltroCodigo)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtFiltroCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(rbFiltroNombre)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtFiltroNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnListarEmpleados))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel1)
+                                        .addComponent(jLabel3)
+                                        .addComponent(jLabel6))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                            .addGap(0, 151, Short.MAX_VALUE)
+                                            .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(61, 61, 61)
+                                            .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(txtCodigo, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                                                .addComponent(txtTelefono))
+                                            .addGap(24, 24, 24)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addComponent(jLabel2)
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                    .addComponent(txtNombre))
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addComponent(jLabel5)
+                                                    .addGap(193, 193, 193)
+                                                    .addComponent(jLabel4)
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addComponent(txtNit, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                                                    .addGap(5, 5, 5))))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addComponent(jLabel7)
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                    .addComponent(txtDireccion))
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addComponent(txtCUI, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addGap(0, 0, Short.MAX_VALUE))))))
+                                .addComponent(jSeparator1)
+                                .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(25, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -154,11 +293,11 @@ public class AddEmpleadoView extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5)
                     .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtCUI, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtNit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5))
+                    .addComponent(txtNit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
@@ -169,19 +308,61 @@ public class AddEmpleadoView extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAgregar)
                     .addComponent(btnActualizar)
-                    .addComponent(btnLimpiar)
-                    .addComponent(btnListado))
+                    .addComponent(btnLimpiar))
                 .addGap(18, 18, 18)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(rbFiltroCodigo)
+                    .addComponent(txtFiltroCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rbFiltroNombre)
+                    .addComponent(txtFiltroNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnListarEmpleados))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(32, Short.MAX_VALUE))
         );
+
+        bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void txtCodigoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoKeyTyped
+        limitarCaracteres(txtCodigo, evt, 10);
+    }//GEN-LAST:event_txtCodigoKeyTyped
+
+    private void txtNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyTyped
+        limitarCaracteres(txtNombre, evt, 45);
+    }//GEN-LAST:event_txtNombreKeyTyped
+
+    private void txtCorreoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCorreoKeyTyped
+        limitarCaracteres(txtCorreo, evt, 30);
+    }//GEN-LAST:event_txtCorreoKeyTyped
+
+    private void txtDireccionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDireccionKeyTyped
+        limitarCaracteres(txtDireccion, evt, 50);
+    }//GEN-LAST:event_txtDireccionKeyTyped
+
+    private void txtNitKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNitKeyTyped
+        limitarCaracteres(txtNit, evt, 10);
+    }//GEN-LAST:event_txtNitKeyTyped
+
+    private void rbFiltroCodigoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rbFiltroCodigoMouseClicked
+        cambioFiltro();
+    }//GEN-LAST:event_rbFiltroCodigoMouseClicked
+
+    private void rbFiltroNombreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rbFiltroNombreMouseClicked
+        cambioFiltro();
+    }//GEN-LAST:event_rbFiltroNombreMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup bgFiltro;
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnLimpiar;
-    private javax.swing.JButton btnListado;
+    private javax.swing.JButton btnListarEmpleados;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -189,16 +370,48 @@ public class AddEmpleadoView extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextField txtCUI;
+    private javax.swing.JRadioButton rbFiltroCodigo;
+    private javax.swing.JRadioButton rbFiltroNombre;
+    private javax.swing.JTable tblEmpleados;
+    private javax.swing.JFormattedTextField txtCUI;
     private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtCorreo;
     private javax.swing.JTextField txtDireccion;
+    private javax.swing.JTextField txtFiltroCodigo;
+    private javax.swing.JTextField txtFiltroNombre;
     private javax.swing.JTextField txtNit;
     private javax.swing.JTextField txtNombre;
-    private javax.swing.JTextField txtTelefono;
+    private javax.swing.JFormattedTextField txtTelefono;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
+    private void limitarCaracteres(JTextField jText, KeyEvent e, int limite) {
+        if (jText.getText().length() == limite) {
+            e.consume();
+        }
+    }
+    
+    private void cambioFiltro(){
+        if (rbFiltroCodigo.isSelected()) {
+            txtFiltroCodigo.setEditable(true);
+            txtFiltroCodigo.requestFocus();
+            txtFiltroNombre.setEditable(false);
+        } else if (rbFiltroNombre.isSelected()) {
+            txtFiltroCodigo.setEditable(false);
+            txtFiltroNombre.setEditable(true);
+            txtFiltroNombre.requestFocus();
+        }
+        limpiarFiltros();
+    }
+    
+    private void limpiarFiltros(){
+        txtFiltroCodigo.setText("");
+        txtFiltroNombre.setText("");
+    }
+    
     public JButton getBtnActualizar() {
         return btnActualizar;
     }
@@ -211,8 +424,32 @@ public class AddEmpleadoView extends javax.swing.JPanel {
         return btnLimpiar;
     }
 
-    public JButton getBtnListado() {
-        return btnListado;
+    public ButtonGroup getBgFiltro() {
+        return bgFiltro;
+    }
+
+    public JButton getBtnListarEmpleados() {
+        return btnListarEmpleados;
+    }
+
+    public JRadioButton getRbFiltroCodigo() {
+        return rbFiltroCodigo;
+    }
+
+    public JRadioButton getRbFiltroNombre() {
+        return rbFiltroNombre;
+    }
+
+    public JTable getTblEmpleados() {
+        return tblEmpleados;
+    }
+
+    public JTextField getTxtFiltroCodigo() {
+        return txtFiltroCodigo;
+    }
+
+    public JTextField getTxtFiltroNombre() {
+        return txtFiltroNombre;
     }
 
     public JTextField getTxtCUI() {
@@ -241,6 +478,14 @@ public class AddEmpleadoView extends javax.swing.JPanel {
 
     public JTextField getTxtTelefono() {
         return txtTelefono;
+    }
+
+    public ObservableList<Empleado> getEmpleadoObservableList() {
+        return empleadoObservableList;
+    }
+
+    public void setEmpleadoObservableList(ObservableList<Empleado> empleadoObservableList) {
+        this.empleadoObservableList = empleadoObservableList;
     }
 
     

@@ -94,7 +94,6 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
                 }
                 JOptionPane.showMessageDialog(null, "Tienda actualizada", "Info", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
-                addTiendaV.getBtnActualizar().setEnabled(false);
             } catch (UserInputException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
             }

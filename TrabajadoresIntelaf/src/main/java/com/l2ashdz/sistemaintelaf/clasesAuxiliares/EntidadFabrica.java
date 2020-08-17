@@ -112,6 +112,19 @@ public class EntidadFabrica {
         empleado.setCUI(parametros[4]);
         return empleado;
     }
+    
+    public static Empleado nuevoEmpleado(String codigo, String nombre, String cui, 
+            String nit, String correo, String direccion, String telefono){
+        Empleado empleado = new Empleado();
+        empleado.setCodigo(codigo);
+        empleado.setNombre(nombre);
+        empleado.setCUI(cui);
+        empleado.setNit(nit.isEmpty()?null:nit);
+        empleado.setCorreo(correo);
+        empleado.setTelefono(telefono);
+        empleado.setDireccion(direccion);
+        return empleado;
+    }
 
     public static Pedido nuevoPedido(String[] parametros) {
         Float total = Float.parseFloat(parametros[8]);

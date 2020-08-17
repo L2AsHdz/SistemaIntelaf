@@ -410,7 +410,6 @@
       </Properties>
       <Events>
         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="rbTiendaMouseClicked"/>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rbTiendaActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JRadioButton" name="rbCodigo">
@@ -431,7 +430,6 @@
       </Properties>
       <Events>
         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="rbCodigoMouseClicked"/>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rbCodigoActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JRadioButton" name="rbNombre">
@@ -452,7 +450,6 @@
       </Properties>
       <Events>
         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="rbNombreMouseClicked"/>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rbNombreActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

@@ -212,11 +212,6 @@ public class AddProductoView extends javax.swing.JPanel {
                 rbTiendaMouseClicked(evt);
             }
         });
-        rbTienda.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rbTiendaActionPerformed(evt);
-            }
-        });
 
         rbCodigo.setBackground(new java.awt.Color(39, 44, 52));
         bgFiltro.add(rbCodigo);
@@ -228,11 +223,6 @@ public class AddProductoView extends javax.swing.JPanel {
                 rbCodigoMouseClicked(evt);
             }
         });
-        rbCodigo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rbCodigoActionPerformed(evt);
-            }
-        });
 
         rbNombre.setBackground(new java.awt.Color(39, 44, 52));
         bgFiltro.add(rbNombre);
@@ -242,11 +232,6 @@ public class AddProductoView extends javax.swing.JPanel {
         rbNombre.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 rbNombreMouseClicked(evt);
-            }
-        });
-        rbNombre.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rbNombreActionPerformed(evt);
             }
         });
 
@@ -405,18 +390,6 @@ public class AddProductoView extends javax.swing.JPanel {
     private void rbCodigoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rbCodigoMouseClicked
         cambioFiltro();
     }//GEN-LAST:event_rbCodigoMouseClicked
-
-    private void rbTiendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbTiendaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rbTiendaActionPerformed
-
-    private void rbNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbNombreActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rbNombreActionPerformed
-
-    private void rbCodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbCodigoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rbCodigoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

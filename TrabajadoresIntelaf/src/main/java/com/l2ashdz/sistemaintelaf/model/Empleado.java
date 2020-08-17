@@ -2,9 +2,8 @@ package com.l2ashdz.sistemaintelaf.model;
 
 public class Empleado {
     private String codigo;
-    private String password;
     private String CUI;
-    private String nitI;
+    private String nit;
     private String nombre;
     private String telefono;
     private String correo;
@@ -22,14 +21,6 @@ public class Empleado {
         this.codigo = codigo;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getCUI() {
         return CUI;
     }
@@ -38,12 +29,12 @@ public class Empleado {
         this.CUI = CUI;
     }
 
-    public String getNitI() {
-        return nitI;
+    public String getNit() {
+        return nit;
     }
 
-    public void setNitI(String nitI) {
-        this.nitI = nitI;
+    public void setNit(String nit) {
+        this.nit = nit;
     }
 
     public String getNombre() {
@@ -80,7 +71,7 @@ public class Empleado {
 
     public int getEstado() {
         return estado;
-    }
+}
 
     public void setEstado(int estado) {
         this.estado = estado;

@@ -1,8 +1,10 @@
 package com.l2ashdz.sistemaintelaf.controller;
 
-import com.l2ashdz.sistemaintelaf.controller.poducto.AddProductoController;
+import com.l2ashdz.sistemaintelaf.controller.empleado.AddEmpleadoController;
+import com.l2ashdz.sistemaintelaf.controller.producto.AddProductoController;
 import com.l2ashdz.sistemaintelaf.controller.tienda.TiendaController;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
+import com.l2ashdz.sistemaintelaf.ui.empleado.AddEmpleadoView;
 import com.l2ashdz.sistemaintelaf.ui.producto.AddProductoView;
 import com.l2ashdz.sistemaintelaf.ui.tienda.TiendaView;
 import java.awt.event.MouseAdapter;
@@ -23,6 +25,10 @@ public class PrincipalUIController extends MouseAdapter {
     //Vista y controlador para menu productos
     private AddProductoView productoV = new AddProductoView();
     private AddProductoController productoC = new AddProductoController(productoV);
+    
+    //Vista y controlador para menu empleados
+    private AddEmpleadoView empleadoV = new AddEmpleadoView();
+    private AddEmpleadoController empleadoC = new AddEmpleadoController(empleadoV);
 
     public PrincipalUIController(PrincipalView principalUI, String codigo, String nombre) {
         this.principalUI = principalUI;
@@ -49,12 +55,16 @@ public class PrincipalUIController extends MouseAdapter {
         //Inicia la interfaz de tienda
         if (principalUI.getBtnTiendas() == e.getSource()) {
             productoV.setEnabled(false);
+            empleadoV.setEnabled(false);
             tiendaC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnProductos() == e.getSource()) {
             tiendaV.setEnabled(false);
+            empleadoV.setEnabled(false);
             productoC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnEmpleados() == e.getSource()) {
-
+            tiendaV.setEnabled(false);
+            productoV.setEnabled(false);
+            empleadoC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnClientes() == e.getSource()) {
 
         } else if (principalUI.getBtnVentas() == e.getSource()) {
