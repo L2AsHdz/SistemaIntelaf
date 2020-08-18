@@ -5,6 +5,7 @@
  */
 package com.l2ashdz.sistemaintelaf.ui.venta;
 
+import com.l2ashdz.sistemaintelaf.model.Producto;
 import com.l2ashdz.sistemaintelaf.model.ProductoVenta;
 import com.toedter.calendar.JDateChooser;
 import java.awt.event.KeyEvent;
@@ -18,6 +19,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
  *
@@ -27,6 +29,8 @@ public class AddVentaView extends javax.swing.JPanel {
     
     private List<ProductoVenta> prodVentaList;
     private ObservableList<ProductoVenta> prodVentaObservableList;
+    private List<Producto> productosList;
+    private ObservableList<Producto> productosObservableList;
 
     /**
      * Creates new form AddVentaView
@@ -34,6 +38,8 @@ public class AddVentaView extends javax.swing.JPanel {
     public AddVentaView() {
         prodVentaList = new ArrayList();
         prodVentaObservableList = ObservableCollections.observableList(prodVentaList);
+        productosList = new ArrayList();
+        productosObservableList = ObservableCollections.observableList(productosList);
         initComponents();
     }
 
@@ -45,6 +51,7 @@ public class AddVentaView extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         jLabel1 = new javax.swing.JLabel();
         txtNit = new javax.swing.JTextField();
@@ -82,9 +89,10 @@ public class AddVentaView extends javax.swing.JPanel {
         txtEfectivo = new javax.swing.JFormattedTextField();
 
         setBackground(new java.awt.Color(39, 44, 52));
+        setEnabled(false);
 
-        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("*Nit");
 
         txtNit.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -93,8 +101,8 @@ public class AddVentaView extends javax.swing.JPanel {
             }
         });
 
-        jLabel2.setBackground(new java.awt.Color(255, 255, 255));
         jLabel2.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("*Nombre");
 
         txtNombre.setEditable(false);
@@ -104,12 +112,12 @@ public class AddVentaView extends javax.swing.JPanel {
             }
         });
 
-        jLabel3.setBackground(new java.awt.Color(255, 255, 255));
         jLabel3.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("*Telefono");
 
-        jLabel4.setBackground(new java.awt.Color(255, 255, 255));
         jLabel4.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Direccion");
 
         txtDireccion.setEditable(false);
@@ -119,12 +127,12 @@ public class AddVentaView extends javax.swing.JPanel {
             }
         });
 
-        jLabel5.setBackground(new java.awt.Color(255, 255, 255));
         jLabel5.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("CUI");
 
-        jLabel6.setBackground(new java.awt.Color(255, 255, 255));
         jLabel6.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Correo");
 
         txtCorreo.setEditable(false);
@@ -136,40 +144,40 @@ public class AddVentaView extends javax.swing.JPanel {
 
         jSeparator1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel7.setBackground(new java.awt.Color(255, 255, 255));
         jLabel7.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("Fecha");
 
         txtFecha.setDateFormatString("yyyy-MM-dd");
 
-        jLabel8.setBackground(new java.awt.Color(255, 255, 255));
         jLabel8.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
         jLabel8.setText("*Efectivo:");
 
-        jLabel9.setBackground(new java.awt.Color(255, 255, 255));
         jLabel9.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(255, 255, 255));
         jLabel9.setText("*Credito:");
 
-        jLabel10.setBackground(new java.awt.Color(255, 255, 255));
         jLabel10.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
         jLabel10.setText("El cliente cuenta con un credito de compra disponible de: Q.");
 
         btnAddProducto.setText("Agregar producto");
 
-        jLabel11.setBackground(new java.awt.Color(255, 255, 255));
         jLabel11.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(255, 255, 255));
         jLabel11.setText("%");
 
-        jLabel12.setBackground(new java.awt.Color(255, 255, 255));
         jLabel12.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel12.setForeground(new java.awt.Color(255, 255, 255));
         jLabel12.setText("Q");
 
-        jLabel13.setBackground(new java.awt.Color(255, 255, 255));
         jLabel13.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(255, 255, 255));
         jLabel13.setText("%");
 
-        jLabel14.setBackground(new java.awt.Color(255, 255, 255));
         jLabel14.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
         jLabel14.setText("Q");
 
         tblProductosVenta.setAutoCreateRowSorter(true);
@@ -190,7 +198,13 @@ public class AddVentaView extends javax.swing.JPanel {
         txtPorcentEfectivo.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txtPorcentEfectivo.setText("");
 
+        AutoCompleteDecorator.decorate(cbBusquedaProducto);
         cbBusquedaProducto.setEditable(true);
+        cbBusquedaProducto.setSelectedIndex(-1);
+
+        org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${productosObservableList}");
+        org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, cbBusquedaProducto);
+        bindingGroup.addBinding(jComboBoxBinding);
 
         txtTelefono.setEditable(false);
         try {
@@ -208,16 +222,16 @@ public class AddVentaView extends javax.swing.JPanel {
         }
         txtCUI.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
 
-        lblCreditoCompra.setBackground(new java.awt.Color(255, 255, 255));
         lblCreditoCompra.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lblCreditoCompra.setForeground(new java.awt.Color(255, 255, 255));
         lblCreditoCompra.setText("####");
 
-        jLabel15.setBackground(new java.awt.Color(255, 255, 255));
         jLabel15.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(255, 255, 255));
         jLabel15.setText("Total de la venta Q.");
 
-        lblTotal.setBackground(new java.awt.Color(255, 255, 255));
         lblTotal.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lblTotal.setForeground(new java.awt.Color(255, 255, 255));
         lblTotal.setText("####");
 
         txtPorcentCredito.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
@@ -363,6 +377,8 @@ public class AddVentaView extends javax.swing.JPanel {
                     .addComponent(txtEfectivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
+
+        bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtNitKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNitKeyTyped
@@ -417,6 +433,7 @@ public class AddVentaView extends javax.swing.JPanel {
     private javax.swing.JFormattedTextField txtPorcentCredito;
     private javax.swing.JFormattedTextField txtPorcentEfectivo;
     private javax.swing.JFormattedTextField txtTelefono;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
     private void limitarCaracteres(JTextField jText, KeyEvent e, int limite) {
@@ -499,7 +516,13 @@ public class AddVentaView extends javax.swing.JPanel {
 
     public void setProdVentaObservableList(ObservableList<ProductoVenta> prodVentaObservableList) {
         this.prodVentaObservableList = prodVentaObservableList;
+    }    
+
+    public ObservableList<Producto> getProductosObservableList() {
+        return productosObservableList;
     }
 
-    
+    public void setProductosObservableList(ObservableList<Producto> productosObservableList) {
+        this.productosObservableList = productosObservableList;
+    }
 }
