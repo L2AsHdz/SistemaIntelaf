@@ -31,7 +31,7 @@ public class ProductoPedidoDAOImpl implements ProductoPedidoDAO {
 
     @Override
     public List<ProductoPedido> getListado() {
-        String sql = "SELECT * FROM producto_pedido";
+        String sql = "SELECT p.*, pp.codigo_pedido, pp.cantidad FROM producto p INNER JOIN producto_pedido pp on p.codigo = pp.codigo_producto";
         Statement declaracion = null;
         ResultSet rs = null;
         List<ProductoPedido> productosP = null;
@@ -39,14 +39,18 @@ public class ProductoPedidoDAOImpl implements ProductoPedidoDAO {
         try {
             declaracion = conexion.createStatement();
             rs = declaracion.executeQuery(sql);
-            productosP = new ArrayList();
+            productosP = new ArrayList<>();
 
             while (rs.next()) {
                 ProductoPedido productoP = new ProductoPedido();
-                productoP.setCodigoPedido(rs.getInt("codigo_pedido"));
-                productoP.setCodigoProducto(rs.getString("codigo_producto"));
+                productoP.setCodigo(rs.getString("codigo"));
+                productoP.setNombre(rs.getString("nombre"));
+                productoP.setFabricante(rs.getString("fabricante"));
                 productoP.setPrecio(rs.getFloat("precio"));
+                productoP.setDescripcion(rs.getString("descripcion"));
+                productoP.setGarantiaMeses(rs.getInt("garantia_meses"));
                 productoP.setCantidad(rs.getInt("cantidad"));
+                productoP.setCodigoPedido(rs.getInt("codigo_pedido"));
                 productosP.add(productoP);
             }
             System.out.println("Listado de productos de pedido obtenido");
@@ -71,7 +75,7 @@ public class ProductoPedidoDAOImpl implements ProductoPedidoDAO {
         try {
             ps = conexion.prepareStatement(sql);
             ps.setInt(1, pp.getCodigoPedido());
-            ps.setString(2, pp.getCodigoProducto());
+            ps.setString(2, pp.getCodigo());
             ps.setFloat(3, pp.getPrecio());
             ps.setInt(4, pp.getCantidad());
             ps.executeUpdate();
@@ -118,7 +122,7 @@ public class ProductoPedidoDAOImpl implements ProductoPedidoDAO {
             while (rs.next()) {
                 pp = new ProductoPedido();
                 pp.setCodigoPedido(rs.getInt("codigo_pedido"));
-                pp.setCodigoProducto(rs.getString("codigo_producto"));
+                pp.setCodigo(rs.getString("codigo_producto"));
                 pp.setPrecio(rs.getFloat("precio"));
                 pp.setCantidad(rs.getInt("cantidad"));
             }

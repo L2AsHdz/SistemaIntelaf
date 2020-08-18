@@ -4,10 +4,8 @@ package com.l2ashdz.sistemaintelaf.model;
  *
  * @author asael
  */
-public class ProductoPedido {
+public class ProductoPedido extends Producto {
     private int codigoPedido;
-    private String codigoProducto;
-    private float precio;
     private int cantidad;
 
     public ProductoPedido() {
@@ -19,22 +17,6 @@ public class ProductoPedido {
 
     public void setCodigoPedido(int codigoPedido) {
         this.codigoPedido = codigoPedido;
-    }
-
-    public String getCodigoProducto() {
-        return codigoProducto;
-    }
-
-    public void setCodigoProducto(String codigoProducto) {
-        this.codigoProducto = codigoProducto;
-    }
-
-    public float getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(float precio) {
-        this.precio = precio;
     }
 
     public int getCantidad() {

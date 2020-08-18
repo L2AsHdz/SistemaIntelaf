@@ -46,7 +46,7 @@ public class EmpleadoDAOImpl implements EmpleadoDAO {
             while (rs.next()) {
                 Empleado empleado = new Empleado();
                 empleado.setCodigo(rs.getString("codigo"));
-                empleado.setCUI(rs.getString("cui"));
+                empleado.setCui(rs.getString("cui"));
                 empleado.setNit(rs.getString("nit"));
                 empleado.setNombre(rs.getString("nombre"));
                 empleado.setCorreo(rs.getString("correo"));
@@ -78,7 +78,7 @@ public class EmpleadoDAOImpl implements EmpleadoDAO {
         try {
             ps = conexion.prepareStatement(sql);
             ps.setString(1, e.getCodigo());
-            ps.setString(2, e.getCUI());
+            ps.setString(2, e.getCui());
             ps.setString(3, e.getNit());
             ps.setString(4, e.getNombre());
             ps.setString(5, e.getCorreo());
@@ -112,7 +112,7 @@ public class EmpleadoDAOImpl implements EmpleadoDAO {
             while (rs.next()) {
                 e = new Empleado();
                 e.setCodigo(rs.getString("codigo"));
-                e.setCUI(rs.getString("cui"));
+                e.setCui(rs.getString("cui"));
                 e.setNit(rs.getString("nit"));
                 e.setNombre(rs.getString("nombre"));
                 e.setCorreo(rs.getString("correo"));
@@ -143,7 +143,7 @@ public class EmpleadoDAOImpl implements EmpleadoDAO {
         try {
             ps = conexion.prepareStatement(sql);
             ps.setString(1, e.getNombre());
-            ps.setString(2, e.getCUI());
+            ps.setString(2, e.getCui());
             ps.setString(3, e.getNit());
             ps.setString(4, e.getDireccion());
             ps.setString(5, e.getTelefono());
@@ -214,7 +214,7 @@ public class EmpleadoDAOImpl implements EmpleadoDAO {
                 empleado.setNombre(rs.getString("nombre"));
                 empleado.setDireccion(rs.getString("direccion"));
                 empleado.setCorreo(rs.getString("correo"));
-                empleado.setCUI(rs.getString("cui"));
+                empleado.setCui(rs.getString("cui"));
                 empleado.setNit(rs.getString("nit"));
                 empleado.setTelefono(rs.getString("telefono"));
                 empleados.add(empleado);

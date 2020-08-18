@@ -152,7 +152,7 @@ public class AddEmpleadoController extends MouseAdapter implements ActionListene
         addEmpleadoV.getTxtCodigo().setText(empleado.getCodigo());
         addEmpleadoV.getTxtCodigo().setEditable(false);
         addEmpleadoV.getTxtNombre().setText(empleado.getNombre());
-        addEmpleadoV.getTxtCUI().setText(empleado.getCUI());
+        addEmpleadoV.getTxtCUI().setText(empleado.getCui());
         addEmpleadoV.getTxtNit().setText(empleado.getNit());
         addEmpleadoV.getTxtCorreo().setText(empleado.getCorreo());
         addEmpleadoV.getTxtDireccion().setText(empleado.getDireccion());

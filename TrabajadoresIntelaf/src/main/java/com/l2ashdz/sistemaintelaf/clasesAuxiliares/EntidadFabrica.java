@@ -121,7 +121,7 @@ public class EntidadFabrica {
         empleado.setNombre(parametros[1]);
         empleado.setCodigo(parametros[2]);
         empleado.setTelefono(parametros[3]);
-        empleado.setCUI(parametros[4]);
+        empleado.setCui(parametros[4]);
         return empleado;
     }
     
@@ -130,7 +130,7 @@ public class EntidadFabrica {
         Empleado empleado = new Empleado();
         empleado.setCodigo(codigo);
         empleado.setNombre(nombre);
-        empleado.setCUI(cui);
+        empleado.setCui(cui);
         empleado.setNit(nit.isEmpty()?null:nit);
         empleado.setCorreo(correo);
         empleado.setTelefono(telefono);
@@ -159,7 +159,7 @@ public class EntidadFabrica {
         CRUD<Producto> productoDAO = ProductoDAOImpl.getProductoDAO();
         ProductoPedido productoP = new ProductoPedido();
         productoP.setCodigoPedido(Integer.parseInt(parametros[1]));
-        productoP.setCodigoProducto(parametros[6]);
+        productoP.setCodigo(parametros[6]);
         productoP.setCantidad(Integer.parseInt(parametros[7]));
         productoP.setPrecio(productoDAO.getObject(parametros[6]).getPrecio());
         return productoP;
