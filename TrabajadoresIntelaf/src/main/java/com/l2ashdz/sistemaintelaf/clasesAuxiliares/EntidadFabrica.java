@@ -8,8 +8,10 @@ import com.l2ashdz.sistemaintelaf.model.ExistenciaProducto;
 import com.l2ashdz.sistemaintelaf.model.Pedido;
 import com.l2ashdz.sistemaintelaf.model.Producto;
 import com.l2ashdz.sistemaintelaf.model.ProductoPedido;
+import com.l2ashdz.sistemaintelaf.model.ProductoVenta;
 import com.l2ashdz.sistemaintelaf.model.TiempoTraslado;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
+import com.l2ashdz.sistemaintelaf.model.Venta;
 import java.time.LocalDate;
 
 /**
@@ -163,5 +165,26 @@ public class EntidadFabrica {
         productoP.setCantidad(Integer.parseInt(parametros[7]));
         productoP.setPrecio(productoDAO.getObject(parametros[6]).getPrecio());
         return productoP;
+    }
+    
+    public static Venta nuevaVenta(String nitCliente, String fecha, String pcredito, 
+            String pefectivo, String codTienda){
+        Venta venta = new Venta();
+        venta.setCodTienda(codTienda);
+        venta.setNitCliente(nitCliente);
+        venta.setFecha(LocalDate.parse(fecha));
+        venta.setPorcentCredito(Float.parseFloat(pcredito));
+        venta.setPorcentEfectivo(Float.parseFloat(pefectivo));
+        return venta;
+    }
+    
+    public static ProductoVenta nuevoProductoVenta(String idVenta, String codP, 
+            String precio, String cantidad){
+        ProductoVenta pVenta = new ProductoVenta();
+        pVenta.setIdVenta(Integer.parseInt(idVenta));
+        pVenta.setCodigo(codP);
+        pVenta.setPrecio(Float.parseFloat(precio));
+        pVenta.setCantidad(Integer.parseInt(cantidad));
+        return pVenta;
     }
 }

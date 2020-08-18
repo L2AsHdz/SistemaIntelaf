@@ -3,6 +3,7 @@ package com.l2ashdz.sistemaintelaf.clasesAuxiliares;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.isInt;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.isFloat;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.isMayorACero;
+import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.isFecha;
 import com.l2ashdz.sistemaintelaf.dao.CRUD;
 import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.empleado.EmpleadoDAOImpl;
@@ -127,5 +128,35 @@ public class ValidacionesInterfaz {
         if (nombre.isEmpty() || telefono.isEmpty()) {
             throw new UserInputException("Los campos con * son obligatorios");
         }
+    }
+    
+    public static void validarVenta(String nitCliente, String fecha, String porcentEfectivo, 
+            String porcentCredito, String nombre, String telefono, String efectivo, 
+            String credito) throws UserInputException {
+        if (nitCliente.isEmpty() || fecha.isEmpty() || porcentCredito.isEmpty() 
+                || porcentEfectivo.isEmpty() || nombre.isEmpty() || telefono.isEmpty()
+                || efectivo.isEmpty() || credito.isEmpty()) {
+            throw new UserInputException("Los datos con * son obligatorios");
+        } else if (!isFecha(fecha)) {
+            throw new UserInputException("La fecha no tiene el formato correcto");
+        } else if (!isPorcentajeValido(porcentCredito) || !isPorcentajeValido(porcentEfectivo)) {
+            throw new UserInputException("Los porcentajes no son validos");
+        } else if (!porcentajeTotal(porcentCredito, porcentEfectivo)) {
+            throw new UserInputException("Los porcentajes deben sumar 1");
+        } else if (!isMayorACero(credito) || !isMayorACero(efectivo)) {
+            throw new UserInputException("Los valores efectivo y credito deben ser mayores a cero");
+        }
+        
+    }
+    
+    private static boolean isPorcentajeValido(String percent){
+        int porcentaje = Integer.parseInt(percent);
+        return (porcentaje>=0 && porcentaje<=1);
+    }
+    
+    private static boolean porcentajeTotal(String p1, String p2){
+        int porcentaje1 = Integer.parseInt(p1);
+        int porcentaje2 = Integer.parseInt(p2);
+        return ((porcentaje1+porcentaje2) == 1);
     }
 }
