@@ -83,6 +83,6 @@ public class Producto {
 
     @Override
     public String toString() {
-        return nombre;
+        return nombre+" - Q."+precio+" - Exist."+existencias ;
     }
 }

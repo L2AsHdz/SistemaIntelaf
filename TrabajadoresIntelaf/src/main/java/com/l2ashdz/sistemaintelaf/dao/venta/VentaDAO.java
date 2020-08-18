@@ -8,5 +8,5 @@ import com.l2ashdz.sistemaintelaf.model.Venta;
  * @author asael
  */
 public interface VentaDAO extends CRUD<Venta>{
-    
+    int getIdVenta();
 }

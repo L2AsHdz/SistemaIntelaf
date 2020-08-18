@@ -7,6 +7,7 @@ import com.l2ashdz.sistemaintelaf.model.Tienda;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.EntidadFabrica.*;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.ValidacionesInterfaz.*;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.isInt;
+import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.isMayorACero;
 import com.l2ashdz.sistemaintelaf.dao.CRUD;
 import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAOImpl;
 import com.l2ashdz.sistemaintelaf.excepciones.UserInputException;
@@ -132,8 +133,8 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
             if (!t.getCodigo().equals(codigo)) {
                 tiempo = JOptionPane.showInputDialog(null, mensaje + t.getNombre(), "Tiempo traslado",
                         JOptionPane.QUESTION_MESSAGE);
-                while (!isInt(tiempo)) {
-                    tiempo = JOptionPane.showInputDialog(null, "Debe ser un dato numerico\n"
+                while (!isInt(tiempo) && !isMayorACero(tiempo)) {
+                    tiempo = JOptionPane.showInputDialog(null, "Debe ser un dato numerico mayor a cero\n"
                             + mensaje + t.getNombre(), "Tiempo traslado", JOptionPane.ERROR_MESSAGE);
                 }
 

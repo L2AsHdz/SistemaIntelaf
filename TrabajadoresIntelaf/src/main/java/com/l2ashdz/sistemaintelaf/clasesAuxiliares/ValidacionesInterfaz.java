@@ -13,7 +13,10 @@ import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
 import com.l2ashdz.sistemaintelaf.excepciones.UserInputException;
 import com.l2ashdz.sistemaintelaf.model.Cliente;
 import com.l2ashdz.sistemaintelaf.model.Empleado;
+import com.l2ashdz.sistemaintelaf.model.Producto;
+import com.l2ashdz.sistemaintelaf.model.ProductoVenta;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
+import java.util.List;
 
 /**
  *
@@ -147,6 +150,25 @@ public class ValidacionesInterfaz {
             throw new UserInputException("Los valores efectivo y credito deben ser mayores a cero");
         }
         
+    }
+    
+    public static void validarAddProducVenta(String cantidad, Producto p, List<ProductoVenta> pList) throws UserInputException{
+        if (Integer.parseInt(cantidad) > p.getExistencias()) {
+            throw new UserInputException("No hay existencias suficientes, "+p.getExistencias()+
+                    " unidades disponibles");
+        } else if (isProductoInVenta(pList, p)) {
+            throw new UserInputException("El producto ya esta agregado");
+        }
+    }
+    
+    private static boolean isProductoInVenta(List<ProductoVenta> pList, Producto p){
+        boolean flag = false;
+        for (Producto producto : pList) {
+            if (producto.getCodigo().equals(p.getCodigo())) {
+                flag = true;
+            }
+        }
+        return flag;
     }
     
     private static boolean isPorcentajeValido(String percent){

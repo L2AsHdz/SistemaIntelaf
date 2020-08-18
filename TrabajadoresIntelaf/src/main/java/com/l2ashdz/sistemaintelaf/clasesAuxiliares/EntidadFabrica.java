@@ -187,4 +187,10 @@ public class EntidadFabrica {
         pVenta.setCantidad(Integer.parseInt(cantidad));
         return pVenta;
     }
+    
+    /**
+     * 
+     * Cambiar la entidad fabrica por constructores en las clases
+     * 
+     * */
 }
