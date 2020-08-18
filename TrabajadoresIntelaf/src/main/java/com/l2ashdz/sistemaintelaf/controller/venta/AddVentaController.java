@@ -1,10 +1,12 @@
 package com.l2ashdz.sistemaintelaf.controller.venta;
 
 import com.l2ashdz.sistemaintelaf.dao.CRUD;
+import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAO;
 import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.venta.ProductoVentaDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.venta.VentaDAOImpl;
+import com.l2ashdz.sistemaintelaf.model.Cliente;
 import com.l2ashdz.sistemaintelaf.model.Producto;
 import com.l2ashdz.sistemaintelaf.model.ProductoVenta;
 import com.l2ashdz.sistemaintelaf.model.Venta;
@@ -30,11 +32,13 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
     private AddVentaView addVentaV;
     private Venta venta;
     private ProductoVenta productoVenta;
+    private Cliente cliente;
     private List<ProductoVenta> productosV;
     private List<Producto> productos;
     private CRUD<Venta> ventaDAO;
     private CRUD<ProductoVenta> productoVDAO;
     private ProductoDAO productoDAO;
+    private CRUD<Cliente> clienteDAO;
 
     private String nitCliente;
     private String nombre;
@@ -54,6 +58,7 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
         ventaDAO = VentaDAOImpl.getVentaDAO();
         productoVDAO = ProductoVentaDAOImpl.getProductoVentaDAO();
         productoDAO = ProductoDAOImpl.getProductoDAO();
+        clienteDAO = ClienteDAOImpl.getClienteDAO();
         this.addVentaV = addVentaV;
         this.addVentaV.getBtnAddProducto().addActionListener(this);
         this.addVentaV.getBtnSiguiente().addActionListener(this);
@@ -71,11 +76,8 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
             addVentaV.setVisible(true);
             parent.add(addVentaV);
             parent.validate();
-            
-            addVentaV.getProductosObservableList().clear();
-        productos = productoDAO.getFilteredList(PrincipalView.lblCodigo.getText(), 4);
-        addVentaV.getProductosObservableList().addAll(productos);
             limpiarCampos();
+
         } else {
             System.out.println("Ya se esta mostrando addVenta");
         }
@@ -87,17 +89,7 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
     }
 
     private void limpiarCampos() {
-        addVentaV.getTxtNit().setText("");
-        addVentaV.getTxtNombre().setText("");
-        addVentaV.getTxtNombre().setEditable(false);
-        addVentaV.getTxtTelefono().setText("");
-        addVentaV.getTxtTelefono().setEditable(false);
-        addVentaV.getTxtCorreo().setText("");
-        addVentaV.getTxtCorreo().setEditable(false);
-        addVentaV.getTxtDireccion().setText("");
-        addVentaV.getTxtDireccion().setEditable(false);
-        addVentaV.getTxtCUI().setText("");
-        addVentaV.getTxtCUI().setEditable(false);
+        limpiarCamposCliente();
         addVentaV.getTxtPorcentCredito().setText("");
         addVentaV.getTxtPorcentEfectivo().setText("");
         addVentaV.getTxtEfectivo().setText("");
@@ -107,7 +99,17 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
         addVentaV.getCbBusquedaProducto().setSelectedIndex(-1);
         addVentaV.getTxtNit().requestFocus();
     }
-    
+
+    private void limpiarCamposCliente() {
+        addVentaV.getTxtNit().setText("");
+        addVentaV.getTxtNombre().setText("");
+        addVentaV.getTxtTelefono().setText("");
+        addVentaV.getTxtCorreo().setText("");
+        addVentaV.getTxtDireccion().setText("");
+        addVentaV.getTxtCUI().setText("");
+        setEnabledCamposC(false);
+    }
+
     private void obtenerDatos() {
         nitCliente = addVentaV.getTxtNit().getText();
         nombre = addVentaV.getTxtNombre().getText();
@@ -122,34 +124,55 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
         efectivo = addVentaV.getTxtEfectivo().getText();
         credito = addVentaV.getTxtEfectivo().getText();
     }
-    
+
+    private void setEnabledCamposC(boolean bool) {
+        addVentaV.getTxtNombre().setEditable(bool);
+        addVentaV.getTxtTelefono().setEditable(bool);
+        addVentaV.getTxtCorreo().setEditable(bool);
+        addVentaV.getTxtDireccion().setEditable(bool);
+        addVentaV.getTxtCUI().setEditable(bool);
+    }
+
     @Override
     public void focusGained(FocusEvent e) {
-
+        addVentaV.getTxtNit().setText("");
     }
 
     @Override
     public void focusLost(FocusEvent e) {
-
+        if (addVentaV.getTxtNit() == e.getComponent()) {
+            nitCliente = addVentaV.getTxtNit().getText();
+            cliente = clienteDAO.getObject(nitCliente);
+            if (cliente != null) {
+                addVentaV.getTxtNombre().setText(cliente.getNombre());
+                addVentaV.getTxtTelefono().setText(cliente.getTelefono());
+                addVentaV.getTxtCorreo().setText(cliente.getCorreo());
+                addVentaV.getTxtDireccion().setText(cliente.getDireccion());
+                addVentaV.getTxtCUI().setText(cliente.getCui());
+                addVentaV.getCbBusquedaProducto().requestFocus();
+            } else {
+                System.out.println("cliente no existe");
+                limpiarCamposCliente();
+                setEnabledCamposC(true);
+                addVentaV.getTxtNombre().requestFocus();
+            }
+            addVentaV.getTxtNit().setText(nitCliente);
+        }
     }
-    
+
     @Override
     public void keyReleased(KeyEvent e) {
-        
     }
-
 
     @Override
     public void mouseClicked(MouseEvent e) {
 
     }
 
-    
-    
     @Override
     public void keyTyped(KeyEvent e) {
     }
-    
+
     @Override
     public void keyPressed(KeyEvent e) {
     }
