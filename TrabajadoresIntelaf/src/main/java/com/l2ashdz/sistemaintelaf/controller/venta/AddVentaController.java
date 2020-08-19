@@ -18,13 +18,17 @@ import com.l2ashdz.sistemaintelaf.model.ProductoVenta;
 import com.l2ashdz.sistemaintelaf.model.Venta;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
 import com.l2ashdz.sistemaintelaf.ui.venta.AddVentaView;
+import com.l2ashdz.sistemaintelaf.ui.venta.FacturaView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -36,6 +40,7 @@ import javax.swing.JPanel;
 public class AddVentaController extends MouseAdapter implements ActionListener, FocusListener {
 
     private AddVentaView addVentaV;
+    private FacturaView facturaV;
     private Venta venta;
     private Producto prodVenta;
     private Cliente cliente;
@@ -56,25 +61,23 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
 
     //datos venta y productosVenta
     private String fecha;
-    private String tiedaActual;
+    private String tiendaActual;
     private String idVenta;
     private String porcentajeEfectivo;
     private String porcentajeCredito;
-    private String credito;
-    private String efectivo;
     private int filaProducto;
     private String cantidad;
-    private float total;
 
     public AddVentaController(AddVentaView addVentaV) {
         productosV = new ArrayList<>();
+        facturaV = new FacturaView();
         ventaDAO = VentaDAOImpl.getVentaDAO();
         productoVDAO = ProductoVentaDAOImpl.getProductoVentaDAO();
         productoDAO = ProductoDAOImpl.getProductoDAO();
         clienteDAO = ClienteDAOImpl.getClienteDAO();
         this.addVentaV = addVentaV;
         this.addVentaV.getBtnAddProducto().addActionListener(this);
-        this.addVentaV.getBtnSiguiente().addActionListener(this);
+        this.addVentaV.getBtnFinalizar().addActionListener(this);
         this.addVentaV.getBtnCambiarCant().addActionListener(this);
         this.addVentaV.getBtnEliminarP().addActionListener(this);
         this.addVentaV.getBtnLimpiar().addActionListener(this);
@@ -125,6 +128,7 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
                     productosV.add(new ProductoVenta(prodVenta, idVenta, cantidad));
                     actualizarTablaP(productosV);
                     addVentaV.getLblTotal().setText(getTotal(productosV));
+                    addVentaV.getCbBusquedaProducto().requestFocus();
 
                 } catch (UserInputException ex) {
                     JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
@@ -163,17 +167,39 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
             }
 
+            //Limpia completamente la interfaz
         } else if (addVentaV.getBtnLimpiar() == e.getSource()) {
             limpiarCampos();
             setEnableBtns(false);
-        } else if (addVentaV.getBtnSiguiente() == e.getSource()) {
+
+            //Valida los datos y registra la venta
+        } else if (addVentaV.getBtnFinalizar() == e.getSource()) {
+            obtenerDatosV();
+            obtenerDatosC();
+
+            try {
+                validarAddCliente(nombre, cui, telefono);
+                validarVenta(fecha, porcentajeEfectivo, porcentajeCredito);
+                ventaDAO.create(nuevaVenta(nitCliente, fecha, porcentajeCredito, porcentajeEfectivo, tiendaActual));
+                productosV.forEach(pv -> productoVDAO.create(pv));
+
+                if (clienteDAO.getObject(nitCliente) == null) {
+                    clienteDAO.create(nuevoCliente(nitCliente, nombre, cui, direccion, telefono, correo));
+                }
+
+                JOptionPane.showMessageDialog(null, "Venta registrada", "Info", JOptionPane.INFORMATION_MESSAGE);
+                generarFactura();
+                limpiarCampos();
+
+            } catch (UserInputException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
+            }
 
         }
     }
 
     private void limpiarCampos() {
         limpiarCamposCliente();
-        total = 0;
         addVentaV.getTxtPorcentCredito().setText("");
         addVentaV.getTxtPorcentEfectivo().setText("");
         addVentaV.getTxtEfectivo().setText("");
@@ -206,13 +232,13 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
         correo = addVentaV.getTxtCorreo().getText();
     }
 
-    private void obtenerDatosV(Producto p) {
-        fecha = addVentaV.getTxtFecha().getDateFormatString();
-        tiedaActual = PrincipalView.lblCodigo.toString();
+    private void obtenerDatosV() {
+        Date input = addVentaV.getTxtFecha().getDate();
+        LocalDate date = input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        fecha = date.toString() == null ? "" : date.toString();
+        tiendaActual = PrincipalView.lblCodigo.getText();
         porcentajeCredito = addVentaV.getTxtPorcentCredito().getText();
         porcentajeEfectivo = addVentaV.getTxtPorcentEfectivo().getText();
-        efectivo = addVentaV.getTxtEfectivo().getText();
-        credito = addVentaV.getTxtEfectivo().getText();
     }
 
     private String getTotal(List<ProductoVenta> pvList) {
@@ -273,5 +299,25 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
     public void mouseClicked(MouseEvent e) {
         filaProducto = addVentaV.getTblProductosVenta().getSelectedRow();
         setEnableBtns(true);
+    }
+
+    private void generarFactura() {
+        facturaV.getTxtAFactura().append("Cliente:");
+        facturaV.getTxtAFactura().append("\nNombre:\t" + nombre);
+        facturaV.getTxtAFactura().append("\nNit:\t" + nitCliente);
+        facturaV.getTxtAFactura().append("\nDireccion:\t" + direccion);
+        facturaV.getTxtAFactura().append("\nTelefono:\t" + telefono + "\n");
+        
+        facturaV.getTxtAFactura().append("\nProductos:");
+        
+        productosV.forEach(pv -> {
+            facturaV.getTxtAFactura().append("\n"+pv.getNombre()+" (x"+pv.getCantidad()+")"
+            +"\tQ."+pv.getSubtotal());
+        });
+        
+        facturaV.getTxtAFactura().append("\n\nTotal:\t\tQ."+getTotal(productosV));
+        
+        facturaV.setLocationRelativeTo(null);
+        facturaV.setVisible(true);
     }
 }

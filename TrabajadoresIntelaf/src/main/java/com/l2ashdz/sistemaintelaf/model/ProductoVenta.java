@@ -10,7 +10,7 @@ package com.l2ashdz.sistemaintelaf.model;
  * @author asael
  */
 public class ProductoVenta extends Producto {
-    
+
     private int idVenta;
     private int cantidad;
     private float subtotal;
@@ -28,7 +28,7 @@ public class ProductoVenta extends Producto {
         super.setExistencias(p.getExistencias());
         this.idVenta = Integer.parseInt(idVenta);
         this.cantidad = Integer.parseInt(cantidad);
-        this.subtotal = this.cantidad*super.getPrecio();
+        this.subtotal = this.cantidad * super.getPrecio();
     }
 
     public int getIdVenta() {
@@ -45,7 +45,7 @@ public class ProductoVenta extends Producto {
 
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
-        this.subtotal = this.cantidad*super.getPrecio();
+        this.subtotal = this.cantidad * super.getPrecio();
     }
 
     public float getSubtotal() {

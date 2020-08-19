@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import org.jdesktop.observablecollections.ObservableCollections;
@@ -26,7 +27,7 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
  * @author asael
  */
 public class AddVentaView extends javax.swing.JPanel {
-    
+
     private List<ProductoVenta> prodVentaList;
     private ObservableList<ProductoVenta> prodVentaObservableList;
     private List<Producto> productosList;
@@ -76,7 +77,7 @@ public class AddVentaView extends javax.swing.JPanel {
         jLabel14 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblProductosVenta = new javax.swing.JTable();
-        btnSiguiente = new javax.swing.JButton();
+        btnFinalizar = new javax.swing.JButton();
         txtPorcentEfectivo = new javax.swing.JFormattedTextField();
         cbBusquedaProducto = new javax.swing.JComboBox<>();
         txtTelefono = new javax.swing.JFormattedTextField();
@@ -217,10 +218,15 @@ public class AddVentaView extends javax.swing.JPanel {
         jTableBinding.bind();
         jScrollPane2.setViewportView(tblProductosVenta);
 
-        btnSiguiente.setText("Siguiente");
+        btnFinalizar.setText("Finalizar venta");
 
         txtPorcentEfectivo.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
         txtPorcentEfectivo.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtPorcentEfectivo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtPorcentEfectivoFocusLost(evt);
+            }
+        });
 
         AutoCompleteDecorator.decorate(cbBusquedaProducto);
         cbBusquedaProducto.setEditable(true);
@@ -259,12 +265,27 @@ public class AddVentaView extends javax.swing.JPanel {
 
         txtPorcentCredito.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
         txtPorcentCredito.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtPorcentCredito.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtPorcentCreditoFocusLost(evt);
+            }
+        });
 
-        txtCredito.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        txtCredito.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
         txtCredito.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtCredito.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtCreditoFocusLost(evt);
+            }
+        });
 
-        txtEfectivo.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        txtEfectivo.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
         txtEfectivo.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtEfectivo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtEfectivoFocusLost(evt);
+            }
+        });
 
         btnEliminarP.setText("Eliminar producto");
         btnEliminarP.setEnabled(false);
@@ -310,8 +331,8 @@ public class AddVentaView extends javax.swing.JPanel {
                                         .addComponent(jLabel14)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(txtEfectivo, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
-                                .addComponent(btnSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnFinalizar, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -347,7 +368,7 @@ public class AddVentaView extends javax.swing.JPanel {
                                 .addComponent(btnEliminarP, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(53, 53, 53)
                                 .addComponent(btnCambiarCant, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)
                                 .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(cbBusquedaProducto, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -407,7 +428,7 @@ public class AddVentaView extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(37, 37, 37)
-                        .addComponent(btnSiguiente))
+                        .addComponent(btnFinalizar))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel9)
@@ -422,7 +443,7 @@ public class AddVentaView extends javax.swing.JPanel {
                             .addComponent(jLabel14)
                             .addComponent(txtPorcentEfectivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtEfectivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(80, Short.MAX_VALUE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();
@@ -444,13 +465,109 @@ public class AddVentaView extends javax.swing.JPanel {
         limitarCaracteres(txtCorreo, evt, 45);
     }//GEN-LAST:event_txtCorreoKeyTyped
 
+    private void txtPorcentCreditoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtPorcentCreditoFocusLost
+        if (tblProductosVenta.getRowCount() > 0 && !txtPorcentCredito.getText().isEmpty()) {
+            float total = Float.parseFloat(lblTotal.getText());
+            float creditoCompra = Float.parseFloat(lblCreditoCompra.getText());
+            float porcentajeC = Float.parseFloat(txtPorcentCredito.getText());
+            float credito = porcentajeC * total;
+            float porcentajeE = 1 - porcentajeC;
+            float efectivo = porcentajeE * total;
+            if (credito > creditoCompra) {
+                JOptionPane.showMessageDialog(null, "Credito insuficiente", "Advertencia", JOptionPane.ERROR_MESSAGE);
+                txtPorcentCredito.setText("");
+                txtPorcentCredito.requestFocus();
+            } else if (efectivo > total || credito > total) {
+                JOptionPane.showMessageDialog(null, "Se sobrepasa el total", "Advertencia", JOptionPane.ERROR_MESSAGE);
+                txtPorcentCredito.setText("");
+                txtPorcentCredito.requestFocus();
+            } else {
+                txtCredito.setText(String.valueOf(credito));
+                txtPorcentEfectivo.setText(String.valueOf(porcentajeE));
+                txtEfectivo.setText(String.valueOf(efectivo));
+            }
+        }
+    }//GEN-LAST:event_txtPorcentCreditoFocusLost
+
+    private void txtCreditoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCreditoFocusLost
+        if (tblProductosVenta.getRowCount() > 0 && !txtCredito.getText().isEmpty()) {
+            float total = Float.parseFloat(lblTotal.getText());
+            float creditoCompra = Float.parseFloat(lblCreditoCompra.getText());
+            float credito = Float.parseFloat(txtCredito.getText());
+            float porcentajeC = credito / total;
+            float porcentajeE = 1 - porcentajeC;
+            float efectivo = porcentajeE * total;
+            if (credito > creditoCompra) {
+                JOptionPane.showMessageDialog(null, "Credito insuficiente", "Advertencia", JOptionPane.ERROR_MESSAGE);
+                txtCredito.setText("");
+                txtCredito.requestFocus();
+            } else if (efectivo > total || credito > total) {
+                JOptionPane.showMessageDialog(null, "Se sobrepasa el total", "Advertencia", JOptionPane.ERROR_MESSAGE);
+                txtCredito.setText("");
+                txtCredito.requestFocus();
+            } else {
+                txtPorcentCredito.setText(String.valueOf(porcentajeC));
+                txtPorcentEfectivo.setText(String.valueOf(porcentajeE));
+                txtEfectivo.setText(String.valueOf(efectivo));
+            }
+        }
+    }//GEN-LAST:event_txtCreditoFocusLost
+
+    private void txtPorcentEfectivoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtPorcentEfectivoFocusLost
+        if (tblProductosVenta.getRowCount() > 0 && !txtPorcentEfectivo.getText().isEmpty()) {
+            float total = Float.parseFloat(lblTotal.getText());
+            float creditoCompra = Float.parseFloat(lblCreditoCompra.getText());
+            float porcentajeE = Float.parseFloat(txtPorcentEfectivo.getText());
+            float efectivo = porcentajeE * total;
+            float porcentajeC = 1 - porcentajeE;
+            float credito = porcentajeC * total;
+            if (credito > creditoCompra) {
+                JOptionPane.showMessageDialog(null, "Credito insuficiente", "Advertencia", JOptionPane.ERROR_MESSAGE);
+                txtPorcentEfectivo.setText("");
+                txtPorcentEfectivo.requestFocus();
+            } else if (efectivo > total || credito > total) {
+                JOptionPane.showMessageDialog(null, "Se sobrepasa el total", "Advertencia", JOptionPane.ERROR_MESSAGE);
+                txtPorcentEfectivo.setText("");
+                txtPorcentEfectivo.requestFocus();
+            } else {
+                txtPorcentCredito.setText(String.valueOf(porcentajeC));
+                txtEfectivo.setText(String.valueOf(efectivo));
+                txtCredito.setText(String.valueOf(credito));
+            }
+        }
+    }//GEN-LAST:event_txtPorcentEfectivoFocusLost
+
+    private void txtEfectivoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtEfectivoFocusLost
+        if (tblProductosVenta.getRowCount() > 0 && !txtEfectivo.getText().isEmpty()) {
+            float total = Float.parseFloat(lblTotal.getText());
+            float creditoCompra = Float.parseFloat(lblCreditoCompra.getText());
+            float efectivo = Float.parseFloat(txtEfectivo.getText());
+            float porcentajeE = efectivo / total;
+            float porcentajeC = 1 - porcentajeE;
+            float credito = porcentajeC * total;
+            if (credito > creditoCompra) {
+                JOptionPane.showMessageDialog(null, "Credito insuficiente", "Advertencia", JOptionPane.ERROR_MESSAGE);
+                txtEfectivo.setText("");
+                txtEfectivo.requestFocus();
+            } else if (efectivo > total || credito > total) {
+                JOptionPane.showMessageDialog(null, "Se sobrepasa el total", "Advertencia", JOptionPane.ERROR_MESSAGE);
+                txtEfectivo.setText("");
+                txtEfectivo.requestFocus();
+            } else {
+                txtPorcentCredito.setText(String.valueOf(porcentajeC));
+                txtPorcentEfectivo.setText(String.valueOf(porcentajeE));
+                txtCredito.setText(String.valueOf(credito));
+            }
+        }
+    }//GEN-LAST:event_txtEfectivoFocusLost
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddProducto;
     private javax.swing.JButton btnCambiarCant;
     private javax.swing.JButton btnEliminarP;
+    private javax.swing.JButton btnFinalizar;
     private javax.swing.JButton btnLimpiar;
-    private javax.swing.JButton btnSiguiente;
     private javax.swing.JComboBox<String> cbBusquedaProducto;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -491,13 +608,13 @@ public class AddVentaView extends javax.swing.JPanel {
             e.consume();
         }
     }
-    
+
     public JButton getBtnAddProducto() {
         return btnAddProducto;
     }
 
-    public JButton getBtnSiguiente() {
-        return btnSiguiente;
+    public JButton getBtnFinalizar() {
+        return btnFinalizar;
     }
 
     public JButton getBtnCambiarCant() {
@@ -578,7 +695,7 @@ public class AddVentaView extends javax.swing.JPanel {
 
     public void setProdVentaObservableList(ObservableList<ProductoVenta> prodVentaObservableList) {
         this.prodVentaObservableList = prodVentaObservableList;
-    }    
+    }
 
     public ObservableList<Producto> getProductosObservableList() {
         return productosObservableList;

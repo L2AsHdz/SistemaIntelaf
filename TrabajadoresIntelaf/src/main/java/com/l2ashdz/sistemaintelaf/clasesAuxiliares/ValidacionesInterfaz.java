@@ -133,21 +133,12 @@ public class ValidacionesInterfaz {
         }
     }
 
-    public static void validarVenta(String nitCliente, String fecha, String porcentEfectivo,
-            String porcentCredito, String nombre, String telefono, String efectivo,
-            String credito) throws UserInputException {
-        if (nitCliente.isEmpty() || fecha.isEmpty() || porcentCredito.isEmpty()
-                || porcentEfectivo.isEmpty() || nombre.isEmpty() || telefono.isEmpty()
-                || efectivo.isEmpty() || credito.isEmpty()) {
+    public static void validarVenta(String fecha, String porcentEfectivo,
+            String porcentCredito) throws UserInputException {
+        if (fecha.isEmpty() || porcentCredito.isEmpty() || porcentEfectivo.isEmpty()) {
             throw new UserInputException("Los datos con * son obligatorios");
         } else if (!isFecha(fecha)) {
             throw new UserInputException("La fecha no tiene el formato correcto");
-        } else if (!isPorcentajeValido(porcentCredito) || !isPorcentajeValido(porcentEfectivo)) {
-            throw new UserInputException("Los porcentajes no son validos");
-        } else if (!porcentajeTotal(porcentCredito, porcentEfectivo)) {
-            throw new UserInputException("Los porcentajes deben sumar 1");
-        } else if (!isMayorACero(credito) || !isMayorACero(efectivo)) {
-            throw new UserInputException("Los valores efectivo y credito deben ser mayores a cero");
         }
 
     }

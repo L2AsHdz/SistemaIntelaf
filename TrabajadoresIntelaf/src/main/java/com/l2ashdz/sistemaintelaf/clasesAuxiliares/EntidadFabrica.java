@@ -36,9 +36,9 @@ public class EntidadFabrica {
         tienda.setNombre(nombre);
         tienda.setDireccion(dir);
         tienda.setTelefono1(tel1);
-        tienda.setTelefono2(tel2.isEmpty()?null:tel2);
-        tienda.setCorreo(correo.isEmpty()?null:correo);
-        tienda.setHorario(horario.isEmpty()?null:horario);
+        tienda.setTelefono2(tel2.isEmpty() ? null : tel2);
+        tienda.setCorreo(correo.isEmpty() ? null : correo);
+        tienda.setHorario(horario.isEmpty() ? null : horario);
         return tienda;
     }
 
@@ -49,8 +49,8 @@ public class EntidadFabrica {
         tiempoT.setTiempo(Integer.parseInt(parametros[3]));
         return tiempoT;
     }
-    
-    public static TiempoTraslado nuevoTiempo(String codT1, String codT2, int t){
+
+    public static TiempoTraslado nuevoTiempo(String codT1, String codT2, int t) {
         TiempoTraslado tiempoT = new TiempoTraslado();
         tiempoT.setCodigoT1(codT1);
         tiempoT.setCodigoT2(codT2);
@@ -66,18 +66,18 @@ public class EntidadFabrica {
         producto.setPrecio(Float.parseFloat(parametros[5]));
         return producto;
     }
-    
+
     public static Producto nuevoProducto(String codigo, String nombre, String fabricante,
-            String precio, String existencias, String descricpion, String garantia, String codT){
+            String precio, String existencias, String descricpion, String garantia, String codT) {
         Producto producto = new Producto();
         producto.setCodigo(codigo);
         producto.setNombre(nombre);
-        producto.setDescripcion(descricpion.isEmpty()?null:descricpion);
+        producto.setDescripcion(descricpion.isEmpty() ? null : descricpion);
         producto.setFabricante(fabricante);
         producto.setCodTienda(codT);
         producto.setPrecio(Float.parseFloat(precio));
         producto.setExistencias(Integer.parseInt(existencias));
-        producto.setGarantiaMeses(garantia.isEmpty()?0:Integer.parseInt(garantia));
+        producto.setGarantiaMeses(garantia.isEmpty() ? 0 : Integer.parseInt(garantia));
         return producto;
     }
 
@@ -88,8 +88,8 @@ public class EntidadFabrica {
         existenciaP.setExistencias(Integer.parseInt(parametros[4]));
         return existenciaP;
     }
-    
-    public static ExistenciaProducto nuevaExistenciaProducto(String codT, String codP, String existencias){
+
+    public static ExistenciaProducto nuevaExistenciaProducto(String codT, String codP, String existencias) {
         ExistenciaProducto existencia = new ExistenciaProducto();
         existencia.setCodigoProducto(codP);
         existencia.setCodigoTienda(codT);
@@ -105,16 +105,16 @@ public class EntidadFabrica {
         cliente.setCreditoCompra(Float.parseFloat(parametros[4]));
         return cliente;
     }
-    
+
     public static Cliente nuevoCliente(String nit, String nombre, String cui, String direccion,
-            String telefono, String correo){
+            String telefono, String correo) {
         Cliente cliente = new Cliente();
         cliente.setNit(nit);
         cliente.setNombre(nombre);
         cliente.setTelefono(telefono);
-        cliente.setCui(cui.isEmpty()?null:cui);
-        cliente.setDireccion(direccion.isEmpty()?null:direccion);
-        cliente.setCorreo(correo.isEmpty()?null:correo);
+        cliente.setCui(cui.isEmpty() ? null : cui);
+        cliente.setDireccion(direccion.isEmpty() ? null : direccion);
+        cliente.setCorreo(correo.isEmpty() ? null : correo);
         return cliente;
     }
 
@@ -126,14 +126,14 @@ public class EntidadFabrica {
         empleado.setCui(parametros[4]);
         return empleado;
     }
-    
-    public static Empleado nuevoEmpleado(String codigo, String nombre, String cui, 
-            String nit, String correo, String direccion, String telefono){
+
+    public static Empleado nuevoEmpleado(String codigo, String nombre, String cui,
+            String nit, String correo, String direccion, String telefono) {
         Empleado empleado = new Empleado();
         empleado.setCodigo(codigo);
         empleado.setNombre(nombre);
         empleado.setCui(cui);
-        empleado.setNit(nit.isEmpty()?null:nit);
+        empleado.setNit(nit.isEmpty() ? null : nit);
         empleado.setCorreo(correo);
         empleado.setTelefono(telefono);
         empleado.setDireccion(direccion);
@@ -166,9 +166,9 @@ public class EntidadFabrica {
         productoP.setPrecio(productoDAO.getObject(parametros[6]).getPrecio());
         return productoP;
     }
-    
-    public static Venta nuevaVenta(String nitCliente, String fecha, String pcredito, 
-            String pefectivo, String codTienda){
+
+    public static Venta nuevaVenta(String nitCliente, String fecha, String pcredito,
+            String pefectivo, String codTienda) {
         Venta venta = new Venta();
         venta.setCodTienda(codTienda);
         venta.setNitCliente(nitCliente);
@@ -177,9 +177,9 @@ public class EntidadFabrica {
         venta.setPorcentEfectivo(Float.parseFloat(pefectivo));
         return venta;
     }
-    
-    public static ProductoVenta nuevoProductoVenta(String idVenta, String codP, 
-            String precio, String cantidad){
+
+    public static ProductoVenta nuevoProductoVenta(String idVenta, String codP,
+            String precio, String cantidad) {
         ProductoVenta pVenta = new ProductoVenta();
         pVenta.setIdVenta(Integer.parseInt(idVenta));
         pVenta.setCodigo(codP);
@@ -187,10 +187,11 @@ public class EntidadFabrica {
         pVenta.setCantidad(Integer.parseInt(cantidad));
         return pVenta;
     }
-    
+
     /**
-     * 
+     *
      * Cambiar la entidad fabrica por constructores en las clases
-     * 
-     * */
+     *
+     *
+     */
 }
