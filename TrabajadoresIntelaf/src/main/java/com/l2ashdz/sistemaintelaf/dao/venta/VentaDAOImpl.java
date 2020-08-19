@@ -14,12 +14,13 @@ import java.util.List;
  * @author asael
  */
 public class VentaDAOImpl implements VentaDAO {
+
     private static VentaDAOImpl ventaDAO = null;
     private final Connection conexion = Conexion.getConexion();
-    
-    private VentaDAOImpl(){
+
+    private VentaDAOImpl() {
     }
-    
+
     public static VentaDAOImpl getVentaDAO() {
         if (ventaDAO == null) {
             ventaDAO = new VentaDAOImpl();
@@ -33,12 +34,11 @@ public class VentaDAOImpl implements VentaDAO {
     }
 
     @Override
-    public void create(Venta v ){
+    public void create(Venta v) {
         String sql = "INSERT INTO venta (nit_cliente, codigo_tienda, fecha, porcentaje_efectivo,"
                 + "porcentaje_credito) VALUES (?,?,?,?,?)";
-        PreparedStatement ps = null;
-        try {
-            ps = conexion.prepareStatement(sql);
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, v.getNitCliente());
             ps.setString(2, v.getCodTienda());
             ps.setString(3, v.getFecha().toString());
@@ -49,12 +49,6 @@ public class VentaDAOImpl implements VentaDAO {
         } catch (SQLException ex) {
             System.out.println("No se inserto la venta");
             ex.printStackTrace(System.out);
-        } finally {
-            try {
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
     }
 
@@ -75,24 +69,21 @@ public class VentaDAOImpl implements VentaDAO {
 
     @Override
     public int getIdVenta() {
-            String sql = "SELECT id FROM venta ORDER BY id DESC LIMIT 1";
+        String sql = "SELECT id FROM venta ORDER BY id DESC LIMIT 1";
         int id = 1;
-        try {
-            Statement stmt = conexion.createStatement();
-            
-            ResultSet rs = stmt.executeQuery(sql);
+        try (Statement declaracion = conexion.createStatement();
+                ResultSet rs = declaracion.executeQuery(sql)) {
+
             if (rs.next()) {
-                id = rs.getInt(1)+1;
+                id = rs.getInt(1) + 1;
             }
-            
+
             System.out.println("id de venta obtenido");
-            rs.close();
-            stmt.close();
         } catch (SQLException ex) {
             System.out.println("No se pudo leer el id");
             ex.printStackTrace(System.out);
         }
         return id;
     }
-    
+
 }

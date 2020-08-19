@@ -32,13 +32,10 @@ public class ProductoPedidoDAOImpl implements ProductoPedidoDAO {
     @Override
     public List<ProductoPedido> getListado() {
         String sql = "SELECT p.*, pp.codigo_pedido, pp.cantidad FROM producto p INNER JOIN producto_pedido pp on p.codigo = pp.codigo_producto";
-        Statement declaracion = null;
-        ResultSet rs = null;
         List<ProductoPedido> productosP = null;
 
-        try {
-            declaracion = conexion.createStatement();
-            rs = declaracion.executeQuery(sql);
+        try (Statement declaracion = conexion.createStatement();
+                ResultSet rs = declaracion.executeQuery(sql)) {
             productosP = new ArrayList<>();
 
             while (rs.next()) {
@@ -57,13 +54,6 @@ public class ProductoPedidoDAOImpl implements ProductoPedidoDAO {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace(System.out);
-        } finally {
-            try {
-                rs.close();
-                declaracion.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
         return productosP;
     }
@@ -71,9 +61,7 @@ public class ProductoPedidoDAOImpl implements ProductoPedidoDAO {
     @Override
     public void create(ProductoPedido pp) {
         String sql = "INSERT INTO producto_pedido VALUES (?,?,?,?)";
-        PreparedStatement ps = null;
-        try {
-            ps = conexion.prepareStatement(sql);
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setInt(1, pp.getCodigoPedido());
             ps.setString(2, pp.getCodigo());
             ps.setFloat(3, pp.getPrecio());
@@ -83,12 +71,6 @@ public class ProductoPedidoDAOImpl implements ProductoPedidoDAO {
         } catch (SQLException ex) {
             System.out.println("No se inserto el ProductoPedido");
             ex.printStackTrace(System.out);
-        } finally {
-            try {
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
     }
 
@@ -111,33 +93,23 @@ public class ProductoPedidoDAOImpl implements ProductoPedidoDAO {
     public ProductoPedido getProductoInPedido(int codPedido, String codProducto) {
         String sql = "SELECT * FROM producto_pedido WHERE codigo_pedido = ? AND "
                 + "codigo_producto = ?";
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         ProductoPedido pp = null;
-        try {
-            ps = conexion.prepareStatement(sql);
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setInt(1, codPedido);
             ps.setString(2, (String) codProducto);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                pp = new ProductoPedido();
-                pp.setCodigoPedido(rs.getInt("codigo_pedido"));
-                pp.setCodigo(rs.getString("codigo_producto"));
-                pp.setPrecio(rs.getFloat("precio"));
-                pp.setCantidad(rs.getInt("cantidad"));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    pp = new ProductoPedido();
+                    pp.setCodigoPedido(rs.getInt("codigo_pedido"));
+                    pp.setCodigo(rs.getString("codigo_producto"));
+                    pp.setPrecio(rs.getFloat("precio"));
+                    pp.setCantidad(rs.getInt("cantidad"));
+                }
             }
             System.out.println("Producto en un pedido obtenidas de la BD");
         } catch (SQLException ex) {
             System.out.println("No se pudo leer el producto del pedido");
             ex.printStackTrace(System.out);
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
-            
         }
         return pp;
     }
@@ -145,22 +117,14 @@ public class ProductoPedidoDAOImpl implements ProductoPedidoDAO {
     @Override
     public void deleteProductosDePedido(String codigoPedido) {
         String sql = "DELETE FROM producto_pedido WHERE codigo_pedido = ?";
-        PreparedStatement ps = null;
-        
-        try {
-            ps = conexion.prepareStatement(sql);
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setInt(1, Integer.parseInt(codigoPedido));
             ps.executeUpdate();
             System.out.println("se eliminaron los productos del pedido");
         } catch (SQLException ex) {
             System.out.println("No se eliminaron los productos del pedido");
             ex.printStackTrace(System.out);
-        } finally {
-            try {
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
     }
 

@@ -32,13 +32,10 @@ public class TiendaDAOImpl implements TiendaDAO {
     @Override
     public List<Tienda> getListado() {
         String sql = "SELECT * FROM tienda";
-        Statement declaracion = null;
-        ResultSet rs = null;
         List<Tienda> tiendas = null;
 
-        try {
-            declaracion = conexion.createStatement();
-            rs = declaracion.executeQuery(sql);
+        try (Statement declaracion = conexion.createStatement();
+                ResultSet rs = declaracion.executeQuery(sql)) {
             tiendas = new ArrayList();
             while (rs.next()) {
                 Tienda tienda = new Tienda();
@@ -55,13 +52,6 @@ public class TiendaDAOImpl implements TiendaDAO {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace(System.out);
-        } finally {
-            try {
-                rs.close();
-                declaracion.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
         return tiendas;
     }
@@ -70,9 +60,8 @@ public class TiendaDAOImpl implements TiendaDAO {
     public void create(Tienda t) {
         String sql = "INSERT INTO tienda (codigo, nombre, direccion, telefono_1,"
                 + " telefono_2, correo, horario) VALUES (?,?,?,?,?,?,?)";
-        PreparedStatement ps = null;
-        try {
-            ps = conexion.prepareStatement(sql);
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, t.getCodigo());
             ps.setString(2, t.getNombre());
             ps.setString(3, t.getDireccion());
@@ -85,47 +74,32 @@ public class TiendaDAOImpl implements TiendaDAO {
         } catch (SQLException ex) {
             System.out.println("No se inserto la tienda");
             ex.printStackTrace(System.out);
-        } finally {
-            try {
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
     }
 
     @Override
     public Tienda getObject(String codigo) {
         String sql = "SELECT * FROM tienda WHERE codigo = ?";
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         Tienda t = null;
-        try {
-            ps = conexion.prepareStatement(sql);
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, codigo);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                t = new Tienda();
-                t.setCodigo(rs.getString("codigo"));
-                t.setNombre(rs.getString("nombre"));
-                t.setDireccion(rs.getString("direccion"));
-                t.setTelefono1(rs.getString("telefono_1"));
-                t.setTelefono2(rs.getString("telefono_2"));
-                t.setCorreo(rs.getString("correo"));
-                t.setHorario(rs.getString("horario"));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    t = new Tienda();
+                    t.setCodigo(rs.getString("codigo"));
+                    t.setNombre(rs.getString("nombre"));
+                    t.setDireccion(rs.getString("direccion"));
+                    t.setTelefono1(rs.getString("telefono_1"));
+                    t.setTelefono2(rs.getString("telefono_2"));
+                    t.setCorreo(rs.getString("correo"));
+                    t.setHorario(rs.getString("horario"));
+                }
             }
             System.out.println("Tienda obtenida de la BD");
         } catch (SQLException ex) {
             System.out.println("No se pudo leer la tienda");
             ex.printStackTrace(System.out);
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
-
         }
         return t;
     }
@@ -134,9 +108,8 @@ public class TiendaDAOImpl implements TiendaDAO {
     public void update(Tienda t) {
         String sql = "UPDATE tienda SET nombre = ?, direccion = ?, telefono_1 = ?,"
                 + " telefono_2 = ?, correo = ?, horario = ? WHERE codigo = ?";
-        PreparedStatement ps = null;
-        try {
-            ps = conexion.prepareStatement(sql);
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, t.getNombre());
             ps.setString(2, t.getDireccion());
             ps.setString(3, t.getTelefono1());
@@ -149,12 +122,6 @@ public class TiendaDAOImpl implements TiendaDAO {
         } catch (SQLException ex) {
             System.out.println("No se actualizo la tienda");
             ex.printStackTrace(System.out);
-        } finally {
-            try {
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
     }
 
@@ -169,7 +136,6 @@ public class TiendaDAOImpl implements TiendaDAO {
         String sql2 = "SELECT * FROM tienda WHERE nombre LIKE ? ORDER BY nombre";
         String sql3 = "SELECT * FROM tienda WHERE codigo LIKE ? OR nombre LIKE ? ORDER BY nombre";
         PreparedStatement ps = null;
-        ResultSet rs = null;
         List<Tienda> tiendas = null;
 
         try {
@@ -188,18 +154,19 @@ public class TiendaDAOImpl implements TiendaDAO {
                     ps.setString(2, "%" + nombre + "%");
                     break;
             }
-            rs = ps.executeQuery();
-            tiendas = new ArrayList();
-            while (rs.next()) {
-                Tienda tienda = new Tienda();
-                tienda.setCodigo(rs.getString("codigo"));
-                tienda.setNombre(rs.getString("nombre"));
-                tienda.setDireccion(rs.getString("direccion"));
-                tienda.setTelefono1(rs.getString("telefono_1"));
-                tienda.setTelefono2(rs.getString("telefono_2"));
-                tienda.setCorreo(rs.getString("correo"));
-                tienda.setHorario(rs.getString("horario"));
-                tiendas.add(tienda);
+            try (ResultSet rs = ps.executeQuery()) {
+                tiendas = new ArrayList();
+                while (rs.next()) {
+                    Tienda tienda = new Tienda();
+                    tienda.setCodigo(rs.getString("codigo"));
+                    tienda.setNombre(rs.getString("nombre"));
+                    tienda.setDireccion(rs.getString("direccion"));
+                    tienda.setTelefono1(rs.getString("telefono_1"));
+                    tienda.setTelefono2(rs.getString("telefono_2"));
+                    tienda.setCorreo(rs.getString("correo"));
+                    tienda.setHorario(rs.getString("horario"));
+                    tiendas.add(tienda);
+                }
             }
             System.out.println("Listado de tiendas obtenido");
         } catch (SQLException e) {
@@ -207,7 +174,6 @@ public class TiendaDAOImpl implements TiendaDAO {
             e.printStackTrace(System.out);
         } finally {
             try {
-                rs.close();
                 ps.close();
             } catch (SQLException ex) {
                 ex.printStackTrace(System.out);

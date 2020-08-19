@@ -34,9 +34,8 @@ public class ProductoVentaDAOImpl implements ProductoVentaDAO {
     @Override
     public void create(ProductoVenta pv) {
         String sql = "INSERT INTO producto_venta VALUES (?,?,?,?)";
-        PreparedStatement ps = null;
-        try {
-            ps = conexion.prepareStatement(sql);
+        
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setInt(1, pv.getIdVenta());
             ps.setString(2, pv.getCodigo());
             ps.setFloat(3, pv.getPrecio());
@@ -46,12 +45,6 @@ public class ProductoVentaDAOImpl implements ProductoVentaDAO {
         } catch (SQLException ex) {
             System.out.println("No se registro el productoVenta");
             ex.printStackTrace(System.out);
-        } finally {
-            try {
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
     }
 

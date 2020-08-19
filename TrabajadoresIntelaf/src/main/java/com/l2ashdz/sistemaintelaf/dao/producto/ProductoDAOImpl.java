@@ -33,13 +33,10 @@ public class ProductoDAOImpl implements ProductoDAO {
     public List<Producto> getListado() {
         String sql = "SELECT p.*, e.codigo_tienda, e.existencias FROM producto p "
                 + "INNER JOIN existencia_producto e ON p.codigo=e.codigo_producto";
-        Statement declaracion = null;
-        ResultSet rs = null;
         List<Producto> productos = null;
 
-        try {
-            declaracion = conexion.createStatement();
-            rs = declaracion.executeQuery(sql);
+        try (Statement declaracion = conexion.createStatement();
+                ResultSet rs = declaracion.executeQuery(sql)) {
             productos = new ArrayList();
 
             while (rs.next()) {
@@ -58,13 +55,6 @@ public class ProductoDAOImpl implements ProductoDAO {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace(System.out);
-        } finally {
-            try {
-                rs.close();
-                declaracion.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
         return productos;
     }
@@ -72,9 +62,8 @@ public class ProductoDAOImpl implements ProductoDAO {
     @Override
     public void create(Producto p) {
         String sql = "INSERT INTO producto VALUES (?,?,?,?,?,?)";
-        PreparedStatement ps = null;
-        try {
-            ps = conexion.prepareStatement(sql);
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, p.getCodigo());
             ps.setString(2, p.getNombre());
             ps.setString(3, p.getFabricante());
@@ -86,12 +75,6 @@ public class ProductoDAOImpl implements ProductoDAO {
         } catch (SQLException ex) {
             System.out.println("No se inserto el producto");
             ex.printStackTrace(System.out);
-        } finally {
-            try {
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
     }
 
@@ -104,9 +87,8 @@ public class ProductoDAOImpl implements ProductoDAO {
     public void update(Producto p) {
         String sql = "UPDATE producto SET nombre = ?, fabricante = ?, descripcion = ?,"
                 + " precio = ?, garantia_meses = ? WHERE codigo = ?";
-        PreparedStatement ps = null;
-        try {
-            ps = conexion.prepareStatement(sql);
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, p.getNombre());
             ps.setString(2, p.getFabricante());
             ps.setString(3, p.getDescripcion());
@@ -118,12 +100,6 @@ public class ProductoDAOImpl implements ProductoDAO {
         } catch (SQLException ex) {
             System.out.println("No se actualizo el producto");
             ex.printStackTrace(System.out);
-        } finally {
-            try {
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
     }
 
@@ -139,48 +115,47 @@ public class ProductoDAOImpl implements ProductoDAO {
                 + "WHERE ";
         String order = "ORDER BY p.codigo";
         PreparedStatement ps = null;
-        ResultSet rs = null;
         List<Producto> productos = null;
 
         try {
             switch (opcion) {
                 case 1:
-                    ps = conexion.prepareStatement(sql+"p.codigo LIKE ? "+order);
+                    ps = conexion.prepareStatement(sql + "p.codigo LIKE ? " + order);
                     ps.setString(1, "%" + filtro + "%");
                     break;
                 case 2:
-                    ps = conexion.prepareStatement(sql+"p.nombre LIKE ? "+order);
+                    ps = conexion.prepareStatement(sql + "p.nombre LIKE ? " + order);
                     ps.setString(1, "%" + filtro + "%");
                     break;
                 case 3:
-                    ps = conexion.prepareStatement(sql+"e.codigo_tienda LIKE ? "+order);
+                    ps = conexion.prepareStatement(sql + "e.codigo_tienda LIKE ? " + order);
                     ps.setString(1, "%" + filtro + "%");
                     break;
                 case 4:
-                    ps = conexion.prepareStatement(sql+"e.codigo_tienda = ? "+order);
+                    ps = conexion.prepareStatement(sql + "e.codigo_tienda = ? " + order);
                     ps.setString(1, filtro);
                     break;
             }
-            rs = ps.executeQuery();
-            productos = new ArrayList();
-            while (rs.next()) {
-                Producto producto = new Producto();
-                producto.setCodigo(rs.getString("codigo"));
-                producto.setNombre(rs.getString("nombre"));
-                producto.setFabricante(rs.getString("fabricante"));
-                producto.setPrecio(rs.getFloat("precio"));
-                producto.setExistencias(rs.getInt("existencias"));
-                producto.setDescripcion(rs.getString("descripcion"));
-                producto.setGarantiaMeses(rs.getInt("garantia_meses"));
-                producto.setCodTienda(rs.getString("codigo_tienda"));
-                productos.add(producto);
+            try (ResultSet rs = ps.executeQuery()) {
+                productos = new ArrayList();
+                while (rs.next()) {
+                    Producto producto = new Producto();
+                    producto.setCodigo(rs.getString("codigo"));
+                    producto.setNombre(rs.getString("nombre"));
+                    producto.setFabricante(rs.getString("fabricante"));
+                    producto.setPrecio(rs.getFloat("precio"));
+                    producto.setExistencias(rs.getInt("existencias"));
+                    producto.setDescripcion(rs.getString("descripcion"));
+                    producto.setGarantiaMeses(rs.getInt("garantia_meses"));
+                    producto.setCodTienda(rs.getString("codigo_tienda"));
+                    productos.add(producto);
+                }
             }
             System.out.println("Listado de productos obtenido");
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         } finally {
             try {
-                rs.close();
                 ps.close();
             } catch (SQLException ex) {
                 ex.printStackTrace(System.out);
@@ -194,37 +169,28 @@ public class ProductoDAOImpl implements ProductoDAO {
         String sql = "SELECT p.*, e.codigo_tienda, e.existencias FROM producto p "
                 + "INNER JOIN existencia_producto e ON p.codigo=e.codigo_producto "
                 + "WHERE e.codigo_tienda = ? AND p.codigo = ?";
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         Producto p = null;
-        try {
-            ps = conexion.prepareStatement(sql);
+        
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, codT);
             ps.setString(2, codP);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                p = new Producto();
-                p.setCodigo(rs.getString("codigo"));
-                p.setNombre(rs.getString("nombre"));
-                p.setFabricante(rs.getString("fabricante"));
-                p.setPrecio(rs.getFloat("precio"));
-                p.setDescripcion(rs.getString("descripcion"));
-                p.setGarantiaMeses(rs.getInt("garantia_meses"));
-                p.setExistencias(rs.getInt("existencias"));
-                p.setCodTienda(rs.getString("codigo_tienda"));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    p = new Producto();
+                    p.setCodigo(rs.getString("codigo"));
+                    p.setNombre(rs.getString("nombre"));
+                    p.setFabricante(rs.getString("fabricante"));
+                    p.setPrecio(rs.getFloat("precio"));
+                    p.setDescripcion(rs.getString("descripcion"));
+                    p.setGarantiaMeses(rs.getInt("garantia_meses"));
+                    p.setExistencias(rs.getInt("existencias"));
+                    p.setCodTienda(rs.getString("codigo_tienda"));
+                }
             }
             System.out.println("Producto obtenido de la BD");
         } catch (SQLException ex) {
             System.out.println("No se pudo leer el producto");
             ex.printStackTrace(System.out);
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
-
         }
         return p;
     }

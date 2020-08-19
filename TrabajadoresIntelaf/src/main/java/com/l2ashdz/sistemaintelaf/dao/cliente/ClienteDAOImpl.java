@@ -14,13 +14,15 @@ import java.util.List;
  *
  * @author asael
  */
-public class ClienteDAOImpl implements ClienteDAO{
+public class ClienteDAOImpl implements ClienteDAO {
+
     private static ClienteDAOImpl clienteDAO = null;
     private Connection conexion = Conexion.getConexion();
-    
-    private ClienteDAOImpl(){}
-    
-    public static ClienteDAOImpl getClienteDAO(){
+
+    private ClienteDAOImpl() {
+    }
+
+    public static ClienteDAOImpl getClienteDAO() {
         if (clienteDAO == null) {
             clienteDAO = new ClienteDAOImpl();
         }
@@ -29,14 +31,11 @@ public class ClienteDAOImpl implements ClienteDAO{
 
     @Override
     public List<Cliente> getListado() {
-            String sql = "SELECT * FROM cliente";
-        Statement declaracion = null;
-        ResultSet rs = null;
-            List<Cliente> clientes = null;
-        
-        try {
-            declaracion = conexion.createStatement();
-            rs = declaracion.executeQuery(sql);
+        String sql = "SELECT * FROM cliente";
+        List<Cliente> clientes = null;
+
+        try (Statement declaracion = conexion.createStatement();
+                ResultSet rs = declaracion.executeQuery(sql)) {
             clientes = new ArrayList();
 
             while (rs.next()) {
@@ -54,23 +53,15 @@ public class ClienteDAOImpl implements ClienteDAO{
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace(System.out);
-        } finally {
-            try {
-                rs.close();
-                declaracion.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
         return clientes;
     }
 
     @Override
     public void create(Cliente c) {
-            String sql = "INSERT INTO cliente VALUES (?,?,?,?,?,?,?)";
-            PreparedStatement ps = null;
-        try {
-            ps = conexion.prepareStatement(sql);
+        String sql = "INSERT INTO cliente VALUES (?,?,?,?,?,?,?)";
+        
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, c.getNit());
             ps.setString(2, c.getNombre());
             ps.setString(3, c.getTelefono());
@@ -83,46 +74,32 @@ public class ClienteDAOImpl implements ClienteDAO{
         } catch (SQLException ex) {
             System.out.println("No se inserto el cliente");
             ex.printStackTrace(System.out);
-        } finally {
-            try {
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
     }
 
     @Override
     public Cliente getObject(String nit) {
         String sql = "SELECT * FROM cliente WHERE nit = ?";
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+
         Cliente c = null;
-        try {
-            ps = conexion.prepareStatement(sql);
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, nit);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                c = new Cliente();
-                c.setNit(rs.getString("nit"));
-                c.setNombre(rs.getString("nombre"));
-                c.setTelefono(rs.getString("telefono"));
-                c.setCui(rs.getString("cui"));
-                c.setCreditoCompra(rs.getFloat("credito_compra"));
-                c.setCorreo(rs.getString("correo"));
-                c.setDireccion(rs.getString("direccion"));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    c = new Cliente();
+                    c.setNit(rs.getString("nit"));
+                    c.setNombre(rs.getString("nombre"));
+                    c.setTelefono(rs.getString("telefono"));
+                    c.setCui(rs.getString("cui"));
+                    c.setCreditoCompra(rs.getFloat("credito_compra"));
+                    c.setCorreo(rs.getString("correo"));
+                    c.setDireccion(rs.getString("direccion"));
+                }
+                System.out.println("Cliente obtenido de la BD");
             }
-            System.out.println("Cliente obtenido de la BD");
         } catch (SQLException ex) {
             System.out.println("No se pudo leer el cliente");
             ex.printStackTrace(System.out);
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
         return c;
     }
@@ -131,9 +108,7 @@ public class ClienteDAOImpl implements ClienteDAO{
     public void update(Cliente c) {
         String sql = "UPDATE cliente SET nombre = ?, cui = ?, direccion = ?,"
                 + "telefono = ?, correo = ? WHERE nit = ?";
-        PreparedStatement ps = null;
-        try {
-            ps = conexion.prepareStatement(sql);
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, c.getNombre());
             ps.setString(2, c.getCui());
             ps.setString(3, c.getDireccion());
@@ -145,12 +120,6 @@ public class ClienteDAOImpl implements ClienteDAO{
         } catch (SQLException ex) {
             System.out.println("No se actualizo el cliente");
             ex.printStackTrace(System.out);
-        } finally {
-            try {
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
     }
 
@@ -164,7 +133,6 @@ public class ClienteDAOImpl implements ClienteDAO{
         String sql1 = "SELECT * FROM cliente WHERE nit LIKE ? ORDER BY nit";
         String sql2 = "SELECT * FROM cliente WHERE nombre LIKE ? ORDER BY nit";
         PreparedStatement ps = null;
-        ResultSet rs = null;
         List<Cliente> clientes = null;
 
         try {
@@ -178,18 +146,19 @@ public class ClienteDAOImpl implements ClienteDAO{
                     ps.setString(1, "%" + filtro + "%");
                     break;
             }
-            rs = ps.executeQuery();
-            clientes = new ArrayList();
-            while (rs.next()) {
-                Cliente cliente = new Cliente();
-                cliente.setNit(rs.getString("nit"));
-                cliente.setNombre(rs.getString("nombre"));
-                cliente.setDireccion(rs.getString("direccion"));
-                cliente.setCorreo(rs.getString("correo"));
-                cliente.setCui(rs.getString("cui"));
-                cliente.setTelefono(rs.getString("telefono"));
-                cliente.setCreditoCompra(rs.getFloat("credito_compra"));
-                clientes.add(cliente);
+            try (ResultSet rs = ps.executeQuery()) {
+                clientes = new ArrayList();
+                while (rs.next()) {
+                    Cliente cliente = new Cliente();
+                    cliente.setNit(rs.getString("nit"));
+                    cliente.setNombre(rs.getString("nombre"));
+                    cliente.setDireccion(rs.getString("direccion"));
+                    cliente.setCorreo(rs.getString("correo"));
+                    cliente.setCui(rs.getString("cui"));
+                    cliente.setTelefono(rs.getString("telefono"));
+                    cliente.setCreditoCompra(rs.getFloat("credito_compra"));
+                    clientes.add(cliente);
+                }
             }
             System.out.println("Listado de clientes obtenido");
         } catch (SQLException e) {
@@ -197,7 +166,6 @@ public class ClienteDAOImpl implements ClienteDAO{
             e.printStackTrace(System.out);
         } finally {
             try {
-                rs.close();
                 ps.close();
             } catch (SQLException ex) {
                 ex.printStackTrace(System.out);
@@ -209,9 +177,7 @@ public class ClienteDAOImpl implements ClienteDAO{
     @Override
     public void restarCredito(String nitCliente, float creditoUsado) {
         String sql = "UPDATE cliente SET credito_compra = credito_compra - ? WHERE nit = ?";
-        PreparedStatement ps = null;
-        try {
-            ps = conexion.prepareStatement(sql);
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setFloat(1, creditoUsado);
             ps.setString(2, nitCliente);
             ps.executeUpdate();
@@ -219,13 +185,7 @@ public class ClienteDAOImpl implements ClienteDAO{
         } catch (SQLException ex) {
             System.out.println("No se actualizo el credito de compra");
             ex.printStackTrace(System.out);
-        } finally {
-            try {
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
     }
-    
+
 }

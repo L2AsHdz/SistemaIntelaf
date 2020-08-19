@@ -34,13 +34,10 @@ public class PedidoDAOImpl implements PedidoDAO {
     public List<Pedido> getListado() {
         String sql = "SELECT * FROM pedido";
         String fecha;
-        Statement declaracion = null;
-        ResultSet rs = null;
         List<Pedido> pedidos = null;
 
-        try {
-            declaracion = conexion.createStatement();
-            rs = declaracion.executeQuery(sql);
+        try (Statement declaracion = conexion.createStatement();
+                ResultSet rs = declaracion.executeQuery(sql)) {
             pedidos = new ArrayList();
 
             while (rs.next()) {
@@ -64,13 +61,6 @@ public class PedidoDAOImpl implements PedidoDAO {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace(System.out);
-        } finally {
-            try {
-                rs.close();
-                declaracion.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
         return pedidos;
     }
@@ -80,9 +70,8 @@ public class PedidoDAOImpl implements PedidoDAO {
         String sql = "INSERT INTO pedido (codigo, nit_cliente, codigo_tienda_origen, "
                 + "codigo_tienda_destino, fecha, porcentaje_efectivo, porcentaje_credito, "
                 + "porcentaje_pagado) VALUES (?,?,?,?,?,?,?,?)";
-        PreparedStatement ps = null;
-        try {
-            ps = conexion.prepareStatement(sql);
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setInt(1, p.getCodigo());
             ps.setString(2, p.getNitCliente());
             ps.setString(3, p.getCodigoTiendaOrigen());
@@ -96,12 +85,6 @@ public class PedidoDAOImpl implements PedidoDAO {
         } catch (SQLException ex) {
             System.out.println("No se inserto el pedido");
             ex.printStackTrace(System.out);
-        } finally {
-            try {
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
     }
 
@@ -109,41 +92,31 @@ public class PedidoDAOImpl implements PedidoDAO {
     public Pedido getObject(String codigo) {
         String sql = "SELECT * FROM pedido WHERE codigo = ?";
         String fecha;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         Pedido p = null;
-        try {
-            ps = conexion.prepareStatement(sql);
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setInt(1, Integer.parseInt(codigo));
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                p = new Pedido();
-                p.setCodigo(rs.getInt("codigo"));
-                p.setNitCliente(rs.getString("nit_cliente"));
-                p.setCodigoTiendaOrigen(rs.getString("codigo_tienda_origen"));
-                p.setCodigoTiendaDestino(rs.getString("codigo_tienda_destino"));
-                p.setFecha(LocalDate.parse(rs.getString("fecha")));
-                fecha = rs.getString("fecha_verificacion");
-                p.setFechaVerificacion((fecha == null) ? null : LocalDate.parse(fecha));
-                fecha = rs.getString("fecha_retiro");
-                p.setFechaRetiro((fecha == null) ? null : LocalDate.parse(fecha));
-                p.setPorcentajeEfectivo(rs.getFloat("porcentaje_efectivo"));
-                p.setPorcentajeCredito(rs.getFloat("porcentaje_credito"));
-                p.setPorcentajePagado(rs.getFloat("porcentaje_pagado"));
-                p.setEstado(rs.getInt("estado"));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    p = new Pedido();
+                    p.setCodigo(rs.getInt("codigo"));
+                    p.setNitCliente(rs.getString("nit_cliente"));
+                    p.setCodigoTiendaOrigen(rs.getString("codigo_tienda_origen"));
+                    p.setCodigoTiendaDestino(rs.getString("codigo_tienda_destino"));
+                    p.setFecha(LocalDate.parse(rs.getString("fecha")));
+                    fecha = rs.getString("fecha_verificacion");
+                    p.setFechaVerificacion((fecha == null) ? null : LocalDate.parse(fecha));
+                    fecha = rs.getString("fecha_retiro");
+                    p.setFechaRetiro((fecha == null) ? null : LocalDate.parse(fecha));
+                    p.setPorcentajeEfectivo(rs.getFloat("porcentaje_efectivo"));
+                    p.setPorcentajeCredito(rs.getFloat("porcentaje_credito"));
+                    p.setPorcentajePagado(rs.getFloat("porcentaje_pagado"));
+                    p.setEstado(rs.getInt("estado"));
+                }
             }
             System.out.println("Pedido obtenido de la BD");
         } catch (SQLException ex) {
             System.out.println("No se pudo leer el pedido");
             ex.printStackTrace(System.out);
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
-
         }
         return p;
     }
@@ -156,22 +129,14 @@ public class PedidoDAOImpl implements PedidoDAO {
     @Override
     public void delete(String codigo) {
         String sql = "DELETE FROM pedido WHERE codigo = ?";
-        PreparedStatement ps = null;
-        
-        try {
-            ps = conexion.prepareStatement(sql);
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setInt(1, Integer.parseInt(codigo));
             ps.executeUpdate();
             System.out.println("se elimino el pedido");
         } catch (SQLException ex) {
             System.out.println("No se elimino el pedido");
             ex.printStackTrace(System.out);
-        } finally {
-            try {
-                ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
         }
     }
 
