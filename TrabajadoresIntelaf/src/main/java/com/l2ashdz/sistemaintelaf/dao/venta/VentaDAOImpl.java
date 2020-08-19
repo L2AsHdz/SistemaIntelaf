@@ -76,7 +76,7 @@ public class VentaDAOImpl implements VentaDAO {
     @Override
     public int getIdVenta() {
             String sql = "SELECT id FROM venta ORDER BY id DESC LIMIT 1";
-        int id = 0;
+        int id = 1;
         try {
             Statement stmt = conexion.createStatement();
             

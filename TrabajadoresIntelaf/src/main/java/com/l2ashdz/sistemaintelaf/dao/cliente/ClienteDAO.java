@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface ClienteDAO extends CRUD<Cliente>{
     List<Cliente> getFilteredList(String filtro, int opcion);
+    void restarCredito(String nitCliente, float creditoUsado);
 }

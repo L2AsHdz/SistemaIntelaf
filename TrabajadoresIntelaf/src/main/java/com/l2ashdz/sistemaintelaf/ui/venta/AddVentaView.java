@@ -253,7 +253,7 @@ public class AddVentaView extends javax.swing.JPanel {
 
         lblCreditoCompra.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblCreditoCompra.setForeground(new java.awt.Color(255, 255, 255));
-        lblCreditoCompra.setText("####");
+        lblCreditoCompra.setText("0");
 
         jLabel15.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel15.setForeground(new java.awt.Color(255, 255, 255));
@@ -261,7 +261,7 @@ public class AddVentaView extends javax.swing.JPanel {
 
         lblTotal.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblTotal.setForeground(new java.awt.Color(255, 255, 255));
-        lblTotal.setText("####");
+        lblTotal.setText("0");
 
         txtPorcentCredito.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
         txtPorcentCredito.setHorizontalAlignment(javax.swing.JTextField.RIGHT);

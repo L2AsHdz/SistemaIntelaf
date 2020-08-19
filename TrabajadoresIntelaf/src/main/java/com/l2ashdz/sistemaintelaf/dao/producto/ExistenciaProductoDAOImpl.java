@@ -185,4 +185,28 @@ public class ExistenciaProductoDAOImpl implements ExistenciaProductoDAO {
         return existencias;
     }
 
+    @Override
+    public void restarExistencias(String codT, String codP, int existencias) {
+        String sql = "UPDATE existencia_producto SET existencias = existencias - ? "
+                + "WHERE codigo_tienda = ? AND  codigo_producto = ?";
+        PreparedStatement ps = null;
+        try {
+            ps = conexion.prepareStatement(sql);
+            ps.setInt(1, existencias);
+            ps.setString(2, codT);
+            ps.setString(3, codP);
+            ps.executeUpdate();
+            System.out.println("Se restaron las unidades vendidas");
+        } catch (SQLException ex) {
+            System.out.println("No se restaron las existencias");
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+    }
+
 }

@@ -5,7 +5,10 @@ import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.isMayor
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.EntidadFabrica.*;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.ValidacionesInterfaz.*;
 import com.l2ashdz.sistemaintelaf.dao.CRUD;
+import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAO;
 import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
+import com.l2ashdz.sistemaintelaf.dao.producto.ExistenciaProductoDAO;
+import com.l2ashdz.sistemaintelaf.dao.producto.ExistenciaProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAO;
 import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.venta.ProductoVentaDAOImpl;
@@ -13,9 +16,9 @@ import com.l2ashdz.sistemaintelaf.dao.venta.VentaDAO;
 import com.l2ashdz.sistemaintelaf.dao.venta.VentaDAOImpl;
 import com.l2ashdz.sistemaintelaf.excepciones.UserInputException;
 import com.l2ashdz.sistemaintelaf.model.Cliente;
+import com.l2ashdz.sistemaintelaf.model.Conexion;
 import com.l2ashdz.sistemaintelaf.model.Producto;
 import com.l2ashdz.sistemaintelaf.model.ProductoVenta;
-import com.l2ashdz.sistemaintelaf.model.Venta;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
 import com.l2ashdz.sistemaintelaf.ui.venta.AddVentaView;
 import com.l2ashdz.sistemaintelaf.ui.venta.FacturaView;
@@ -25,6 +28,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -41,7 +46,6 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
 
     private AddVentaView addVentaV;
     private FacturaView facturaV;
-    private Venta venta;
     private Producto prodVenta;
     private Cliente cliente;
     private List<ProductoVenta> productosV;
@@ -49,7 +53,9 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
     private VentaDAO ventaDAO;
     private CRUD<ProductoVenta> productoVDAO;
     private ProductoDAO productoDAO;
-    private CRUD<Cliente> clienteDAO;
+    private ClienteDAO clienteDAO;
+    private ExistenciaProductoDAO existenciaDAO;
+    private Connection conexion;
 
     //datos cliente
     private String nitCliente;
@@ -65,16 +71,19 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
     private String idVenta;
     private String porcentajeEfectivo;
     private String porcentajeCredito;
+    private float credito;
     private int filaProducto;
     private String cantidad;
 
     public AddVentaController(AddVentaView addVentaV) {
+        conexion = Conexion.getConexion();
         productosV = new ArrayList<>();
         facturaV = new FacturaView();
         ventaDAO = VentaDAOImpl.getVentaDAO();
         productoVDAO = ProductoVentaDAOImpl.getProductoVentaDAO();
         productoDAO = ProductoDAOImpl.getProductoDAO();
         clienteDAO = ClienteDAOImpl.getClienteDAO();
+        existenciaDAO = ExistenciaProductoDAOImpl.getExistenciaDAO();
         this.addVentaV = addVentaV;
         this.addVentaV.getBtnAddProducto().addActionListener(this);
         this.addVentaV.getBtnFinalizar().addActionListener(this);
@@ -97,10 +106,7 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
             parent.validate();
 
             //carga los productos al JComboBox
-            addVentaV.getProductosObservableList().clear();
-            productos = productoDAO.getFilteredList(PrincipalView.lblCodigo.getText(), 4);
-            addVentaV.getProductosObservableList().addAll(productos);
-            limpiarCampos();
+            actualizarDatosP();
 
         } else {
             System.out.println("Ya se esta mostrando addVenta");
@@ -115,6 +121,7 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
 
             if (addVentaV.getCbBusquedaProducto().getSelectedItem() != null) {
                 idVenta = String.valueOf(ventaDAO.getIdVenta());
+                System.out.println(idVenta);
                 prodVenta = (Producto) addVentaV.getCbBusquedaProducto().getSelectedItem();
                 cantidad = JOptionPane.showInputDialog(null, "Ingrese cantidad del producto", "Agregar producto",
                         JOptionPane.QUESTION_MESSAGE);
@@ -128,6 +135,7 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
                     productosV.add(new ProductoVenta(prodVenta, idVenta, cantidad));
                     actualizarTablaP(productosV);
                     addVentaV.getLblTotal().setText(getTotal(productosV));
+                    addVentaV.getCbBusquedaProducto().setSelectedIndex(-1);
                     addVentaV.getCbBusquedaProducto().requestFocus();
 
                 } catch (UserInputException ex) {
@@ -145,6 +153,8 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
             actualizarTablaP(productosV);
             setEnableBtns(false);
             addVentaV.getLblTotal().setText(getTotal(productosV));
+            addVentaV.getCbBusquedaProducto().setSelectedIndex(-1);
+            addVentaV.getCbBusquedaProducto().requestFocus();
 
             //Cambia la cantidad a vender de un producto
         } else if (addVentaV.getBtnCambiarCant() == e.getSource()) {
@@ -153,9 +163,6 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
             while (!isInt(cantidad) || !isMayorACero(cantidad)) {
                 cantidad = JOptionPane.showInputDialog(null, "Debe ser un dato numerico y mayor a cero\n\n"
                         + "Ingrese cantidad del producto", "Agregar producto", JOptionPane.ERROR_MESSAGE);
-                if (cantidad == null) {
-                    break;
-                }
             }
             try {
                 validarExistencias(cantidad, productosV.get(filaProducto));
@@ -163,6 +170,8 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
                 actualizarTablaP(productosV);
                 setEnableBtns(false);
                 addVentaV.getLblTotal().setText(getTotal(productosV));
+                addVentaV.getCbBusquedaProducto().setSelectedIndex(-1);
+                addVentaV.getCbBusquedaProducto().requestFocus();
             } catch (UserInputException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
             }
@@ -174,25 +183,38 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
 
             //Valida los datos y registra la venta
         } else if (addVentaV.getBtnFinalizar() == e.getSource()) {
+            idVenta = String.valueOf(ventaDAO.getIdVenta());
             obtenerDatosV();
             obtenerDatosC();
 
             try {
+                conexion.setAutoCommit(false);
                 validarAddCliente(nombre, cui, telefono);
                 validarVenta(fecha, porcentajeEfectivo, porcentajeCredito);
-                ventaDAO.create(nuevaVenta(nitCliente, fecha, porcentajeCredito, porcentajeEfectivo, tiendaActual));
-                productosV.forEach(pv -> productoVDAO.create(pv));
-
                 if (clienteDAO.getObject(nitCliente) == null) {
                     clienteDAO.create(nuevoCliente(nitCliente, nombre, cui, direccion, telefono, correo));
                 }
+                ventaDAO.create(nuevaVenta(nitCliente, fecha, porcentajeCredito, porcentajeEfectivo, tiendaActual));
+                productosV.forEach(pv -> productoVDAO.create(pv));
+                productosV.forEach(pv -> existenciaDAO.restarExistencias(tiendaActual,
+                        pv.getCodigo(), pv.getCantidad()));
 
-                JOptionPane.showMessageDialog(null, "Venta registrada", "Info", JOptionPane.INFORMATION_MESSAGE);
+                clienteDAO.restarCredito(nitCliente, credito);
+                conexion.commit();
+                conexion.setAutoCommit(true);
+
                 generarFactura();
+                actualizarDatosP();
                 limpiarCampos();
 
             } catch (UserInputException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
+            } catch (SQLException ex) {
+                try {
+                    conexion.rollback();
+                } catch (SQLException ex2) {
+                    ex2.printStackTrace(System.out);
+                }
             }
 
         }
@@ -204,8 +226,8 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
         addVentaV.getTxtPorcentEfectivo().setText("");
         addVentaV.getTxtEfectivo().setText("");
         addVentaV.getTxtCredito().setText("");
-        addVentaV.getLblTotal().setText("####");
-        addVentaV.getTxtFecha().setCalendar(null);
+        addVentaV.getLblTotal().setText("0");
+        addVentaV.getTxtFecha().setDate(new Date());
         productosV.removeAll(productosV);
         addVentaV.getProdVentaObservableList().clear();
         addVentaV.getCbBusquedaProducto().setSelectedIndex(-1);
@@ -219,7 +241,7 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
         addVentaV.getTxtCorreo().setText("");
         addVentaV.getTxtDireccion().setText("");
         addVentaV.getTxtCUI().setText("");
-        addVentaV.getLblCreditoCompra().setText("####");
+        addVentaV.getLblCreditoCompra().setText("0");
         setEnabledCamposC(false);
     }
 
@@ -239,6 +261,10 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
         tiendaActual = PrincipalView.lblCodigo.getText();
         porcentajeCredito = addVentaV.getTxtPorcentCredito().getText();
         porcentajeEfectivo = addVentaV.getTxtPorcentEfectivo().getText();
+
+        if (!addVentaV.getTxtCredito().getText().isEmpty()) {
+            credito = Float.parseFloat(addVentaV.getTxtCredito().getText());
+        }
     }
 
     private String getTotal(List<ProductoVenta> pvList) {
@@ -252,6 +278,13 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
     private void actualizarTablaP(List<ProductoVenta> pList) {
         addVentaV.getProdVentaObservableList().clear();
         addVentaV.getProdVentaObservableList().addAll(pList);
+    }
+
+    private void actualizarDatosP() {
+        addVentaV.getProductosObservableList().clear();
+        productos = productoDAO.getFilteredList(PrincipalView.lblCodigo.getText(), 4);
+        addVentaV.getProductosObservableList().addAll(productos);
+        limpiarCampos();
     }
 
     private void setEnableBtns(boolean enable) {
@@ -302,21 +335,22 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
     }
 
     private void generarFactura() {
-        facturaV.getTxtAFactura().append("Cliente:");
+        facturaV.getTxtAFactura().append("Factura No. "+idVenta);
+        facturaV.getTxtAFactura().append("\nCliente:");
         facturaV.getTxtAFactura().append("\nNombre:\t" + nombre);
         facturaV.getTxtAFactura().append("\nNit:\t" + nitCliente);
         facturaV.getTxtAFactura().append("\nDireccion:\t" + direccion);
         facturaV.getTxtAFactura().append("\nTelefono:\t" + telefono + "\n");
-        
+
         facturaV.getTxtAFactura().append("\nProductos:");
-        
+
         productosV.forEach(pv -> {
-            facturaV.getTxtAFactura().append("\n"+pv.getNombre()+" (x"+pv.getCantidad()+")"
-            +"\tQ."+pv.getSubtotal());
+            facturaV.getTxtAFactura().append("\n" + pv.getNombre() + " (x" + pv.getCantidad() + ")"
+                    + "\tQ." + pv.getSubtotal());
         });
-        
-        facturaV.getTxtAFactura().append("\n\nTotal:\t\tQ."+getTotal(productosV));
-        
+
+        facturaV.getTxtAFactura().append("\n\nTotal:\t\tQ." + getTotal(productosV));
+
         facturaV.setLocationRelativeTo(null);
         facturaV.setVisible(true);
     }

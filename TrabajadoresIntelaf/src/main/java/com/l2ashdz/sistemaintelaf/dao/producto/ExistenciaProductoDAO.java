@@ -10,4 +10,5 @@ import com.l2ashdz.sistemaintelaf.model.ExistenciaProducto;
 public interface ExistenciaProductoDAO extends CRUD<ExistenciaProducto>{
     ExistenciaProducto getProductoInTienda (String codT, String codP);
     int getExistencias(String codT, String codP);
+    void restarExistencias(String codT, String codP, int existencias);
 }

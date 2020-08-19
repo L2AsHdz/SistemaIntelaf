@@ -205,5 +205,27 @@ public class ClienteDAOImpl implements ClienteDAO{
         }
         return clientes;
     }
+
+    @Override
+    public void restarCredito(String nitCliente, float creditoUsado) {
+        String sql = "UPDATE cliente SET credito_compra = credito_compra - ? WHERE nit = ?";
+        PreparedStatement ps = null;
+        try {
+            ps = conexion.prepareStatement(sql);
+            ps.setFloat(1, creditoUsado);
+            ps.setString(2, nitCliente);
+            ps.executeUpdate();
+            System.out.println("Credito de compra actualizado");
+        } catch (SQLException ex) {
+            System.out.println("No se actualizo el credito de compra");
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+    }
     
 }
