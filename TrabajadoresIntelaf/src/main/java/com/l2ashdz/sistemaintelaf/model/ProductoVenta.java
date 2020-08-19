@@ -45,6 +45,7 @@ public class ProductoVenta extends Producto {
 
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
+        this.subtotal = this.cantidad*super.getPrecio();
     }
 
     public float getSubtotal() {

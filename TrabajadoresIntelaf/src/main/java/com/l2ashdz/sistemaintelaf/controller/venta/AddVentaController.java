@@ -22,8 +22,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -35,7 +33,7 @@ import javax.swing.JPanel;
  *
  * @author asael
  */
-public class AddVentaController extends MouseAdapter implements ActionListener, KeyListener, FocusListener {
+public class AddVentaController extends MouseAdapter implements ActionListener, FocusListener {
 
     private AddVentaView addVentaV;
     private Venta venta;
@@ -48,12 +46,15 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
     private ProductoDAO productoDAO;
     private CRUD<Cliente> clienteDAO;
 
+    //datos cliente
     private String nitCliente;
     private String nombre;
     private String telefono;
     private String direccion;
     private String cui;
     private String correo;
+
+    //datos venta y productosVenta
     private String fecha;
     private String tiedaActual;
     private String idVenta;
@@ -61,8 +62,9 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
     private String porcentajeCredito;
     private String credito;
     private String efectivo;
+    private int filaProducto;
     private String cantidad;
-    private float subTotal;
+    private float total;
 
     public AddVentaController(AddVentaView addVentaV) {
         productosV = new ArrayList<>();
@@ -73,11 +75,14 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
         this.addVentaV = addVentaV;
         this.addVentaV.getBtnAddProducto().addActionListener(this);
         this.addVentaV.getBtnSiguiente().addActionListener(this);
+        this.addVentaV.getBtnCambiarCant().addActionListener(this);
+        this.addVentaV.getBtnEliminarP().addActionListener(this);
+        this.addVentaV.getBtnLimpiar().addActionListener(this);
         this.addVentaV.getTblProductosVenta().addMouseListener(this);
-        this.addVentaV.getCbBusquedaProducto().getEditor().getEditorComponent().addKeyListener(this);
         this.addVentaV.getTxtNit().addFocusListener(this);
     }
 
+    //Inicia la interfaz
     public void iniciar(JPanel parent) {
         if (!addVentaV.isEnabled()) {
             parent.removeAll();
@@ -111,17 +116,15 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
                 cantidad = JOptionPane.showInputDialog(null, "Ingrese cantidad del producto", "Agregar producto",
                         JOptionPane.QUESTION_MESSAGE);
                 while (!isInt(cantidad) || !isMayorACero(cantidad)) {
-                    cantidad = JOptionPane.showInputDialog(null, "Debe ser un dato numerico mayor a cero\n"
+                    cantidad = JOptionPane.showInputDialog(null, "Debe ser un dato numerico y mayor a cero\n\n"
                             + "Ingrese cantidad del producto", "Agregar producto", JOptionPane.ERROR_MESSAGE);
                 }
 
                 try {
                     validarAddProducVenta(cantidad, prodVenta, productosV);
                     productosV.add(new ProductoVenta(prodVenta, idVenta, cantidad));
-                    addVentaV.getProdVentaObservableList().clear();
-                    addVentaV.getProdVentaObservableList().addAll(productosV);
-                    subTotal += Integer.parseInt(cantidad)*prodVenta.getPrecio();
-                    addVentaV.getLblTotal().setText(String.valueOf(subTotal));
+                    actualizarTablaP(productosV);
+                    addVentaV.getLblTotal().setText(getTotal(productosV));
 
                 } catch (UserInputException ex) {
                     JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
@@ -131,12 +134,46 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
                 JOptionPane.showMessageDialog(null, "No ha seleccionado un producto",
                         "Advertencia", JOptionPane.ERROR_MESSAGE);
             }
+
+            //Elimina un producto de la venta
+        } else if (addVentaV.getBtnEliminarP() == e.getSource()) {
+            productosV.remove(filaProducto);
+            actualizarTablaP(productosV);
+            setEnableBtns(false);
+            addVentaV.getLblTotal().setText(getTotal(productosV));
+
+            //Cambia la cantidad a vender de un producto
+        } else if (addVentaV.getBtnCambiarCant() == e.getSource()) {
+            cantidad = JOptionPane.showInputDialog(null, "Ingrese cantidad del producto", "Agregar producto",
+                    JOptionPane.QUESTION_MESSAGE);
+            while (!isInt(cantidad) || !isMayorACero(cantidad)) {
+                cantidad = JOptionPane.showInputDialog(null, "Debe ser un dato numerico y mayor a cero\n\n"
+                        + "Ingrese cantidad del producto", "Agregar producto", JOptionPane.ERROR_MESSAGE);
+                if (cantidad == null) {
+                    break;
+                }
+            }
+            try {
+                validarExistencias(cantidad, productosV.get(filaProducto));
+                productosV.get(filaProducto).setCantidad(Integer.parseInt(cantidad));
+                actualizarTablaP(productosV);
+                setEnableBtns(false);
+                addVentaV.getLblTotal().setText(getTotal(productosV));
+            } catch (UserInputException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } else if (addVentaV.getBtnLimpiar() == e.getSource()) {
+            limpiarCampos();
+            setEnableBtns(false);
+        } else if (addVentaV.getBtnSiguiente() == e.getSource()) {
+
         }
     }
 
     private void limpiarCampos() {
         limpiarCamposCliente();
-        subTotal = 0;
+        total = 0;
         addVentaV.getTxtPorcentCredito().setText("");
         addVentaV.getTxtPorcentEfectivo().setText("");
         addVentaV.getTxtEfectivo().setText("");
@@ -169,7 +206,7 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
         correo = addVentaV.getTxtCorreo().getText();
     }
 
-    private void obtenerDatosP(Producto p) {
+    private void obtenerDatosV(Producto p) {
         fecha = addVentaV.getTxtFecha().getDateFormatString();
         tiedaActual = PrincipalView.lblCodigo.toString();
         porcentajeCredito = addVentaV.getTxtPorcentCredito().getText();
@@ -178,12 +215,30 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
         credito = addVentaV.getTxtEfectivo().getText();
     }
 
-    private void setEnabledCamposC(boolean bool) {
-        addVentaV.getTxtNombre().setEditable(bool);
-        addVentaV.getTxtTelefono().setEditable(bool);
-        addVentaV.getTxtCorreo().setEditable(bool);
-        addVentaV.getTxtDireccion().setEditable(bool);
-        addVentaV.getTxtCUI().setEditable(bool);
+    private String getTotal(List<ProductoVenta> pvList) {
+        float total = 0;
+        for (ProductoVenta pv : pvList) {
+            total += pv.getSubtotal();
+        }
+        return String.valueOf(total);
+    }
+
+    private void actualizarTablaP(List<ProductoVenta> pList) {
+        addVentaV.getProdVentaObservableList().clear();
+        addVentaV.getProdVentaObservableList().addAll(pList);
+    }
+
+    private void setEnableBtns(boolean enable) {
+        addVentaV.getBtnEliminarP().setEnabled(enable);
+        addVentaV.getBtnCambiarCant().setEnabled(enable);
+    }
+
+    private void setEnabledCamposC(boolean enable) {
+        addVentaV.getTxtNombre().setEditable(enable);
+        addVentaV.getTxtTelefono().setEditable(enable);
+        addVentaV.getTxtCorreo().setEditable(enable);
+        addVentaV.getTxtDireccion().setEditable(enable);
+        addVentaV.getTxtCUI().setEditable(enable);
     }
 
     @Override
@@ -215,20 +270,8 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
-    }
-
-    @Override
     public void mouseClicked(MouseEvent e) {
-
+        filaProducto = addVentaV.getTblProductosVenta().getSelectedRow();
+        setEnableBtns(true);
     }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-    }
-
 }

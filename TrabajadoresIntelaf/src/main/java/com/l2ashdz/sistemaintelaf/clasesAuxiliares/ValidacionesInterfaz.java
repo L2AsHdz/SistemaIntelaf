@@ -31,7 +31,7 @@ public class ValidacionesInterfaz {
 
     public static void validarAddTienda(String codigo, String nombre, String direccion,
             String tel1) throws UserInputException {
-        
+
         if (nombre.isEmpty() || codigo.isEmpty() || tel1.isEmpty() || direccion.isEmpty()) {
             throw new UserInputException("Los datos con * son obligatorios");
         } else if (tiendaDAO.getObject(codigo) != null) {
@@ -51,7 +51,7 @@ public class ValidacionesInterfaz {
         if (tiempo.isEmpty()) {
             throw new UserInputException("Debe ingresar un tiempo");
         } else if (!isInt(tiempo)) {
-            throw new UserInputException("El tiempo debe ser un valor numerico");
+            throw new UserInputException("El tiempo debe ser un numero entero");
         } else if (Integer.parseInt(tiempo) < 0) {
             throw new UserInputException("El tiempo no pude ser negativo");
         }
@@ -73,7 +73,7 @@ public class ValidacionesInterfaz {
         } else if (!isMayorACero(precio)) {
             throw new UserInputException("El precio no puede ser menor o igual a cero");
         } else if (!garantia.isEmpty() && !isInt(garantia)) {
-            throw new UserInputException("La garantia debe ser un dato numerico");
+            throw new UserInputException("La garantia debe ser un numero entero");
         } else if (existenciaDAO.getProductoInTienda(codTienda, cod) != null) {
             throw new UserInputException("El producto ya existe en la tienda actual");
         }
@@ -126,17 +126,17 @@ public class ValidacionesInterfaz {
             throw new UserInputException("El cliente ya existe en el sistema");
         }
     }
-    
-    public static void validarUpdateCliente(String nombre, String telefono) throws UserInputException{
+
+    public static void validarUpdateCliente(String nombre, String telefono) throws UserInputException {
         if (nombre.isEmpty() || telefono.isEmpty()) {
             throw new UserInputException("Los campos con * son obligatorios");
         }
     }
-    
-    public static void validarVenta(String nitCliente, String fecha, String porcentEfectivo, 
-            String porcentCredito, String nombre, String telefono, String efectivo, 
+
+    public static void validarVenta(String nitCliente, String fecha, String porcentEfectivo,
+            String porcentCredito, String nombre, String telefono, String efectivo,
             String credito) throws UserInputException {
-        if (nitCliente.isEmpty() || fecha.isEmpty() || porcentCredito.isEmpty() 
+        if (nitCliente.isEmpty() || fecha.isEmpty() || porcentCredito.isEmpty()
                 || porcentEfectivo.isEmpty() || nombre.isEmpty() || telefono.isEmpty()
                 || efectivo.isEmpty() || credito.isEmpty()) {
             throw new UserInputException("Los datos con * son obligatorios");
@@ -149,19 +149,26 @@ public class ValidacionesInterfaz {
         } else if (!isMayorACero(credito) || !isMayorACero(efectivo)) {
             throw new UserInputException("Los valores efectivo y credito deben ser mayores a cero");
         }
-        
+
     }
-    
-    public static void validarAddProducVenta(String cantidad, Producto p, List<ProductoVenta> pList) throws UserInputException{
+
+    public static void validarAddProducVenta(String cantidad, Producto p, List<ProductoVenta> pList) throws UserInputException {
         if (Integer.parseInt(cantidad) > p.getExistencias()) {
-            throw new UserInputException("No hay existencias suficientes, "+p.getExistencias()+
-                    " unidades disponibles");
+            throw new UserInputException("No hay existencias suficientes, unidades disponibles: "
+                    + p.getExistencias());
         } else if (isProductoInVenta(pList, p)) {
             throw new UserInputException("El producto ya esta agregado");
         }
     }
-    
-    private static boolean isProductoInVenta(List<ProductoVenta> pList, Producto p){
+
+    public static void validarExistencias(String cantidad, ProductoVenta p) throws UserInputException {
+        if (Integer.parseInt(cantidad) > p.getExistencias()) {
+            throw new UserInputException("No hay existencias suficientes, unidades disponibles: "
+                    + p.getExistencias());
+        }
+    }
+
+    private static boolean isProductoInVenta(List<ProductoVenta> pList, Producto p) {
         boolean flag = false;
         for (Producto producto : pList) {
             if (producto.getCodigo().equals(p.getCodigo())) {
@@ -170,15 +177,15 @@ public class ValidacionesInterfaz {
         }
         return flag;
     }
-    
-    private static boolean isPorcentajeValido(String percent){
+
+    private static boolean isPorcentajeValido(String percent) {
         int porcentaje = Integer.parseInt(percent);
-        return (porcentaje>=0 && porcentaje<=1);
+        return (porcentaje >= 0 && porcentaje <= 1);
     }
-    
-    private static boolean porcentajeTotal(String p1, String p2){
+
+    private static boolean porcentajeTotal(String p1, String p2) {
         int porcentaje1 = Integer.parseInt(p1);
         int porcentaje2 = Integer.parseInt(p2);
-        return ((porcentaje1+porcentaje2) == 1);
+        return ((porcentaje1 + porcentaje2) == 1);
     }
 }

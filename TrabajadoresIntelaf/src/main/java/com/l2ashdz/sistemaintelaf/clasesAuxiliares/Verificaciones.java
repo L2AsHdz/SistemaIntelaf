@@ -56,7 +56,7 @@ public class Verificaciones {
                 //Si el telefono contiene caracteres que no son numericos lanza una excepcion
             } else if (!isInt(telefono)) {
                 flag = false;
-                throw new UserInputException("El telefono tiene que contener solo numeros");
+                throw new UserInputException("El telefono tiene que contener solo numeros enteros");
 
                 //Si la entidad con el codigo especificado ya esxiste lanza una excepcion
             } else if (tiendaDAO.getObject(codigo) != null) {
@@ -207,7 +207,7 @@ public class Verificaciones {
                 //Si el telefono contiene caracteres que no son numericos lanza una excepcion
             } else if (!isInt(telefono)) {
                 flag = false;
-                throw new UserInputException("El telefono tiene que contener solo numeros");
+                throw new UserInputException("El telefono tiene que contener solo numeros enteros");
 
                 //Si el credito contiene caracteres que no son numericos lanza una excepcion
             } else if (!isFloat(credito)) {
@@ -257,7 +257,7 @@ public class Verificaciones {
                 //Si el telefono contiene caracteres que no son numericos lanza una excepcion
             } else if (!isInt(telefono)) {
                 flag = false;
-                throw new UserInputException("El telefono tiene que contener solo numeros");
+                throw new UserInputException("El telefono tiene que contener solo numeros enteros");
 
                 //Si el cui contiene caracteres que no son numericos lanza una excepcion
             } else if (!isInt(cui)) {
@@ -388,7 +388,7 @@ public class Verificaciones {
     //Verifica si la cadena es un entero
     public static boolean isInt(String s) {
         try {
-            Float.parseFloat(s);
+            Integer.parseInt(s);
             return true;
         } catch (NumberFormatException e) {
             return false;

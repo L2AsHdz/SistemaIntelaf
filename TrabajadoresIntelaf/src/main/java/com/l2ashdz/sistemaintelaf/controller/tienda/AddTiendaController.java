@@ -134,7 +134,7 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
                 tiempo = JOptionPane.showInputDialog(null, mensaje + t.getNombre(), "Tiempo traslado",
                         JOptionPane.QUESTION_MESSAGE);
                 while (!isInt(tiempo) && !isMayorACero(tiempo)) {
-                    tiempo = JOptionPane.showInputDialog(null, "Debe ser un dato numerico mayor a cero\n"
+                    tiempo = JOptionPane.showInputDialog(null, "Debe ser un numero entero mayor a cero\n"
                             + mensaje + t.getNombre(), "Tiempo traslado", JOptionPane.ERROR_MESSAGE);
                 }
 
