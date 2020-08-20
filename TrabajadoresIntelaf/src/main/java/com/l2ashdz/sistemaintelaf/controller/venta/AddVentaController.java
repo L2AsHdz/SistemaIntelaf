@@ -107,6 +107,7 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
 
             //carga los productos al JComboBox
             actualizarDatosP();
+            limpiarCampos();
 
         } else {
             System.out.println("Ya se esta mostrando addVenta");
@@ -284,7 +285,6 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
         addVentaV.getProductosObservableList().clear();
         productos = productoDAO.getFilteredList(PrincipalView.lblCodigo.getText(), 4);
         addVentaV.getProductosObservableList().addAll(productos);
-        limpiarCampos();
     }
 
     private void setEnableBtns(boolean enable) {

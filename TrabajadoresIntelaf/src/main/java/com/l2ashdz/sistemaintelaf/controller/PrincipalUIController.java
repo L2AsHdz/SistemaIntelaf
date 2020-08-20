@@ -2,12 +2,14 @@ package com.l2ashdz.sistemaintelaf.controller;
 
 import com.l2ashdz.sistemaintelaf.controller.cliente.AddClienteController;
 import com.l2ashdz.sistemaintelaf.controller.empleado.AddEmpleadoController;
+import com.l2ashdz.sistemaintelaf.controller.pedido.AddPedidoController;
 import com.l2ashdz.sistemaintelaf.controller.producto.AddProductoController;
 import com.l2ashdz.sistemaintelaf.controller.tienda.TiendaController;
 import com.l2ashdz.sistemaintelaf.controller.venta.AddVentaController;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
 import com.l2ashdz.sistemaintelaf.ui.cliente.AddClienteView;
 import com.l2ashdz.sistemaintelaf.ui.empleado.AddEmpleadoView;
+import com.l2ashdz.sistemaintelaf.ui.pedido.AddPedidoView;
 import com.l2ashdz.sistemaintelaf.ui.producto.AddProductoView;
 import com.l2ashdz.sistemaintelaf.ui.tienda.TiendaView;
 import com.l2ashdz.sistemaintelaf.ui.venta.AddVentaView;
@@ -41,6 +43,10 @@ public class PrincipalUIController extends MouseAdapter {
     //Vista y controlador para menu Ventas
     private AddVentaView ventaV = new AddVentaView();
     private AddVentaController ventaC = new AddVentaController(ventaV);
+    
+    //Vista y controlador para menu Pedidos
+    private AddPedidoView pedidoV = new AddPedidoView();
+    private AddPedidoController pedidoC = new AddPedidoController(pedidoV);
 
     public PrincipalUIController(PrincipalView principalUI, String codigo, String nombre) {
         this.principalUI = principalUI;
@@ -70,36 +76,48 @@ public class PrincipalUIController extends MouseAdapter {
             empleadoV.setEnabled(false);
             clienteV.setEnabled(false);
             ventaV.setEnabled(false);
+            pedidoV.setEnabled(false);
             tiendaC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnProductos() == e.getSource()) {
             tiendaV.setEnabled(false);
             empleadoV.setEnabled(false);
             clienteV.setEnabled(false);
             ventaV.setEnabled(false);
+            pedidoV.setEnabled(false);
             productoC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnEmpleados() == e.getSource()) {
             tiendaV.setEnabled(false);
             productoV.setEnabled(false);
             clienteV.setEnabled(false);
             ventaV.setEnabled(false);
+            pedidoV.setEnabled(false);
             empleadoC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnClientes() == e.getSource()) {
             tiendaV.setEnabled(false);
             productoV.setEnabled(false);
             empleadoV.setEnabled(false);
             ventaV.setEnabled(false);
+            pedidoV.setEnabled(false);
             clienteC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnVentas() == e.getSource()) {
             tiendaV.setEnabled(false);
             productoV.setEnabled(false);
             empleadoV.setEnabled(false);
             clienteV.setEnabled(false);
+            pedidoV.setEnabled(false);
             ventaC.iniciar(principalUI.getPnlDesk());
 
         } else if (principalUI.getBtnPedidos() == e.getSource()) {
-
+            tiendaV.setEnabled(false);
+            productoV.setEnabled(false);
+            empleadoV.setEnabled(false);
+            clienteV.setEnabled(false);
+            ventaV.setEnabled(false);
+            pedidoC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnReportes() == e.getSource()) {
 
+        } else if (principalUI.getBtnReportes() == e.getSource()) {
+            
         }
     }
 }
