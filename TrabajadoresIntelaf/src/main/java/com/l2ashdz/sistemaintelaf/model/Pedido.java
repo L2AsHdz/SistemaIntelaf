@@ -7,6 +7,7 @@ import java.time.LocalDate;
  * @author asael
  */
 public class Pedido {
+
     private int codigo;
     private String nitCliente;
     private String codigoTiendaOrigen;
@@ -20,6 +21,19 @@ public class Pedido {
     private int estado;
 
     public Pedido() {
+    }
+
+    public Pedido(String codigo, String nitC, String codTO, String codTD, String fecha,
+            String porcentajeC, String porcentajeE, String porcentajeP, int estado) {
+        this.codigo = Integer.parseInt(codigo);
+        this.nitCliente = nitC;
+        this.codigoTiendaOrigen = codTO;
+        this.codigoTiendaDestino = codTD;
+        this.fecha = LocalDate.parse(fecha);
+        this.porcentajeCredito = Float.parseFloat(porcentajeC);
+        this.porcentajeEfectivo = Float.parseFloat(porcentajeE);
+        this.porcentajePagado = Float.parseFloat(porcentajeP);
+        this.estado = estado;
     }
 
     public int getCodigo() {

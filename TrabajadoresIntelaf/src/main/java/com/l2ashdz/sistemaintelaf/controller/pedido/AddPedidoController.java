@@ -1,15 +1,23 @@
 package com.l2ashdz.sistemaintelaf.controller.pedido;
 
+import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.EntidadFabrica.*;
+import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.isInt;
+import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.isMayorACero;
+import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.ValidacionesInterfaz.*;
 import com.l2ashdz.sistemaintelaf.dao.CRUD;
 import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAO;
 import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
+import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAO;
 import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.pedido.ProductoPedidoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.producto.ExistenciaProductoDAO;
 import com.l2ashdz.sistemaintelaf.dao.producto.ExistenciaProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAO;
 import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAOImpl;
+import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAO;
+import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
+import com.l2ashdz.sistemaintelaf.excepciones.UserInputException;
 import com.l2ashdz.sistemaintelaf.model.Cliente;
 import com.l2ashdz.sistemaintelaf.model.Conexion;
 import com.l2ashdz.sistemaintelaf.model.Pedido;
@@ -18,6 +26,7 @@ import com.l2ashdz.sistemaintelaf.model.ProductoPedido;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
 import com.l2ashdz.sistemaintelaf.ui.pedido.AddPedidoView;
+import com.l2ashdz.sistemaintelaf.ui.venta.FacturaView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -25,6 +34,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -40,14 +50,17 @@ import javax.swing.JPanel;
 public class AddPedidoController extends MouseAdapter implements ActionListener, FocusListener {
 
     private AddPedidoView addPedidoV;
+    private FacturaView facturaV;
     private Producto prodPedido;
     private Cliente cliente;
+    private Tienda tienda;
     private List<ProductoPedido> productosP;
     private List<Producto> productos;
     private List<Tienda> tiendas;
-    private CRUD<Pedido> pedidoDAO;
+    private PedidoDAO pedidoDAO;
     private CRUD<ProductoPedido> productoPDAO;
     private CRUD<Tienda> tiendaDAO;
+    private TiempoTrasladoDAO tiempoDAO;
     private ProductoDAO productoDAO;
     private ClienteDAO clienteDAO;
     private ExistenciaProductoDAO existenciaDAO;
@@ -62,28 +75,33 @@ public class AddPedidoController extends MouseAdapter implements ActionListener,
     private String correo;
 
     //datos venta y productosVenta
+    private LocalDate date;
     private String fecha;
     private String tiendaOrigen;
     private String tiendaDestino;
-    private String idPedido;
+    private String codigoPedido;
     private String porcentajeEfectivo;
     private String porcentajeCredito;
     private String porcentajePagado;
     private float credito;
     private int filaProducto;
+    int diasTraslado;
     private String cantidad;
 
     public AddPedidoController(AddPedidoView addPedidoView) {
         conexion = Conexion.getConexion();
         productosP = new ArrayList<>();
+        facturaV = new FacturaView();
         pedidoDAO = PedidoDAOImpl.getPedidoDAO();
         tiendaDAO = TiendaDAOImpl.getTiendaDAO();
         productoPDAO = ProductoPedidoDAOImpl.getProductoPDAO();
         productoDAO = ProductoDAOImpl.getProductoDAO();
         clienteDAO = ClienteDAOImpl.getClienteDAO();
+        tiempoDAO = TiempoTrasladoDAOImpl.getTiempoDAO();
         existenciaDAO = ExistenciaProductoDAOImpl.getExistenciaDAO();
         this.addPedidoV = addPedidoView;
         this.addPedidoV.getBtnContinuar().addActionListener(this);
+        this.addPedidoV.getBtnAddProducto().addActionListener(this);
         this.addPedidoV.getBtnFinalizar().addActionListener(this);
         this.addPedidoV.getBtnCambiarCant().addActionListener(this);
         this.addPedidoV.getBtnEliminarP().addActionListener(this);
@@ -114,24 +132,114 @@ public class AddPedidoController extends MouseAdapter implements ActionListener,
     public void actionPerformed(ActionEvent e) {
         if (addPedidoV.getBtnContinuar() == e.getSource()) {
             if (addPedidoV.getCbBusquedaTienda().getSelectedItem() != null) {
-                tiendaOrigen = addPedidoV.getCbBusquedaTienda().getSelectedItem().toString();
+                tienda = (Tienda) addPedidoV.getCbBusquedaTienda().getSelectedItem();
+                tiendaOrigen = tienda.getCodigo();
+                tiendaDestino = PrincipalView.lblCodigo.getText();
+                getDiasTraslado();
+                addPedidoV.getLblTiempo().setText(String.valueOf(diasTraslado));
                 setEditableCamposPedido(true);
-                addPedidoV.getTxtNit().requestFocus();
+                actualizarProductos(tiendaOrigen);
             } else {
                 JOptionPane.showMessageDialog(null, "No ha seleccionado una tienda",
                         "Advertencia", JOptionPane.ERROR_MESSAGE);
             }
-            
+
+            //Agrega un producto al pedido
         } else if (addPedidoV.getBtnAddProducto() == e.getSource()) {
+            if (addPedidoV.getCbBusquedaProducto() != null) {
+                codigoPedido = String.valueOf(pedidoDAO.getCodigoPedido());
+                prodPedido = (Producto) addPedidoV.getCbBusquedaProducto().getSelectedItem();
+                cantidad = JOptionPane.showInputDialog(null, "Ingrese cantidad del producto", "Agregar producto",
+                        JOptionPane.QUESTION_MESSAGE);
+                while (!isInt(cantidad) || !isMayorACero(cantidad)) {
+                    cantidad = JOptionPane.showInputDialog(null, "Debe ser un dato numerico y mayor a cero\n\n"
+                            + "Ingrese cantidad del producto", "Agregar producto", JOptionPane.ERROR_MESSAGE);
+                }
 
+                try {
+                    validarAddProducPedido(cantidad, prodPedido, productosP);
+                    productosP.add(new ProductoPedido(prodPedido, codigoPedido, cantidad));
+                    actualizarTablaP(productosP);
+                    addPedidoV.getLblTotal().setText(getTotal(productosP));
+                    addPedidoV.getCbBusquedaProducto().setSelectedIndex(-1);
+                    addPedidoV.getCbBusquedaProducto().requestFocus();
+
+                } catch (UserInputException ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
+                }
+
+            } else {
+                JOptionPane.showMessageDialog(null, "No ha seleccionado un producto",
+                        "Advertencia", JOptionPane.ERROR_MESSAGE);
+            }
+
+            //cambia la cantidad de un producto ya agregado al pedido
         } else if (addPedidoV.getBtnCambiarCant() == e.getSource()) {
+            cantidad = JOptionPane.showInputDialog(null, "Ingrese cantidad del producto", "Agregar producto",
+                    JOptionPane.QUESTION_MESSAGE);
+            while (!isInt(cantidad) || !isMayorACero(cantidad)) {
+                cantidad = JOptionPane.showInputDialog(null, "Debe ser un dato numerico y mayor a cero\n\n"
+                        + "Ingrese cantidad del producto", "Agregar producto", JOptionPane.ERROR_MESSAGE);
+            }
+            try {
+                validarExistencias(cantidad, productosP.get(filaProducto));
+                productosP.get(filaProducto).setCantidad(Integer.parseInt(cantidad));
+                actualizarTablaP(productosP);
+                setEnableBtnsP(false);
+                addPedidoV.getLblTotal().setText(getTotal(productosP));
+                addPedidoV.getCbBusquedaProducto().setSelectedIndex(-1);
+                addPedidoV.getCbBusquedaProducto().requestFocus();
+            } catch (UserInputException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
+            }
 
+            //Elimina un produccto del pedido
         } else if (addPedidoV.getBtnEliminarP() == e.getSource()) {
+            productosP.remove(filaProducto);
+            actualizarTablaP(productosP);
+            setEnableBtnsP(false);
+            addPedidoV.getLblTotal().setText(getTotal(productosP));
+            addPedidoV.getCbBusquedaProducto().setSelectedIndex(-1);
+            addPedidoV.getCbBusquedaProducto().requestFocus();
 
+            //limpia el formulario de pedido
         } else if (addPedidoV.getBtnLimpiar() == e.getSource()) {
+            limpiarCampos();
+            setEnableBtnsP(false);
 
+            //Registra un nuevo pedido
         } else if (addPedidoV.getBtnFinalizar() == e.getSource()) {
+            obtenerDatosC();
+            obtenerDatosP();
 
+            try {
+                conexion.setAutoCommit(false);
+                validarAddCliente2(nombre, nitCliente, telefono);
+                validarPedido(porcentajeEfectivo, porcentajeCredito, porcentajePagado);
+                if (clienteDAO.getObject(nitCliente) == null) {
+                    clienteDAO.create(nuevoCliente(nitCliente, nombre, cui, direccion, telefono, correo));
+                }
+                pedidoDAO.create(new Pedido(codigoPedido, nitCliente, tiendaOrigen, tiendaDestino,
+                        fecha, porcentajeCredito, porcentajeEfectivo, porcentajePagado, 1));
+                productosP.forEach(pp -> productoPDAO.create(pp));
+                productosP.forEach(pp -> existenciaDAO.restarExistencias(tiendaDestino, pp.getCodigo(), pp.getCantidad()));
+
+                clienteDAO.restarCredito(nitCliente, credito);
+                conexion.commit();
+
+                generarFactura();
+                actualizarProductos(tiendaOrigen);
+                limpiarCampos();
+            } catch (SQLException ex) {
+                try {
+                    conexion.rollback();
+                    conexion.setAutoCommit(true);
+                } catch (SQLException ex2) {
+                    ex2.printStackTrace(System.out);
+                }
+            } catch (UserInputException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -192,13 +300,13 @@ public class AddPedidoController extends MouseAdapter implements ActionListener,
         correo = addPedidoV.getTxtCorreo().getText();
     }
 
-    private void obtenerDatosV() {
+    private void obtenerDatosP() {
         Date input = addPedidoV.getTxtFecha().getDate();
-        LocalDate date = input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        date = input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         fecha = date.toString() == null ? "" : date.toString();
-        tiendaOrigen = addPedidoV.getCbBusquedaTienda().getSelectedItem().toString();
         porcentajeCredito = addPedidoV.getTxtPorcentCredito().getText();
         porcentajeEfectivo = addPedidoV.getTxtPorcentEfectivo().getText();
+        porcentajePagado = addPedidoV.getTxtPorcentAnticipo().getText();
 
         if (!addPedidoV.getTxtCredito().getText().isEmpty()) {
             credito = Float.parseFloat(addPedidoV.getTxtCredito().getText());
@@ -222,6 +330,7 @@ public class AddPedidoController extends MouseAdapter implements ActionListener,
         addPedidoV.getProductosObservableList().clear();
         productos = productoDAO.getFilteredList(tiendaO, 4);
         addPedidoV.getProductosObservableList().addAll(productos);
+        addPedidoV.getCbBusquedaProducto().setSelectedIndex(-1);
     }
 
     private void cargarTiendas() {
@@ -236,7 +345,7 @@ public class AddPedidoController extends MouseAdapter implements ActionListener,
         addPedidoV.getTiendaObservableList().addAll(tiendas);
     }
 
-    private void setEnableBtns(boolean enable) {
+    private void setEnableBtnsP(boolean enable) {
         addPedidoV.getBtnEliminarP().setEnabled(enable);
         addPedidoV.getBtnCambiarCant().setEnabled(enable);
     }
@@ -272,6 +381,59 @@ public class AddPedidoController extends MouseAdapter implements ActionListener,
     @Override
     public void mouseClicked(MouseEvent e) {
         filaProducto = addPedidoV.getTblProductosVenta().getSelectedRow();
-        setEnableBtns(true);
+        setEnableBtnsP(true);
+    }
+
+    private void generarFactura() {
+        insertarTextfactura("Codigo del pedido: " + codigoPedido);
+        insertarTextfactura("\nFecha del pedido: " + fecha);
+
+        tienda = tiendaDAO.getObject(tiendaOrigen);
+        insertarTextfactura("\n\nTienda Origen:");
+        insertarTextfactura("\nCodigo:\t" + tienda.getCodigo());
+        insertarTextfactura("\nNombre:\t" + tienda.getNombre());
+        insertarTextfactura("\nDireccion:\t" + tienda.getDireccion());
+        insertarTextfactura("\nTelfono:\t" + tienda.getTelefono1());
+
+        tienda = tiendaDAO.getObject(tiendaDestino);
+        insertarTextfactura("\n\nTienda Destino:");
+        insertarTextfactura("\nCodigo:\t" + tienda.getCodigo());
+        insertarTextfactura("\nNombre:\t" + tienda.getNombre());
+        insertarTextfactura("\nDireccion:\t" + tienda.getDireccion());
+        insertarTextfactura("\nTelfono:\t" + tienda.getTelefono1());
+
+        insertarTextfactura("\n\nCliente:");
+        insertarTextfactura("\nNombre:\t" + nombre);
+        insertarTextfactura("\nNit:\t" + nitCliente);
+        insertarTextfactura("\nDireccion:\t" + direccion);
+        insertarTextfactura("\nTelefono:\t" + telefono + "\n");
+
+        insertarTextfactura("\nProductos:");
+        productosP.forEach(pv -> {
+            insertarTextfactura("\n" + pv.getNombre() + " (x" + pv.getCantidad() + ")"
+                    + " \tQ." + pv.getSubtotal());
+        });
+
+        insertarTextfactura("\n\nTotal:\t\t Q." + getTotal(productosP));
+        insertarTextfactura("\nAnticipo:\t\t Q."
+                + Float.parseFloat(getTotal(productosP)) * Float.parseFloat(porcentajePagado));
+
+        getDiasTraslado();
+        insertarTextfactura("\n\nFecha llegada: \t " + date.plusDays(diasTraslado));
+
+        facturaV.setLocationRelativeTo(null);
+        facturaV.setVisible(true);
+    }
+
+    private void insertarTextfactura(String text) {
+        facturaV.getTxtAFactura().append(text);
+    }
+    
+    private void getDiasTraslado(){
+        if (tiempoDAO.getTiempoT(tiendaDestino, tiendaOrigen) == null) {
+            diasTraslado = tiempoDAO.getTiempoT(tiendaOrigen, tiendaDestino).getTiempo();
+        } else {
+            diasTraslado = tiempoDAO.getTiempoT(tiendaDestino, tiendaOrigen).getTiempo();
+        }
     }
 }

@@ -5,6 +5,7 @@ package com.l2ashdz.sistemaintelaf.model;
  * @author asael
  */
 public class Tienda {
+
     private String codigo;
     private String nombre;
     private String direccion;

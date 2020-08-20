@@ -78,7 +78,7 @@ public class PrincipalView extends javax.swing.JFrame {
         );
         pnlDeskLayout.setVerticalGroup(
             pnlDeskLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 570, Short.MAX_VALUE)
         );
 
         pnlMenu.setBackground(new java.awt.Color(239, 121, 34));
@@ -354,7 +354,7 @@ public class PrincipalView extends javax.swing.JFrame {
                 .addComponent(btnPedidos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(btnReportes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(108, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout pnlMenuLayout = new javax.swing.GroupLayout(pnlMenu);
@@ -407,13 +407,10 @@ public class PrincipalView extends javax.swing.JFrame {
         );
         pnlInfoTiendaLayout.setVerticalGroup(
             pnlInfoTiendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlInfoTiendaLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlInfoTiendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(lblCodigo)
-                    .addComponent(lblNombreT))
-                .addContainerGap(15, Short.MAX_VALUE))
+            .addGroup(pnlInfoTiendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jLabel1)
+                .addComponent(lblCodigo)
+                .addComponent(lblNombreT))
         );
 
         javax.swing.GroupLayout pnlPrincipalLayout = new javax.swing.GroupLayout(pnlPrincipal);
@@ -432,7 +429,7 @@ public class PrincipalView extends javax.swing.JFrame {
             .addGroup(pnlPrincipalLayout.createSequentialGroup()
                 .addComponent(pnlInfoTienda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(pnlDesk, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(pnlDesk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

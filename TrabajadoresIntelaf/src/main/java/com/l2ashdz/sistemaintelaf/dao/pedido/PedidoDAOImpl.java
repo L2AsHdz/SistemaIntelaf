@@ -140,4 +140,23 @@ public class PedidoDAOImpl implements PedidoDAO {
         }
     }
 
+    @Override
+    public int getCodigoPedido() {
+        String sql = "SELECT codigo FROM pedido ORDER BY codigo DESC LIMIT 1";
+        int id = 1;
+        try (Statement declaracion = conexion.createStatement();
+                ResultSet rs = declaracion.executeQuery(sql)) {
+
+            if (rs.next()) {
+                id = rs.getInt(1) + 1;
+            }
+
+            System.out.println("codigo de pedido obtenido");
+        } catch (SQLException ex) {
+            System.out.println("No se pudo leer el codigo del pedido");
+            ex.printStackTrace(System.out);
+        }
+        return id;
+    }
+
 }

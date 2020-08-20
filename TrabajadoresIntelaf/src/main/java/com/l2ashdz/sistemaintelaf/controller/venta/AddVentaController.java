@@ -122,7 +122,6 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
 
             if (addVentaV.getCbBusquedaProducto().getSelectedItem() != null) {
                 idVenta = String.valueOf(ventaDAO.getIdVenta());
-                System.out.println(idVenta);
                 prodVenta = (Producto) addVentaV.getCbBusquedaProducto().getSelectedItem();
                 cantidad = JOptionPane.showInputDialog(null, "Ingrese cantidad del producto", "Agregar producto",
                         JOptionPane.QUESTION_MESSAGE);
@@ -190,7 +189,7 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
 
             try {
                 conexion.setAutoCommit(false);
-                validarAddCliente(nombre, cui, telefono);
+                validarAddCliente2(nombre, nitCliente, telefono);
                 validarVenta(fecha, porcentajeEfectivo, porcentajeCredito);
                 if (clienteDAO.getObject(nitCliente) == null) {
                     clienteDAO.create(nuevoCliente(nitCliente, nombre, cui, direccion, telefono, correo));
@@ -335,23 +334,28 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
     }
 
     private void generarFactura() {
-        facturaV.getTxtAFactura().append("Factura No. "+idVenta);
-        facturaV.getTxtAFactura().append("\nCliente:");
-        facturaV.getTxtAFactura().append("\nNombre:\t" + nombre);
-        facturaV.getTxtAFactura().append("\nNit:\t" + nitCliente);
-        facturaV.getTxtAFactura().append("\nDireccion:\t" + direccion);
-        facturaV.getTxtAFactura().append("\nTelefono:\t" + telefono + "\n");
+        insertarTextfactura("Factura No. "+idVenta);
+        insertarTextfactura("\nFecha: "+fecha);
+        
+        insertarTextfactura("\nCliente:");
+        insertarTextfactura("\nNombre:\t" + nombre);
+        insertarTextfactura("\nNit:\t" + nitCliente);
+        insertarTextfactura("\nDireccion:\t" + direccion);
+        insertarTextfactura("\nTelefono:\t" + telefono + "\n");
 
-        facturaV.getTxtAFactura().append("\nProductos:");
-
+        insertarTextfactura("\nProductos:");
         productosV.forEach(pv -> {
-            facturaV.getTxtAFactura().append("\n" + pv.getNombre() + " (x" + pv.getCantidad() + ")"
+            insertarTextfactura("\n" + pv.getNombre() + " (x" + pv.getCantidad() + ")"
                     + "\tQ." + pv.getSubtotal());
         });
 
-        facturaV.getTxtAFactura().append("\n\nTotal:\t\tQ." + getTotal(productosV));
+        insertarTextfactura("\n\nTotal:\t\tQ." + getTotal(productosV));
 
         facturaV.setLocationRelativeTo(null);
         facturaV.setVisible(true);
+    }
+    
+    private void insertarTextfactura(String text) {
+        facturaV.getTxtAFactura().append(text);
     }
 }

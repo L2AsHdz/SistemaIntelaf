@@ -36,6 +36,7 @@ public class TiendaController extends MouseAdapter {
         if (!tiendaV.isEnabled()) {
             parent.removeAll();
             parent.repaint();
+            tiempoV.setEnabled(false);
             tiendaV.setSize(parent.getSize());
             tiendaV.setVisible(true);
             tiendaV.setEnabled(true);

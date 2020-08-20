@@ -8,5 +8,5 @@ import com.l2ashdz.sistemaintelaf.model.Pedido;
  * @author asael
  */
 public interface PedidoDAO extends CRUD<Pedido>{
-    
+    int getCodigoPedido();
 }

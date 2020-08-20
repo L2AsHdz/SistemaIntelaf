@@ -14,6 +14,7 @@ import com.l2ashdz.sistemaintelaf.excepciones.UserInputException;
 import com.l2ashdz.sistemaintelaf.model.Cliente;
 import com.l2ashdz.sistemaintelaf.model.Empleado;
 import com.l2ashdz.sistemaintelaf.model.Producto;
+import com.l2ashdz.sistemaintelaf.model.ProductoPedido;
 import com.l2ashdz.sistemaintelaf.model.ProductoVenta;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
 import java.util.List;
@@ -126,6 +127,12 @@ public class ValidacionesInterfaz {
             throw new UserInputException("El cliente ya existe en el sistema");
         }
     }
+    
+    public static void validarAddCliente2(String nombre, String nit, String telefono) throws UserInputException {
+        if (nombre.isEmpty() || nit.isEmpty() || telefono.isEmpty()) {
+            throw new UserInputException("Los campos con * son obligatorios");
+        }
+    }
 
     public static void validarUpdateCliente(String nombre, String telefono) throws UserInputException {
         if (nombre.isEmpty() || telefono.isEmpty()) {
@@ -140,7 +147,13 @@ public class ValidacionesInterfaz {
         } else if (!isFecha(fecha)) {
             throw new UserInputException("La fecha no tiene el formato correcto");
         }
-
+    }
+    
+    public static void validarPedido(String porcentEfectivo,
+            String porcentCredito, String porcentajePagado) throws UserInputException {
+        if (porcentCredito.isEmpty() || porcentEfectivo.isEmpty() || porcentajePagado.isEmpty()) {
+            throw new UserInputException("Los datos con * son obligatorios");
+        }
     }
 
     public static void validarAddProducVenta(String cantidad, Producto p, List<ProductoVenta> pList) throws UserInputException {
@@ -151,8 +164,17 @@ public class ValidacionesInterfaz {
             throw new UserInputException("El producto ya esta agregado");
         }
     }
+    
+    public static void validarAddProducPedido(String cantidad, Producto p, List<ProductoPedido> pList) throws UserInputException {
+        if (Integer.parseInt(cantidad) > p.getExistencias()) {
+            throw new UserInputException("No hay existencias suficientes, unidades disponibles: "
+                    + p.getExistencias());
+        } else if (isProductoInPedido(pList, p)) {
+            throw new UserInputException("El producto ya esta agregado");
+        }
+    }
 
-    public static void validarExistencias(String cantidad, ProductoVenta p) throws UserInputException {
+    public static void validarExistencias(String cantidad, Producto p) throws UserInputException {
         if (Integer.parseInt(cantidad) > p.getExistencias()) {
             throw new UserInputException("No hay existencias suficientes, unidades disponibles: "
                     + p.getExistencias());
@@ -168,15 +190,14 @@ public class ValidacionesInterfaz {
         }
         return flag;
     }
-
-    private static boolean isPorcentajeValido(String percent) {
-        int porcentaje = Integer.parseInt(percent);
-        return (porcentaje >= 0 && porcentaje <= 1);
-    }
-
-    private static boolean porcentajeTotal(String p1, String p2) {
-        int porcentaje1 = Integer.parseInt(p1);
-        int porcentaje2 = Integer.parseInt(p2);
-        return ((porcentaje1 + porcentaje2) == 1);
+    
+    private static boolean isProductoInPedido(List<ProductoPedido> pList, Producto p) {
+        boolean flag = false;
+        for (Producto pp : pList) {
+            if (pp.getCodigo().equals(p.getCodigo())) {
+                flag = true;
+            }
+        }
+        return flag;
     }
 }
