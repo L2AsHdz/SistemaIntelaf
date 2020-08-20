@@ -282,7 +282,7 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
 
     private void actualizarDatosP() {
         addVentaV.getProductosObservableList().clear();
-        productos = productoDAO.getFilteredList(PrincipalView.lblCodigo.getText(), 4);
+        productos = productoDAO.getFilteredList(PrincipalView.lblCodigo.getText(), 5);
         addVentaV.getProductosObservableList().addAll(productos);
     }
 

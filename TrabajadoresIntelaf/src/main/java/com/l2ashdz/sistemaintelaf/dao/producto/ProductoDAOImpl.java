@@ -135,6 +135,10 @@ public class ProductoDAOImpl implements ProductoDAO {
                     ps = conexion.prepareStatement(sql + "e.codigo_tienda = ? " + order);
                     ps.setString(1, filtro);
                     break;
+                case 5:
+                    ps = conexion.prepareStatement(sql + "e.codigo_tienda = ? AND e.existencias > 0 " + order);
+                    ps.setString(1, filtro);
+
             }
             try (ResultSet rs = ps.executeQuery()) {
                 productos = new ArrayList();

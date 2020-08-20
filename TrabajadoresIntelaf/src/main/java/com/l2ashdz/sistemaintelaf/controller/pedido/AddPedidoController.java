@@ -328,7 +328,7 @@ public class AddPedidoController extends MouseAdapter implements ActionListener,
 
     private void actualizarProductos(String tiendaO) {
         addPedidoV.getProductosObservableList().clear();
-        productos = productoDAO.getFilteredList(tiendaO, 4);
+        productos = productoDAO.getFilteredList(tiendaO, 5);
         addPedidoV.getProductosObservableList().addAll(productos);
         addPedidoV.getCbBusquedaProducto().setSelectedIndex(-1);
     }
