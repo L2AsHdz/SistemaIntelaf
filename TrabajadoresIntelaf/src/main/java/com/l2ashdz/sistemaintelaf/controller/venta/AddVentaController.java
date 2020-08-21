@@ -334,6 +334,7 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
     }
 
     private void generarFactura() {
+        facturaV.getTxtAFactura().setText("");
         insertarTextfactura("Factura No. "+idVenta);
         insertarTextfactura("\nFecha: "+fecha);
         
@@ -353,6 +354,7 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
 
         facturaV.setLocationRelativeTo(null);
         facturaV.setVisible(true);
+        facturaV.repaint();
     }
     
     private void insertarTextfactura(String text) {

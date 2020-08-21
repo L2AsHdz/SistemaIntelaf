@@ -54,10 +54,6 @@ public class TiempoTrasladoController extends MouseAdapter implements ActionList
         } else {
             System.out.println("ya esta visible tiempo");
         }
-        try {
-
-        } catch (Exception e) {
-        }
     }
 
     @Override

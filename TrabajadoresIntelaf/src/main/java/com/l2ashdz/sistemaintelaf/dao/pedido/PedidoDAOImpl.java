@@ -54,7 +54,7 @@ public class PedidoDAOImpl implements PedidoDAO {
                 pedido.setPorcentajeEfectivo(rs.getFloat("porcentaje_efectivo"));
                 pedido.setPorcentajeCredito(rs.getFloat("porcentaje_credito"));
                 pedido.setPorcentajePagado(rs.getFloat("porcentaje_pagado"));
-                pedido.setEstado(rs.getInt("estado"));
+                pedido.setEstadoP(rs.getInt("estado"));
                 pedidos.add(pedido);
             }
             System.out.println("Listado de pedidos obtenido");
@@ -110,7 +110,7 @@ public class PedidoDAOImpl implements PedidoDAO {
                     p.setPorcentajeEfectivo(rs.getFloat("porcentaje_efectivo"));
                     p.setPorcentajeCredito(rs.getFloat("porcentaje_credito"));
                     p.setPorcentajePagado(rs.getFloat("porcentaje_pagado"));
-                    p.setEstado(rs.getInt("estado"));
+                    p.setEstadoP(rs.getInt("estado"));
                 }
             }
             System.out.println("Pedido obtenido de la BD");

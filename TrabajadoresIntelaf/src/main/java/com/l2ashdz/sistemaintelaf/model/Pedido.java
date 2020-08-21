@@ -18,7 +18,8 @@ public class Pedido {
     private float porcentajeEfectivo;
     private float porcentajeCredito;
     private float porcentajePagado;
-    private int estado;
+    private int estadoP;
+    private String estado;
 
     public Pedido() {
     }
@@ -33,7 +34,7 @@ public class Pedido {
         this.porcentajeCredito = Float.parseFloat(porcentajeC);
         this.porcentajeEfectivo = Float.parseFloat(porcentajeE);
         this.porcentajePagado = Float.parseFloat(porcentajeP);
-        this.estado = estado;
+        this.estadoP = estado;
     }
 
     public int getCodigo() {
@@ -116,11 +117,33 @@ public class Pedido {
         this.porcentajePagado = porcentajePagado;
     }
 
-    public int getEstado() {
+    public int getEstadoP() {
+        return estadoP;
+    }
+
+    public void setEstadoP(int estado) {
+        this.estadoP = estado;
+        setEstado();
+    }
+
+    public String getEstado() {
         return estado;
     }
 
-    public void setEstado(int estado) {
-        this.estado = estado;
+    public void setEstado() {
+        switch (estadoP) {
+            case 0:
+                this.estado = "En Ruta";
+                break;
+            case 1:
+                this.estado = "Atrasado";
+                break;
+            case 2:
+                this.estado = "En espera";
+                break;
+            case 3:
+                this.estado = "Retirado";
+                break;
+        }
     }
 }

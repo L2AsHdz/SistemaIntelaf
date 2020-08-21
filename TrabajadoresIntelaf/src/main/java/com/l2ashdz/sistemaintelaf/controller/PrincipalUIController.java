@@ -2,14 +2,14 @@ package com.l2ashdz.sistemaintelaf.controller;
 
 import com.l2ashdz.sistemaintelaf.controller.cliente.AddClienteController;
 import com.l2ashdz.sistemaintelaf.controller.empleado.AddEmpleadoController;
-import com.l2ashdz.sistemaintelaf.controller.pedido.AddPedidoController;
+import com.l2ashdz.sistemaintelaf.controller.pedido.PedidoController;
 import com.l2ashdz.sistemaintelaf.controller.producto.AddProductoController;
 import com.l2ashdz.sistemaintelaf.controller.tienda.TiendaController;
 import com.l2ashdz.sistemaintelaf.controller.venta.AddVentaController;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
 import com.l2ashdz.sistemaintelaf.ui.cliente.AddClienteView;
 import com.l2ashdz.sistemaintelaf.ui.empleado.AddEmpleadoView;
-import com.l2ashdz.sistemaintelaf.ui.pedido.AddPedidoView;
+import com.l2ashdz.sistemaintelaf.ui.pedido.PedidoView;
 import com.l2ashdz.sistemaintelaf.ui.producto.AddProductoView;
 import com.l2ashdz.sistemaintelaf.ui.tienda.TiendaView;
 import com.l2ashdz.sistemaintelaf.ui.venta.AddVentaView;
@@ -45,8 +45,8 @@ public class PrincipalUIController extends MouseAdapter {
     private AddVentaController ventaC = new AddVentaController(ventaV);
     
     //Vista y controlador para menu Pedidos
-    private AddPedidoView pedidoV = new AddPedidoView();
-    private AddPedidoController pedidoC = new AddPedidoController(pedidoV);
+    private PedidoView pedidoV = new PedidoView();
+    private PedidoController pedidoC = new PedidoController(pedidoV);
 
     public PrincipalUIController(PrincipalView principalUI, String codigo, String nombre) {
         this.principalUI = principalUI;
