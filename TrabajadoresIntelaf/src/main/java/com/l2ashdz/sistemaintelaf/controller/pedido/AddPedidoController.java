@@ -224,11 +224,11 @@ public class AddPedidoController extends MouseAdapter implements ActionListener,
                 productosP.forEach(pp -> existenciaDAO.restarExistencias(tiendaDestino, pp.getCodigo(), pp.getCantidad()));
 
                 clienteDAO.restarCredito(nitCliente, credito);
-                conexion.commit();
 
                 generarFactura();
                 actualizarProductos(tiendaOrigen);
                 limpiarCampos();
+                conexion.commit();
             } catch (SQLException ex) {
                 try {
                     conexion.rollback();

@@ -1,17 +1,30 @@
 package com.l2ashdz.sistemaintelaf.controller.pedido;
 
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.isFecha;
+import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.ValidacionesInterfaz.validarRecogerPedido;
+import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.EntidadFabrica.nuevaVenta;
 import com.l2ashdz.sistemaintelaf.dao.CRUD;
+import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAO;
 import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAO;
 import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAOImpl;
+import com.l2ashdz.sistemaintelaf.dao.pedido.ProductoPedidoDAO;
+import com.l2ashdz.sistemaintelaf.dao.pedido.ProductoPedidoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAO;
 import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
+import com.l2ashdz.sistemaintelaf.dao.venta.ProductoVentaDAOImpl;
+import com.l2ashdz.sistemaintelaf.dao.venta.VentaDAO;
+import com.l2ashdz.sistemaintelaf.dao.venta.VentaDAOImpl;
+import com.l2ashdz.sistemaintelaf.excepciones.UserInputException;
 import com.l2ashdz.sistemaintelaf.model.Cliente;
+import com.l2ashdz.sistemaintelaf.model.Conexion;
 import com.l2ashdz.sistemaintelaf.model.Pedido;
+import com.l2ashdz.sistemaintelaf.model.ProductoPedido;
+import com.l2ashdz.sistemaintelaf.model.ProductoVenta;
 import com.l2ashdz.sistemaintelaf.model.TiempoTraslado;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
+import com.l2ashdz.sistemaintelaf.model.Venta;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
 import com.l2ashdz.sistemaintelaf.ui.pedido.RecogerPedidoView;
 import com.l2ashdz.sistemaintelaf.ui.pedido.VerificarPedidoView;
@@ -19,7 +32,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -33,13 +51,16 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
 
     private VerificarPedidoView verificarPV;
     private RecogerPedidoView recogerPedidoV;
+    private Connection conexion;
 
     private Pedido pedido;
     private List<Pedido> pedidos;
     private PedidoDAO pedidoDAO;
+    private List<ProductoPedido> productosP;
+    private ProductoPedidoDAO prodPedidoDAO;
 
     private Cliente cliente;
-    private CRUD<Cliente> clienteDAO;
+    private ClienteDAO clienteDAO;
 
     private Tienda tiendaO;
     private Tienda tiendaD;
@@ -48,14 +69,31 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
     private TiempoTraslado tiempo;
     private TiempoTrasladoDAO tiempoDAO;
 
+    private Venta venta;
+    private VentaDAO ventaDAO;
+
+    private List<ProductoVenta> productosV;
+    private CRUD<ProductoVenta> prodVentaDAO;
+
     private String tiendaActual;
     LocalDate fecha;
+    String fechaRetiro;
+    String porcentajeC;
+    String porcentajeE;
+    float anticipo;
+    float pagoPendiente;
+    float credito;
+    
 
     public VerificarPedidoController(VerificarPedidoView verificarPV) {
+        conexion = Conexion.getConexion();
         pedidoDAO = PedidoDAOImpl.getPedidoDAO();
         clienteDAO = ClienteDAOImpl.getClienteDAO();
         tiendaDAO = TiendaDAOImpl.getTiendaDAO();
         tiempoDAO = TiempoTrasladoDAOImpl.getTiempoDAO();
+        ventaDAO = VentaDAOImpl.getVentaDAO();
+        prodVentaDAO = ProductoVentaDAOImpl.getProductoVentaDAO();
+        prodPedidoDAO = ProductoPedidoDAOImpl.getProductoPDAO();
         this.verificarPV = verificarPV;
         this.verificarPV.getBtnEspera().addActionListener(this);
         this.verificarPV.getBtnRecogido().addActionListener(this);
@@ -87,9 +125,9 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
                     + "\nejemplo(2020-04-09)", "Verificar Pedido", JOptionPane.INFORMATION_MESSAGE);
             while (!isFecha(fechaV)) {
                 fechaV = JOptionPane.showInputDialog(null, "El formato de la fecha no es correcto"
-                    + "\nejemplo(2020-04-09)", "Verificar Pedido", JOptionPane.ERROR_MESSAGE);
+                        + "\nejemplo(2020-04-09)", "Verificar Pedido", JOptionPane.ERROR_MESSAGE);
             }
-            
+
             pedidoDAO.setEstado(pedido.getCodigo(), 2);
             pedidoDAO.setFecha(pedido.getCodigo(), fechaV, 1);
             limpiarCampos();
@@ -107,11 +145,54 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
              * pagar total-anticipo
              *
              * cambiar estado pedido a 3 registrar venta
-             *
-             *
              */
+
+            try {
+                conexion.setAutoCommit(false);
+                if (pedido.getFechaVerificacion().isAfter(fecha)) {
+                    if (pedido.getPorcentajePagado() == 1) {
+                        float add = (float) (pedido.getTotal() * 0.05) * -1;
+                        clienteDAO.restarCredito(pedido.getNitCliente(), add);
+                    } else {
+                        float add = (float) (pedido.getTotal() * 0.02) * -1;
+                        clienteDAO.restarCredito(pedido.getNitCliente(), add);
+                    }
+                }
+
+                int idVenta= ventaDAO.getIdVenta();
+                ventaDAO.create(nuevaVenta(pedido.getNitCliente(), fechaRetiro, getPorcCredito(),
+                        getPorcEfectivo(), pedido.getTiendaDestino()));
+
+                productosP = prodPedidoDAO.getProductosInPedido(pedido.getCodigo());
+                productosP.forEach(pp -> {
+                    prodVentaDAO.create(new ProductoVenta(pp, String.valueOf(idVenta),
+                            String.valueOf(pp.getCantidad())));
+                });
+                clienteDAO.restarCredito(pedido.getNitCliente(), credito);
+                pedidoDAO.setEstado(pedido.getCodigo(), 3);
+                pedidoDAO.setFecha(pedido.getCodigo(), fechaRetiro, 2);
+                limpiarCampos();
+                JOptionPane.showMessageDialog(null, "Pedido completado", "Info", JOptionPane.INFORMATION_MESSAGE);
+                conexion.commit();
+
+            } catch (SQLException ex) {
+                try {
+                    conexion.rollback();
+                    conexion.setAutoCommit(true);
+                } catch (SQLException ex2) {
+                    ex2.printStackTrace(System.out);
+                }
+            }
+
+            //Cierra interfaz recoger pedido
         } else if (recogerPedidoV.getBtnFinalizar() == e.getSource()) {
-            recogerPedidoV.dispose();
+            obtenerDatos();
+            try {
+                validarRecogerPedido(fechaRetiro, porcentajeC, porcentajeE);
+                recogerPedidoV.dispose();
+            } catch (UserInputException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -140,6 +221,17 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
         verificarPV.getBtnRetrasado().setEnabled(false);
     }
 
+    private void obtenerDatos() {
+        Date input = recogerPedidoV.getTxtFecha().getDate();
+        LocalDate date = input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        fechaRetiro = date.toString() == null ? "" : date.toString();
+        porcentajeC = recogerPedidoV.getTxtPorcentajeC().getText();
+        porcentajeE = recogerPedidoV.getTxtPorcentajeE().getText();
+        if (!recogerPedidoV.getTxtCredito().getText().isEmpty()) {
+            credito = Float.parseFloat(recogerPedidoV.getTxtCredito().getText());
+        }
+    }
+
     private void cargarPedidos() {
         tiendaActual = PrincipalView.lblCodigo.getText();
         pedidos = pedidoDAO.getPedidos(tiendaActual);
@@ -147,10 +239,22 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
         verificarPV.getPedidosObservableList().addAll(pedidos);
     }
 
+    private String getPorcCredito() {
+        float porcAnticipo = pedido.getPorcentajeCredito() * pedido.getPorcentajePagado();
+        float porcPendiente = Float.parseFloat(porcentajeC) * (pagoPendiente / pedido.getTotal());
+        Float porcTotalC = porcAnticipo + porcPendiente;
+        return porcTotalC.toString();
+    }
+
+    private String getPorcEfectivo() {
+        float porcAnticipo = pedido.getPorcentajeEfectivo() * pedido.getPorcentajePagado();
+        float porcPendiente = Float.parseFloat(porcentajeE) * (pagoPendiente / pedido.getTotal());
+        Float porcTotalE = porcAnticipo + porcPendiente;
+        return porcTotalE.toString();
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
-        float anticipo;
-        float pagoPendiente;
         int fila = verificarPV.getTblPedidos().getSelectedRow();
         String codPedido = verificarPV.getTblPedidos().getValueAt(fila, 0).toString();
 
@@ -225,7 +329,18 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
     private void setVisibleRecogerP() {
         recogerPedidoV = new RecogerPedidoView();
         recogerPedidoV.getBtnFinalizar().addActionListener(this);
-        recogerPedidoV.getTxtFecha().setDate(new Date());
+        String date = pedido.getFechaVerificacion().toString();
+        Date date2 = null;
+        try {
+
+            date2 = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+        } catch (ParseException e) {
+        }
+        recogerPedidoV.getTxtFecha().setDate(date2);
+        recogerPedidoV.getLblAnticipo().setText(String.valueOf(anticipo));
+        recogerPedidoV.getLblCreditoCompra().setText(String.valueOf(cliente.getCreditoCompra()));
+        recogerPedidoV.getLblTotal().setText(String.valueOf(pedido.getTotal()));
+        recogerPedidoV.getLblPagoPendiente().setText(String.valueOf(pagoPendiente));
         recogerPedidoV.setLocationRelativeTo(null);
         recogerPedidoV.setVisible(true);
     }

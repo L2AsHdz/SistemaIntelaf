@@ -180,6 +180,12 @@ public class ValidacionesInterfaz {
                     + p.getExistencias());
         }
     }
+    
+    public static void validarRecogerPedido(String fecha, String porcentajeC, String porcentajeE) throws UserInputException {
+        if (fecha.isEmpty() || porcentajeC.isEmpty() || porcentajeE.isEmpty()) {
+            throw new UserInputException("Todos los campos son obligatorios");
+        }
+    }
 
     private static boolean isProductoInVenta(List<ProductoVenta> pList, Producto p) {
         boolean flag = false;

@@ -31,7 +31,8 @@ public class ProductoPedidoDAOImpl implements ProductoPedidoDAO {
 
     @Override
     public List<ProductoPedido> getListado() {
-        String sql = "SELECT p.*, pp.codigo_pedido, pp.cantidad FROM producto p INNER JOIN producto_pedido pp on p.codigo = pp.codigo_producto";
+        String sql = "SELECT p.*, pp.codigo_pedido, pp.cantidad FROM producto p INNER JOIN "
+                + "producto_pedido pp on p.codigo = pp.codigo_producto";
         List<ProductoPedido> productosP = null;
 
         try (Statement declaracion = conexion.createStatement();
@@ -126,6 +127,38 @@ public class ProductoPedidoDAOImpl implements ProductoPedidoDAO {
             System.out.println("No se eliminaron los productos del pedido");
             ex.printStackTrace(System.out);
         }
+    }
+
+    @Override
+    public List<ProductoPedido> getProductosInPedido(int codP) {
+        String sql = "SELECT p.*, pp.codigo_pedido, pp.cantidad FROM producto p INNER JOIN "
+                + "producto_pedido pp on p.codigo = pp.codigo_producto WHERE pp.codigo_pedido = ?";
+        List<ProductoPedido> productosP = null;
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, codP);
+            try (ResultSet rs = ps.executeQuery()) {
+                productosP = new ArrayList<>();
+                
+                while (rs.next()) {
+                    ProductoPedido productoP = new ProductoPedido();
+                    productoP.setCodigo(rs.getString("codigo"));
+                    productoP.setNombre(rs.getString("nombre"));
+                    productoP.setFabricante(rs.getString("fabricante"));
+                    productoP.setPrecio(rs.getFloat("precio"));
+                    productoP.setDescripcion(rs.getString("descripcion"));
+                    productoP.setGarantiaMeses(rs.getInt("garantia_meses"));
+                    productoP.setCantidad(rs.getInt("cantidad"));
+                    productoP.setCodigoPedido(rs.getInt("codigo_pedido"));
+                    productosP.add(productoP);
+                }
+            }
+            System.out.println("Listado de productos de pedido obtenido");
+        } catch (SQLException e) {
+            System.out.println("No se obtuvo el listado de productos del pedido");
+            e.printStackTrace(System.out);
+        }
+        return productosP;
     }
 
 }
