@@ -268,7 +268,7 @@ public class VerificarPedidoView extends javax.swing.JPanel {
         lblCredito.setForeground(new java.awt.Color(255, 255, 255));
 
         lblAvisoAtrasado.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
-        lblAvisoAtrasado.setForeground(new java.awt.Color(255, 255, 255));
+        lblAvisoAtrasado.setForeground(new java.awt.Color(255, 51, 51));
         lblAvisoAtrasado.setText("aviso");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

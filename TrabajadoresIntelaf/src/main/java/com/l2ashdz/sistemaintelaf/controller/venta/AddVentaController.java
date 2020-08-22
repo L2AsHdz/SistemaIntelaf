@@ -78,7 +78,6 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
     public AddVentaController(AddVentaView addVentaV) {
         conexion = Conexion.getConexion();
         productosV = new ArrayList<>();
-        facturaV = new FacturaView();
         ventaDAO = VentaDAOImpl.getVentaDAO();
         productoVDAO = ProductoVentaDAOImpl.getProductoVentaDAO();
         productoDAO = ProductoDAOImpl.getProductoDAO();
@@ -334,7 +333,7 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
     }
 
     private void generarFactura() {
-        facturaV.getTxtAFactura().setText("");
+        facturaV = new FacturaView();
         insertarTextfactura("Factura No. "+idVenta);
         insertarTextfactura("\nFecha: "+fecha);
         
@@ -354,7 +353,6 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
 
         facturaV.setLocationRelativeTo(null);
         facturaV.setVisible(true);
-        facturaV.repaint();
     }
     
     private void insertarTextfactura(String text) {

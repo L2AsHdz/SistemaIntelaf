@@ -91,7 +91,6 @@ public class AddPedidoController extends MouseAdapter implements ActionListener,
     public AddPedidoController(AddPedidoView addPedidoView) {
         conexion = Conexion.getConexion();
         productosP = new ArrayList<>();
-        facturaV = new FacturaView();
         pedidoDAO = PedidoDAOImpl.getPedidoDAO();
         tiendaDAO = TiendaDAOImpl.getTiendaDAO();
         productoPDAO = ProductoPedidoDAOImpl.getProductoPDAO();
@@ -385,6 +384,7 @@ public class AddPedidoController extends MouseAdapter implements ActionListener,
     }
 
     private void generarFactura() {
+        facturaV = new FacturaView();
         insertarTextfactura("Codigo del pedido: " + codigoPedido);
         insertarTextfactura("\nFecha del pedido: " + fecha);
 

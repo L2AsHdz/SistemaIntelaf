@@ -1,5 +1,6 @@
 package com.l2ashdz.sistemaintelaf.controller.pedido;
 
+import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.isFecha;
 import com.l2ashdz.sistemaintelaf.dao.CRUD;
 import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAO;
@@ -82,8 +83,15 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
 
         //Marca el pedido a la espera del cliete
         if (verificarPV.getBtnEspera() == e.getSource()) {
+            String fechaV = JOptionPane.showInputDialog(null, "Ingrese fecha de verificacion"
+                    + "\nejemplo(2020-04-09)", "Verificar Pedido", JOptionPane.INFORMATION_MESSAGE);
+            while (!isFecha(fechaV)) {
+                fechaV = JOptionPane.showInputDialog(null, "El formato de la fecha no es correcto"
+                    + "\nejemplo(2020-04-09)", "Verificar Pedido", JOptionPane.ERROR_MESSAGE);
+            }
+            
             pedidoDAO.setEstado(pedido.getCodigo(), 2);
-            pedidoDAO.setFecha(pedido.getCodigo(), LocalDate.now().toString(), 1);
+            pedidoDAO.setFecha(pedido.getCodigo(), fechaV, 1);
             limpiarCampos();
 
         } else if (verificarPV.getBtnRetrasado() == e.getSource()) {
