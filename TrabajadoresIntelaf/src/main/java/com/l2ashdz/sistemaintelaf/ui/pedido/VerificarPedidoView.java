@@ -58,7 +58,7 @@ public class VerificarPedidoView extends javax.swing.JPanel {
         lblCodPedido = new javax.swing.JLabel();
         lblNitC = new javax.swing.JLabel();
         lblCodTO = new javax.swing.JLabel();
-        lblTD = new javax.swing.JLabel();
+        lblCodTD = new javax.swing.JLabel();
         lblNameTO = new javax.swing.JLabel();
         lblFechaP = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
@@ -81,6 +81,10 @@ public class VerificarPedidoView extends javax.swing.JPanel {
         jLabel22 = new javax.swing.JLabel();
         jLabel23 = new javax.swing.JLabel();
         btnRecogido = new javax.swing.JButton();
+        lblCantProd = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        lblCredito = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(39, 44, 52));
 
@@ -92,26 +96,27 @@ public class VerificarPedidoView extends javax.swing.JPanel {
 
             }
         ));
+        tblPedidos.getTableHeader().setReorderingAllowed(false);
 
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${pedidosObservableList}");
         org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, tblPedidos);
-        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nitCliente}"));
-        columnBinding.setColumnName("Nit Cliente");
-        columnBinding.setColumnClass(String.class);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${codigo}"));
+        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${codigo}"));
         columnBinding.setColumnName("Codigo");
         columnBinding.setColumnClass(Integer.class);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${codigoTiendaDestino}"));
-        columnBinding.setColumnName("Codigo Tienda Destino");
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nitCliente}"));
+        columnBinding.setColumnName("Nit Cliente");
         columnBinding.setColumnClass(String.class);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${codigoTiendaOrigen}"));
-        columnBinding.setColumnName("Codigo Tienda Origen");
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${tiendaOrigen}"));
+        columnBinding.setColumnName("Tienda Origen");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${tiendaDestino}"));
+        columnBinding.setColumnName("Tienda Destino");
         columnBinding.setColumnClass(String.class);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${fecha}"));
         columnBinding.setColumnName("Fecha");
         columnBinding.setColumnClass(java.time.LocalDate.class);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${estadoS}"));
-        columnBinding.setColumnName("Estado S");
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${estado}"));
+        columnBinding.setColumnName("Estado");
         columnBinding.setColumnClass(String.class);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
@@ -157,31 +162,24 @@ public class VerificarPedidoView extends javax.swing.JPanel {
 
         lblTotal.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblTotal.setForeground(new java.awt.Color(255, 255, 255));
-        lblTotal.setText("afds");
 
         lblCodPedido.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblCodPedido.setForeground(new java.awt.Color(255, 255, 255));
-        lblCodPedido.setText("sda");
 
         lblNitC.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblNitC.setForeground(new java.awt.Color(255, 255, 255));
-        lblNitC.setText("nit");
 
         lblCodTO.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblCodTO.setForeground(new java.awt.Color(255, 255, 255));
-        lblCodTO.setText("Anticipo pagado:");
 
-        lblTD.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        lblTD.setForeground(new java.awt.Color(255, 255, 255));
-        lblTD.setText("Anticipo pagado:");
+        lblCodTD.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lblCodTD.setForeground(new java.awt.Color(255, 255, 255));
 
         lblNameTO.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblNameTO.setForeground(new java.awt.Color(255, 255, 255));
-        lblNameTO.setText("Anticipo pagado:");
 
         lblFechaP.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblFechaP.setForeground(new java.awt.Color(255, 255, 255));
-        lblFechaP.setText("dfsddf");
 
         jLabel9.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(255, 255, 255));
@@ -189,11 +187,9 @@ public class VerificarPedidoView extends javax.swing.JPanel {
 
         lblAnticipo.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblAnticipo.setForeground(new java.awt.Color(255, 255, 255));
-        lblAnticipo.setText("fgr");
 
         lblNameC.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblNameC.setForeground(new java.awt.Color(255, 255, 255));
-        lblNameC.setText("asdf");
 
         jLabel10.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(255, 255, 255));
@@ -205,7 +201,6 @@ public class VerificarPedidoView extends javax.swing.JPanel {
 
         lblTelTO.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblTelTO.setForeground(new java.awt.Color(255, 255, 255));
-        lblTelTO.setText("Anticipo pagado:");
 
         jLabel12.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(255, 255, 255));
@@ -217,15 +212,12 @@ public class VerificarPedidoView extends javax.swing.JPanel {
 
         lblTelTD.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblTelTD.setForeground(new java.awt.Color(255, 255, 255));
-        lblTelTD.setText("Anticipo pagado:");
 
         lblNameTD.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblNameTD.setForeground(new java.awt.Color(255, 255, 255));
-        lblNameTD.setText("Anticipo pagado:");
 
         lblPagoPendiente.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         lblPagoPendiente.setForeground(new java.awt.Color(255, 255, 255));
-        lblPagoPendiente.setText("dsfgg");
 
         jLabel18.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         jLabel18.setForeground(new java.awt.Color(255, 255, 255));
@@ -237,7 +229,6 @@ public class VerificarPedidoView extends javax.swing.JPanel {
 
         lblDirC.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblDirC.setForeground(new java.awt.Color(255, 255, 255));
-        lblDirC.setText("df");
 
         jLabel20.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel20.setForeground(new java.awt.Color(255, 255, 255));
@@ -245,7 +236,6 @@ public class VerificarPedidoView extends javax.swing.JPanel {
 
         lblTelC.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblTelC.setForeground(new java.awt.Color(255, 255, 255));
-        lblTelC.setText("dfaf");
 
         jLabel21.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel21.setForeground(new java.awt.Color(255, 255, 255));
@@ -262,6 +252,20 @@ public class VerificarPedidoView extends javax.swing.JPanel {
         btnRecogido.setText("Marcar como recogido");
         btnRecogido.setEnabled(false);
 
+        lblCantProd.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lblCantProd.setForeground(new java.awt.Color(255, 255, 255));
+
+        jLabel14.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel14.setText("Cant. Productos:");
+
+        jLabel24.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel24.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel24.setText("Credito:");
+
+        lblCredito.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lblCredito.setForeground(new java.awt.Color(255, 255, 255));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -269,13 +273,9 @@ public class VerificarPedidoView extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addGap(32, 32, 32)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel18)
-                                .addGap(18, 18, 18)
-                                .addComponent(lblPagoPendiente))
                             .addComponent(jLabel22)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -287,68 +287,98 @@ public class VerificarPedidoView extends javax.swing.JPanel {
                                     .addComponent(lblNameTO)
                                     .addComponent(lblCodTO)
                                     .addComponent(lblTelTO)))
-                            .addComponent(jLabel1)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel9)
-                                    .addComponent(jLabel8))
-                                .addGap(74, 74, 74)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel14)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(135, 135, 135)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(lblFechaP)
+                                            .addComponent(lblCodPedido)
+                                            .addComponent(lblCantProd)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel9)
+                                            .addComponent(jLabel8)
+                                            .addComponent(jLabel18))
+                                        .addGap(23, 23, 23)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(lblPagoPendiente)
+                                            .addComponent(lblTotal)
+                                            .addComponent(lblAnticipo))))
+                                .addGap(102, 102, 102)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblTotal)
-                                    .addComponent(lblAnticipo)
-                                    .addComponent(lblFechaP)
-                                    .addComponent(lblCodPedido)))
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel7))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel23)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel10)
-                                    .addComponent(jLabel3))
-                                .addGap(28, 28, 28)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblNameC)
-                                    .addComponent(lblNitC)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel19)
-                                    .addComponent(jLabel20))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblTelC)
-                                    .addComponent(lblDirC)))
-                            .addComponent(jLabel21)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel12)
-                                    .addComponent(jLabel13)
-                                    .addComponent(jLabel5))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblTD)
-                                    .addComponent(lblNameTD)
-                                    .addComponent(lblTelTD))))
-                        .addGap(111, 111, 111))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel10)
+                                            .addComponent(jLabel3))
+                                        .addGap(28, 28, 28)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(lblNameC)
+                                            .addComponent(lblNitC)))
+                                    .addComponent(jLabel21)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel19)
+                                            .addComponent(jLabel20)
+                                            .addComponent(jLabel24))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(lblCredito)
+                                            .addComponent(lblTelC)
+                                            .addComponent(lblDirC)))
+                                    .addComponent(jLabel23)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel12)
+                                            .addComponent(jLabel13)
+                                            .addComponent(jLabel5))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(lblCodTD)
+                                            .addComponent(lblNameTD)
+                                            .addComponent(lblTelTD)))))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnRetrasado)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnEspera)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnRecogido))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 584, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(24, Short.MAX_VALUE))))
+                        .addComponent(btnRetrasado)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnEspera)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnRecogido))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 582, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel21)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(lblNitC))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel10)
+                            .addComponent(lblNameC))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel19)
+                            .addComponent(lblDirC))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel20)
+                            .addComponent(lblTelC))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel24)
+                            .addComponent(lblCredito)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -362,9 +392,13 @@ public class VerificarPedidoView extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(lblFechaP)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel8)
-                            .addComponent(lblTotal))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel14)
+                            .addComponent(lblCantProd))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblTotal)
+                            .addComponent(jLabel8))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel9)
@@ -372,8 +406,10 @@ public class VerificarPedidoView extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel18)
-                            .addComponent(lblPagoPendiente))
-                        .addGap(18, 18, 18)
+                            .addComponent(lblPagoPendiente))))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel22)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -390,24 +426,6 @@ public class VerificarPedidoView extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(lblTelTO))))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel21)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(lblNitC))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel10)
-                            .addComponent(lblNameC))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel19)
-                            .addComponent(lblDirC))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel20)
-                            .addComponent(lblTelC))
-                        .addGap(49, 49, 49)
                         .addComponent(jLabel23)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -418,16 +436,17 @@ public class VerificarPedidoView extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel13))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblTD)
+                                .addComponent(lblCodTD)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(lblNameTD)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(lblTelTD)))))
-                .addGap(38, 38, 38)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnEspera)
-                    .addComponent(btnRetrasado)
-                    .addComponent(btnRecogido))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnRetrasado)
+                        .addComponent(btnRecogido)))
                 .addGap(33, 33, 33))
         );
 
@@ -444,6 +463,7 @@ public class VerificarPedidoView extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
@@ -451,6 +471,7 @@ public class VerificarPedidoView extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -460,8 +481,11 @@ public class VerificarPedidoView extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblAnticipo;
+    private javax.swing.JLabel lblCantProd;
     private javax.swing.JLabel lblCodPedido;
+    private javax.swing.JLabel lblCodTD;
     private javax.swing.JLabel lblCodTO;
+    private javax.swing.JLabel lblCredito;
     private javax.swing.JLabel lblDirC;
     private javax.swing.JLabel lblFechaP;
     private javax.swing.JLabel lblNameC;
@@ -469,7 +493,6 @@ public class VerificarPedidoView extends javax.swing.JPanel {
     private javax.swing.JLabel lblNameTO;
     private javax.swing.JLabel lblNitC;
     private javax.swing.JLabel lblPagoPendiente;
-    private javax.swing.JLabel lblTD;
     private javax.swing.JLabel lblTelC;
     private javax.swing.JLabel lblTelTD;
     private javax.swing.JLabel lblTelTO;
@@ -538,8 +561,8 @@ public class VerificarPedidoView extends javax.swing.JPanel {
         return lblPagoPendiente;
     }
 
-    public JLabel getLblTD() {
-        return lblTD;
+    public JLabel getLblCodTD() {
+        return lblCodTD;
     }
 
     public JLabel getLblTelC() {
@@ -556,6 +579,14 @@ public class VerificarPedidoView extends javax.swing.JPanel {
 
     public JLabel getLblTotal() {
         return lblTotal;
+    }
+
+    public JLabel getLblCantProd() {
+        return lblCantProd;
+    }
+
+    public JLabel getLblCredito() {
+        return lblCredito;
     }
 
     public JTable getTblPedidos() {

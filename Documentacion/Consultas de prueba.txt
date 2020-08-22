@@ -1,38 +1,38 @@
 Obtiene el tiempo de un pedido:
-select p.codigo, tt.tiempo from pedido p inner join tiempo_traslado tt on ((p.codigo_tienda_destino=tt.codigo_tienda_1 AND p.codigo_tienda_origen=tt.codigo_tienda_2) OR (p.codigo_tienda_origen=tt.codigo_tienda_1 AND p.codigo_tienda_destino=tt.codigo_tienda_2)); 
+SELECT p.codigo, tt.tiempo FROM pedido p INNER JOIN tiempo_traslado tt ON ((p.codigo_tienda_destino=tt.codigo_tienda_1  AND p.codigo_tienda_origen=tt.codigo_tienda_2) OR (p.codigo_tienda_origen=tt.codigo_tienda_1  AND p.codigo_tienda_destino=tt.codigo_tienda_2)); 
 
-Obtiene lista de los pedidos con datos del cliente y el total del pedido;
-select c.nit, c.nombre, p.codigo, SUM(pp.precio*pp.cantidad) from pedido p inner join producto_pedido pp on p.codigo=pp.codigo_pedido inner join cliente c on p.nit_cliente=c.nit group by p.codigo;
+obtiene el total y cantidad de articulos comprados de un pedido:
+SELECT SUM(pp.precio*pp.cantidad) total, COUNT(pp.codigo_producto) cantProductos FROM pedido p INNER JOIN producto_pedido pp ON p.codigo=pp.codigo_pedido WHERE p.codigo=3;
 
-obtiene el total de un pedido:
-select SUM(pp.precio*pp.cantidad) total from pedido p inner join producto_pedido pp on p.codigo=pp.codigo_pedido inner join cliente c on p.nit_cliente=c.nit where p.codigo=3;
+Listado para verificar pedidos:
+SELECT p.*, SUM(pp.precio*pp.cantidad) total, COUNT(pp.codigo_producto) prodComprados FROM pedido p INNER JOIN producto_pedido pp ON p.codigo=pp.codigo_pedido WHERE p.codigo_tienda_destino = ? AND DATE_ADD(p.fecha, INTERVAL (SELECT tt.tiempo FROM tiempo_traslado tt WHERE ((p.codigo_tienda_destino=tt.codigo_tienda_1  AND p.codigo_tienda_origen=tt.codigo_tienda_2) OR (p.codigo_tienda_origen=tt.codigo_tienda_1  AND p.codigo_tienda_destino=tt.codigo_tienda_2))) DAY) <= NOW() GROUP BY p.codigo;
 
 Reporte 1: todos los pedidos que llegaran a la tienda
-select * from pedido where codigo_tienda_destino='ABC-4' and estado=1;
+SELECT * FROM pedido WHERE codigo_tienda_destino='ABC-4'  AND estado=1;
 
 Reporte 2: pedidos que estan en tiempo de estar en tienda esperando ser verificados
-select p.codigo, p.fecha from pedido p where DATE_ADD(p.fecha, INTERVAL (select tt.tiempo from tiempo_traslado tt where ((p.codigo_tienda_destino=tt.codigo_tienda_1 AND p.codigo_tienda_origen=tt.codigo_tienda_2) OR (p.codigo_tienda_origen=tt.codigo_tienda_1 AND p.codigo_tienda_destino=tt.codigo_tienda_2))) DAY) <= '2020-08-26';
+SELECT p.codigo, p.fecha FROM pedido p WHERE p. codigo_tienda_destino='ABC-4' AND DATE_ADD(p.fecha, INTERVAL (SELECT tt.tiempo FROM tiempo_traslado tt WHERE ((p.codigo_tienda_destino=tt.codigo_tienda_1  AND p.codigo_tienda_origen=tt.codigo_tienda_2) OR (p.codigo_tienda_origen=tt.codigo_tienda_1  AND p.codigo_tienda_destino=tt.codigo_tienda_2))) DAY) <= '2020-08-26';
 
 Reporte 3: pedidos atrasados
-select * from pedido where codigo_tienda_destino='ABC-6' and estado=2;
+SELECT * FROM pedido WHERE codigo_tienda_destino='ABC-6'  AND estado=2;
 
 Reporte 4: pedidos que salieron de la tienda y estan en transito
-select * from pedido where codigo_tienda_origen='ABC-2' and estado=1;
+SELECT * FROM pedido WHERE codigo_tienda_origen='ABC-2'  AND estado=1;
 
 Reporte 5: compras realizadas por un cliente
-select c.nit, c.nombre, v.*, SUM(pv.precio*pv.cantidad) total from venta v inner join producto_venta pv on v.id=pv.id_venta inner join cliente c on v.nit_cliente=c.nit where v.nit_cliente='e-5924' group by v.id;
+SELECT c.nit, c.nombre, v.*, SUM(pv.precio*pv.cantidad) total FROM venta v INNER JOIN producto_venta pv ON v.id=pv.id_venta INNER JOIN cliente c ON v.nit_cliente=c.nit WHERE v.nit_cliente='e-5924'  GROUP BY v.id;
 
 Reporte 6: pedidos en curso de un cliente
-select * from pedido p where estado=1 and p.nit_cliente='e-5924';
+SELECT * FROM pedido p WHERE estado=1  AND p.nit_cliente='e-5924';
 
 Reporte 7: los diez productos mas vendidos en un intervalo de tiempo
-select p.*, count(pv.codigo_producto) cantV from venta v inner join producto_venta pv on v.id=pv.id_venta inner join producto p on pv.codigo_producto=p.codigo where v.fecha BETWEEN '2020-08-01' AND '2020-08-21' group by pv.codigo_producto order by cantV desc limit 10;
+SELECT p.*, COUNT(pv.codigo_producto) cantV FROM venta v INNER JOIN producto_venta pv ON v.id=pv.id_venta INNER JOIN producto p ON pv.codigo_producto=p.codigo WHERE v.fecha BETWEEN '2020-08-01'  AND '2020-08-21'  GROUP BY pv.codigo_producto ORDER BY cantV DESC LIMIT 10;
 
 Reporte 8: productos mas vendidos en una tienda en un intervalo de tiempo
-elect p.*, count(pv.codigo_producto) cantV from venta v inner join producto_venta pv on v.id=pv.id_venta inner join producto p on pv.codigo_producto=p.codigo where v.codigo_tienda='ABC-3' AND v.fecha BETWEEN '2020-08-01' AND '2020-08-21' group by pv.codigo_producto order by cantV desc;
+elect p.*, COUNT(pv.codigo_producto) cantV FROM venta v INNER JOIN producto_venta pv ON v.id=pv.id_venta INNER JOIN producto p ON pv.codigo_producto=p.codigo WHERE v.codigo_tienda='ABC-3'  AND v.fecha BETWEEN '2020-08-01'  AND '2020-08-21'  GROUP BY pv.codigo_producto ORDER BY cantV DESC;
 
 Reporte 9: productos que nunca se han vendido
-select p.* from producto p where (select count(*) from producto_venta pv where p.codigo=pv.codigo_producto)=0;
-select p.* from producto p left join producto_venta pv on p.codigo=pv.codigo_producto where pv.id_venta is null;
+SELECT p.* FROM producto p WHERE (SELECT COUNT(*) FROM producto_venta pv WHERE p.codigo=pv.codigo_producto)=0;
+SELECT p.* FROM producto p LEFT JOIN producto_venta pv ON p.codigo=pv.codigo_producto WHERE pv.id_venta IS NULL;
 
 

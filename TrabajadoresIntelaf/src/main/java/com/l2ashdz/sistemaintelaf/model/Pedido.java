@@ -10,14 +10,16 @@ public class Pedido {
 
     private int codigo;
     private String nitCliente;
-    private String codigoTiendaOrigen;
-    private String codigoTiendaDestino;
+    private String tiendaOrigen;
+    private String tiendaDestino;
     private LocalDate fecha;
     private LocalDate fechaVerificacion;
     private LocalDate fechaRetiro;
     private float porcentajeEfectivo;
     private float porcentajeCredito;
     private float porcentajePagado;
+    private float total;
+    private int cantProductos;
     private int estadoP;
     private String estado;
 
@@ -28,8 +30,8 @@ public class Pedido {
             String porcentajeC, String porcentajeE, String porcentajeP, int estado) {
         this.codigo = Integer.parseInt(codigo);
         this.nitCliente = nitC;
-        this.codigoTiendaOrigen = codTO;
-        this.codigoTiendaDestino = codTD;
+        this.tiendaOrigen = codTO;
+        this.tiendaDestino = codTD;
         this.fecha = LocalDate.parse(fecha);
         this.porcentajeCredito = Float.parseFloat(porcentajeC);
         this.porcentajeEfectivo = Float.parseFloat(porcentajeE);
@@ -53,20 +55,20 @@ public class Pedido {
         this.nitCliente = nitCliente;
     }
 
-    public String getCodigoTiendaOrigen() {
-        return codigoTiendaOrigen;
+    public String getTiendaOrigen() {
+        return tiendaOrigen;
     }
 
-    public void setCodigoTiendaOrigen(String codigoTiendaOrigen) {
-        this.codigoTiendaOrigen = codigoTiendaOrigen;
+    public void setTiendaOrigen(String codigoTiendaOrigen) {
+        this.tiendaOrigen = codigoTiendaOrigen;
     }
 
-    public String getCodigoTiendaDestino() {
-        return codigoTiendaDestino;
+    public String getTiendaDestino() {
+        return tiendaDestino;
     }
 
-    public void setCodigoTiendaDestino(String codigoTiendaDestino) {
-        this.codigoTiendaDestino = codigoTiendaDestino;
+    public void setTiendaDestino(String codigoTiendaDestino) {
+        this.tiendaDestino = codigoTiendaDestino;
     }
 
     public LocalDate getFecha() {
@@ -115,6 +117,22 @@ public class Pedido {
 
     public void setPorcentajePagado(float porcentajePagado) {
         this.porcentajePagado = porcentajePagado;
+    }
+
+    public float getTotal() {
+        return total;
+    }
+
+    public void setTotal(float total) {
+        this.total = total;
+    }
+
+    public int getCantProductos() {
+        return cantProductos;
+    }
+
+    public void setCantProductos(int cantProductos) {
+        this.cantProductos = cantProductos;
     }
 
     public int getEstadoP() {

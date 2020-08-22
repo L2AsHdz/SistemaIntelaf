@@ -2,6 +2,7 @@ package com.l2ashdz.sistemaintelaf.dao.pedido;
 
 import com.l2ashdz.sistemaintelaf.dao.CRUD;
 import com.l2ashdz.sistemaintelaf.model.Pedido;
+import java.util.List;
 
 /**
  *
@@ -9,4 +10,5 @@ import com.l2ashdz.sistemaintelaf.model.Pedido;
  */
 public interface PedidoDAO extends CRUD<Pedido>{
     int getCodigoPedido();
+    List<Pedido> getPedidos(String codTD);
 }

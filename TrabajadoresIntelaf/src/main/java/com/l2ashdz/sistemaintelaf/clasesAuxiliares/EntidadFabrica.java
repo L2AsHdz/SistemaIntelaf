@@ -148,8 +148,8 @@ public class EntidadFabrica {
         Pedido pedido = new Pedido();
         pedido.setCodigo(Integer.parseInt(parametros[1]));
         pedido.setNitCliente(parametros[5]);
-        pedido.setCodigoTiendaOrigen(parametros[2]);
-        pedido.setCodigoTiendaDestino(parametros[3]);
+        pedido.setTiendaOrigen(parametros[2]);
+        pedido.setTiendaDestino(parametros[3]);
         pedido.setFecha(LocalDate.parse(parametros[4]));
         pedido.setPorcentajePagado(porcentajeP);
         pedido.setPorcentajeEfectivo(1);

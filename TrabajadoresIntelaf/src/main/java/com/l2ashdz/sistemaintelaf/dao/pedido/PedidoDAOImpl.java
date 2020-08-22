@@ -44,8 +44,8 @@ public class PedidoDAOImpl implements PedidoDAO {
                 Pedido pedido = new Pedido();
                 pedido.setCodigo(rs.getInt("codigo"));
                 pedido.setNitCliente(rs.getString("nit_cliente"));
-                pedido.setCodigoTiendaOrigen(rs.getString("codigo_tienda_origen"));
-                pedido.setCodigoTiendaDestino(rs.getString("codigo_tienda_destino"));
+                pedido.setTiendaOrigen(rs.getString("codigo_tienda_origen"));
+                pedido.setTiendaDestino(rs.getString("codigo_tienda_destino"));
                 pedido.setFecha(LocalDate.parse(rs.getString("fecha")));
                 fecha = rs.getString("fecha_verificacion");
                 pedido.setFechaVerificacion((fecha == null) ? null : LocalDate.parse(fecha));
@@ -74,8 +74,8 @@ public class PedidoDAOImpl implements PedidoDAO {
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setInt(1, p.getCodigo());
             ps.setString(2, p.getNitCliente());
-            ps.setString(3, p.getCodigoTiendaOrigen());
-            ps.setString(4, p.getCodigoTiendaDestino());
+            ps.setString(3, p.getTiendaOrigen());
+            ps.setString(4, p.getTiendaDestino());
             ps.setString(5, p.getFecha().toString());
             ps.setFloat(6, p.getPorcentajeEfectivo());
             ps.setFloat(7, p.getPorcentajeCredito());
@@ -90,7 +90,9 @@ public class PedidoDAOImpl implements PedidoDAO {
 
     @Override
     public Pedido getObject(String codigo) {
-        String sql = "SELECT * FROM pedido WHERE codigo = ?";
+        String sql = "SELECT p.*, SUM(pp.precio*pp.cantidad) total, COUNT(pp.codigo_producto)"
+                + " cantProductos FROM pedido p INNER JOIN producto_pedido pp ON p.codigo=pp.codigo_pedido"
+                + " WHERE p.codigo = ?";
         String fecha;
         Pedido p = null;
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
@@ -100,8 +102,8 @@ public class PedidoDAOImpl implements PedidoDAO {
                     p = new Pedido();
                     p.setCodigo(rs.getInt("codigo"));
                     p.setNitCliente(rs.getString("nit_cliente"));
-                    p.setCodigoTiendaOrigen(rs.getString("codigo_tienda_origen"));
-                    p.setCodigoTiendaDestino(rs.getString("codigo_tienda_destino"));
+                    p.setTiendaOrigen(rs.getString("codigo_tienda_origen"));
+                    p.setTiendaDestino(rs.getString("codigo_tienda_destino"));
                     p.setFecha(LocalDate.parse(rs.getString("fecha")));
                     fecha = rs.getString("fecha_verificacion");
                     p.setFechaVerificacion((fecha == null) ? null : LocalDate.parse(fecha));
@@ -110,6 +112,8 @@ public class PedidoDAOImpl implements PedidoDAO {
                     p.setPorcentajeEfectivo(rs.getFloat("porcentaje_efectivo"));
                     p.setPorcentajeCredito(rs.getFloat("porcentaje_credito"));
                     p.setPorcentajePagado(rs.getFloat("porcentaje_pagado"));
+                    p.setTotal(rs.getFloat("total"));
+                    p.setCantProductos(rs.getInt("cantProductos"));
                     p.setEstadoP(rs.getInt("estado"));
                 }
             }
@@ -157,6 +161,50 @@ public class PedidoDAOImpl implements PedidoDAO {
             ex.printStackTrace(System.out);
         }
         return id;
+    }
+
+    @Override
+    public List<Pedido> getPedidos(String codTD) {
+        String sql = "SELECT p.*, SUM(pp.precio*pp.cantidad) total, COUNT(pp.codigo_producto)"
+                + " cantProductos FROM pedido p INNER JOIN producto_pedido pp ON p.codigo=pp.codigo_pedido"
+                + " WHERE p.codigo_tienda_destino = ? AND DATE_ADD(p.fecha, INTERVAL "
+                + "(SELECT tt.tiempo FROM tiempo_traslado tt WHERE ((p.codigo_tienda_destino=tt.codigo_tienda_1  "
+                + "AND p.codigo_tienda_origen=tt.codigo_tienda_2) OR (p.codigo_tienda_origen=tt.codigo_tienda_1  "
+                + "AND p.codigo_tienda_destino=tt.codigo_tienda_2))) DAY) <= NOW() GROUP BY p.codigo";
+        String fecha;
+        List<Pedido> pedidos = null;
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setString(1, codTD);
+            try (ResultSet rs = ps.executeQuery()) {
+                pedidos = new ArrayList();
+
+                while (rs.next()) {
+                    Pedido pedido = new Pedido();
+                    pedido.setCodigo(rs.getInt("codigo"));
+                    pedido.setNitCliente(rs.getString("nit_cliente"));
+                    pedido.setTiendaOrigen(rs.getString("codigo_tienda_origen"));
+                    pedido.setTiendaDestino(rs.getString("codigo_tienda_destino"));
+                    pedido.setFecha(LocalDate.parse(rs.getString("fecha")));
+                    fecha = rs.getString("fecha_verificacion");
+                    pedido.setFechaVerificacion((fecha == null) ? null : LocalDate.parse(fecha));
+                    fecha = rs.getString("fecha_retiro");
+                    pedido.setFechaRetiro((fecha == null) ? null : LocalDate.parse(fecha));
+                    pedido.setPorcentajeEfectivo(rs.getFloat("porcentaje_efectivo"));
+                    pedido.setPorcentajeCredito(rs.getFloat("porcentaje_credito"));
+                    pedido.setPorcentajePagado(rs.getFloat("porcentaje_pagado"));
+                    pedido.setTotal(rs.getFloat("total"));
+                    pedido.setCantProductos(rs.getInt("cantProductos"));
+                    pedido.setEstadoP(rs.getInt("estado"));
+                    pedidos.add(pedido);
+                }
+            }
+            System.out.println("Listado de pedidos obtenido");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace(System.out);
+        }
+        return pedidos;
     }
 
 }
