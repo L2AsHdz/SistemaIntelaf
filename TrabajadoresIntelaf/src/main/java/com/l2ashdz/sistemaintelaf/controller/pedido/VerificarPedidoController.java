@@ -12,12 +12,14 @@ import com.l2ashdz.sistemaintelaf.model.Pedido;
 import com.l2ashdz.sistemaintelaf.model.TiempoTraslado;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
+import com.l2ashdz.sistemaintelaf.ui.pedido.RecogerPedidoView;
 import com.l2ashdz.sistemaintelaf.ui.pedido.VerificarPedidoView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -29,6 +31,7 @@ import javax.swing.JPanel;
 public class VerificarPedidoController extends MouseAdapter implements ActionListener {
 
     private VerificarPedidoView verificarPV;
+    private RecogerPedidoView recogerPedidoV;
 
     private Pedido pedido;
     private List<Pedido> pedidos;
@@ -86,18 +89,21 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
         } else if (verificarPV.getBtnRetrasado() == e.getSource()) {
             pedidoDAO.setEstado(pedido.getCodigo(), 1);
             limpiarCampos();
-            
+
         } else if (verificarPV.getBtnRecogido() == e.getSource()) {
+            setVisibleRecogerP();
             /**
              * Si fecha verificacion es mayor a fecha + tiempo traslado entonces
-             *      si porcentaje pagado es igual a 1 añadir a credito compra total*0.05
-             *      si no agregar a credito total*0.02
-             * si no cliente debe pagar total-anticipo
-             * 
-             * cambiar estado pedido a 3
-             * registrar venta
-             * 
-             * */
+             * si porcentaje pagado es igual a 1 añadir a credito compra
+             * total*0.05 si no agregar a credito total*0.02 si no cliente debe
+             * pagar total-anticipo
+             *
+             * cambiar estado pedido a 3 registrar venta
+             *
+             *
+             */
+        } else if (recogerPedidoV.getBtnFinalizar() == e.getSource()) {
+            recogerPedidoV.dispose();
         }
     }
 
@@ -206,5 +212,13 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
             case 2:
                 verificarPV.getBtnRecogido().setEnabled(true);
         }
+    }
+
+    private void setVisibleRecogerP() {
+        recogerPedidoV = new RecogerPedidoView();
+        recogerPedidoV.getBtnFinalizar().addActionListener(this);
+        recogerPedidoV.getTxtFecha().setDate(new Date());
+        recogerPedidoV.setLocationRelativeTo(null);
+        recogerPedidoV.setVisible(true);
     }
 }
