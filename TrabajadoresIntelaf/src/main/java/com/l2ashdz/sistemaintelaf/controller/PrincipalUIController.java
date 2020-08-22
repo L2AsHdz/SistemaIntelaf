@@ -4,6 +4,7 @@ import com.l2ashdz.sistemaintelaf.controller.cliente.AddClienteController;
 import com.l2ashdz.sistemaintelaf.controller.empleado.AddEmpleadoController;
 import com.l2ashdz.sistemaintelaf.controller.pedido.PedidoController;
 import com.l2ashdz.sistemaintelaf.controller.producto.AddProductoController;
+import com.l2ashdz.sistemaintelaf.controller.reportes.ReportesController;
 import com.l2ashdz.sistemaintelaf.controller.tienda.TiendaController;
 import com.l2ashdz.sistemaintelaf.controller.venta.AddVentaController;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
@@ -11,6 +12,7 @@ import com.l2ashdz.sistemaintelaf.ui.cliente.AddClienteView;
 import com.l2ashdz.sistemaintelaf.ui.empleado.AddEmpleadoView;
 import com.l2ashdz.sistemaintelaf.ui.pedido.PedidoView;
 import com.l2ashdz.sistemaintelaf.ui.producto.AddProductoView;
+import com.l2ashdz.sistemaintelaf.ui.reportes.ReportesView;
 import com.l2ashdz.sistemaintelaf.ui.tienda.TiendaView;
 import com.l2ashdz.sistemaintelaf.ui.venta.AddVentaView;
 import java.awt.event.MouseAdapter;
@@ -24,29 +26,33 @@ public class PrincipalUIController extends MouseAdapter {
 
     private PrincipalView principalUI;
 
-    //Vista y controlador para tienda
+    //Vista y controlador para interfaz tienda
     private TiendaView tiendaV = new TiendaView();
     private TiendaController tiendaC = new TiendaController(tiendaV);
 
-    //Vista y controlador para menu productos
+    //Vista y controlador para interfaz productos
     private AddProductoView productoV = new AddProductoView();
     private AddProductoController productoC = new AddProductoController(productoV);
     
-    //Vista y controlador para menu empleados
+    //Vista y controlador para interfaz empleados
     private AddEmpleadoView empleadoV = new AddEmpleadoView();
     private AddEmpleadoController empleadoC = new AddEmpleadoController(empleadoV);
     
-    //Vista y controlador para menu clientes
+    //Vista y controlador para interfaz clientes
     private AddClienteView clienteV = new AddClienteView();
     private AddClienteController clienteC = new AddClienteController(clienteV);
     
-    //Vista y controlador para menu Ventas
+    //Vista y controlador para interfaz Ventas
     private AddVentaView ventaV = new AddVentaView();
     private AddVentaController ventaC = new AddVentaController(ventaV);
     
-    //Vista y controlador para menu Pedidos
+    //Vista y controlador para interfaz Pedidos
     private PedidoView pedidoV = new PedidoView();
     private PedidoController pedidoC = new PedidoController(pedidoV);
+    
+    //Vista y controlador para interfaz reportes
+    private ReportesView reporteV = new ReportesView();
+    private ReportesController reporteC = new ReportesController(reporteV);
 
     public PrincipalUIController(PrincipalView principalUI, String codigo, String nombre) {
         this.principalUI = principalUI;
@@ -77,6 +83,7 @@ public class PrincipalUIController extends MouseAdapter {
             clienteV.setEnabled(false);
             ventaV.setEnabled(false);
             pedidoV.setEnabled(false);
+            reporteV.setEnabled(false);
             tiendaC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnProductos() == e.getSource()) {
             tiendaV.setEnabled(false);
@@ -84,6 +91,7 @@ public class PrincipalUIController extends MouseAdapter {
             clienteV.setEnabled(false);
             ventaV.setEnabled(false);
             pedidoV.setEnabled(false);
+            reporteV.setEnabled(false);
             productoC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnEmpleados() == e.getSource()) {
             tiendaV.setEnabled(false);
@@ -91,6 +99,7 @@ public class PrincipalUIController extends MouseAdapter {
             clienteV.setEnabled(false);
             ventaV.setEnabled(false);
             pedidoV.setEnabled(false);
+            reporteV.setEnabled(false);
             empleadoC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnClientes() == e.getSource()) {
             tiendaV.setEnabled(false);
@@ -98,6 +107,7 @@ public class PrincipalUIController extends MouseAdapter {
             empleadoV.setEnabled(false);
             ventaV.setEnabled(false);
             pedidoV.setEnabled(false);
+            reporteV.setEnabled(false);
             clienteC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnVentas() == e.getSource()) {
             tiendaV.setEnabled(false);
@@ -105,6 +115,7 @@ public class PrincipalUIController extends MouseAdapter {
             empleadoV.setEnabled(false);
             clienteV.setEnabled(false);
             pedidoV.setEnabled(false);
+            reporteV.setEnabled(false);
             ventaC.iniciar(principalUI.getPnlDesk());
 
         } else if (principalUI.getBtnPedidos() == e.getSource()) {
@@ -113,11 +124,17 @@ public class PrincipalUIController extends MouseAdapter {
             empleadoV.setEnabled(false);
             clienteV.setEnabled(false);
             ventaV.setEnabled(false);
+            reporteV.setEnabled(false);
             pedidoC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnReportes() == e.getSource()) {
-
-        } else if (principalUI.getBtnReportes() == e.getSource()) {
-            
+tiendaV.setEnabled(false);
+            tiendaV.setEnabled(false);
+            productoV.setEnabled(false);
+            empleadoV.setEnabled(false);
+            clienteV.setEnabled(false);
+            ventaV.setEnabled(false);
+            pedidoV.setEnabled(false);
+            reporteC.iniciar(principalUI.getPnlDesk());
         }
     }
 }

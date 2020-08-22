@@ -246,6 +246,8 @@ public class AddPedidoController extends MouseAdapter implements ActionListener,
         limpiarCamposCliente();
         addPedidoV.getTxtPorcentCredito().setText("");
         addPedidoV.getTxtPorcentEfectivo().setText("");
+        addPedidoV.getTxtPorcentAnticipo().setText("");
+        addPedidoV.getTxtAnticipo().setText("");
         addPedidoV.getTxtEfectivo().setText("");
         addPedidoV.getTxtCredito().setText("");
         addPedidoV.getLblTotal().setText("0");

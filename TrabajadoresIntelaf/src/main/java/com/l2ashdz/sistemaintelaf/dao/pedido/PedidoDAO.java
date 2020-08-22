@@ -13,4 +13,5 @@ public interface PedidoDAO extends CRUD<Pedido>{
     List<Pedido> getPedidos(String codTD);
     void setEstado(int codigo, int estado);
     void setFecha(int codigo, String fecha, int opcion);
+    List<Pedido> getPedidosEnRuta(String codT);
 }
