@@ -85,6 +85,7 @@ public class VerificarPedidoView extends javax.swing.JPanel {
         jLabel14 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
         lblCredito = new javax.swing.JLabel();
+        lblAvisoAtrasado = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(39, 44, 52));
 
@@ -122,10 +123,10 @@ public class VerificarPedidoView extends javax.swing.JPanel {
         jTableBinding.bind();
         jScrollPane1.setViewportView(tblPedidos);
 
-        btnEspera.setText("Marcar como en espera");
+        btnEspera.setText("Marcar en espera");
         btnEspera.setEnabled(false);
 
-        btnRetrasado.setText("Macar como atrasado");
+        btnRetrasado.setText("Marcar atraso");
         btnRetrasado.setEnabled(false);
 
         jLabel1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
@@ -249,7 +250,7 @@ public class VerificarPedidoView extends javax.swing.JPanel {
         jLabel23.setForeground(new java.awt.Color(255, 255, 255));
         jLabel23.setText("Datos tienda destino:");
 
-        btnRecogido.setText("Marcar como recogido");
+        btnRecogido.setText("Marcar recogido");
         btnRecogido.setEnabled(false);
 
         lblCantProd.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
@@ -265,6 +266,10 @@ public class VerificarPedidoView extends javax.swing.JPanel {
 
         lblCredito.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblCredito.setForeground(new java.awt.Color(255, 255, 255));
+
+        lblAvisoAtrasado.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        lblAvisoAtrasado.setForeground(new java.awt.Color(255, 255, 255));
+        lblAvisoAtrasado.setText("aviso");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -306,9 +311,9 @@ public class VerificarPedidoView extends javax.swing.JPanel {
                                             .addComponent(jLabel18))
                                         .addGap(23, 23, 23)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(lblPagoPendiente)
                                             .addComponent(lblTotal)
-                                            .addComponent(lblAnticipo))))
+                                            .addComponent(lblAnticipo)
+                                            .addComponent(lblPagoPendiente))))
                                 .addGap(102, 102, 102)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -343,19 +348,22 @@ public class VerificarPedidoView extends javax.swing.JPanel {
                                             .addComponent(lblTelTD)))))))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnRetrasado)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(68, 68, 68)
                         .addComponent(btnEspera)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(65, 65, 65)
                         .addComponent(btnRecogido))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 582, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 582, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblAvisoAtrasado))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblAvisoAtrasado)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel21)
@@ -443,10 +451,10 @@ public class VerificarPedidoView extends javax.swing.JPanel {
                                 .addComponent(lblTelTD)))))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnEspera)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnRetrasado)
-                        .addComponent(btnRecogido)))
+                        .addComponent(btnEspera)
+                        .addComponent(btnRecogido))
+                    .addComponent(btnRetrasado))
                 .addGap(33, 33, 33))
         );
 
@@ -481,6 +489,7 @@ public class VerificarPedidoView extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblAnticipo;
+    private javax.swing.JLabel lblAvisoAtrasado;
     private javax.swing.JLabel lblCantProd;
     private javax.swing.JLabel lblCodPedido;
     private javax.swing.JLabel lblCodTD;
@@ -539,6 +548,10 @@ public class VerificarPedidoView extends javax.swing.JPanel {
 
     public JLabel getLblFechaP() {
         return lblFechaP;
+    }
+
+    public JLabel getLblAvisoAtrasado() {
+        return lblAvisoAtrasado;
     }
 
     public JLabel getLblNameC() {

@@ -167,7 +167,7 @@ public class PedidoDAOImpl implements PedidoDAO {
     public List<Pedido> getPedidos(String codTD) {
         String sql = "SELECT p.*, SUM(pp.precio*pp.cantidad) total, COUNT(pp.codigo_producto)"
                 + " cantProductos FROM pedido p INNER JOIN producto_pedido pp ON p.codigo=pp.codigo_pedido"
-                + " WHERE p.codigo_tienda_destino = ? AND DATE_ADD(p.fecha, INTERVAL "
+                + " WHERE p.codigo_tienda_destino = ? AND p.estado < 3 AND DATE_ADD(p.fecha, INTERVAL "
                 + "(SELECT tt.tiempo FROM tiempo_traslado tt WHERE ((p.codigo_tienda_destino=tt.codigo_tienda_1  "
                 + "AND p.codigo_tienda_origen=tt.codigo_tienda_2) OR (p.codigo_tienda_origen=tt.codigo_tienda_1  "
                 + "AND p.codigo_tienda_destino=tt.codigo_tienda_2))) DAY) <= NOW() GROUP BY p.codigo";
@@ -205,6 +205,48 @@ public class PedidoDAOImpl implements PedidoDAO {
             e.printStackTrace(System.out);
         }
         return pedidos;
+    }
+
+    @Override
+    public void setEstado(int codigo, int estado) {
+        String sql = "UPDATE pedido SET estado = ? WHERE codigo = ?";
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, estado);
+            ps.setInt(2, codigo);
+            ps.executeUpdate();
+            System.out.println("Se cambio el estado del pedido");
+        } catch (SQLException ex) {
+            System.out.println("No se cambio el estado del pedido");
+            ex.printStackTrace(System.out);
+        }
+    }
+
+    @Override
+    public void setFecha(int codigo, String fecha, int opcion) {
+        String sql1 = "UPDATE pedido SET fecha_verificacion = ? WHERE codigo = ?";
+        String sql2 = "UPDATE pedido SET fecha_retiro = ? WHERE codigo = ?";
+
+        PreparedStatement ps = null;
+        try {
+            if (opcion == 1) {
+                ps = conexion.prepareStatement(sql1);
+            } else {
+                ps = conexion.prepareStatement(sql2);
+            }
+            ps.setString(1, fecha);
+            ps.setInt(2, codigo);
+            ps.executeUpdate();
+            System.out.println("Se agrego la fecha al pedido");
+        } catch (SQLException ex) {
+            System.out.println("No se agrego la fecha al pedido");
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+            }
+        }
     }
 
 }
