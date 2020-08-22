@@ -234,7 +234,7 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
 
     private void cargarPedidos() {
         tiendaActual = PrincipalView.lblCodigo.getText();
-        pedidos = pedidoDAO.getPedidos(tiendaActual);
+        pedidos = pedidoDAO.getPedidosSinVerificar(tiendaActual);
         verificarPV.getPedidosObservableList().clear();
         verificarPV.getPedidosObservableList().addAll(pedidos);
     }

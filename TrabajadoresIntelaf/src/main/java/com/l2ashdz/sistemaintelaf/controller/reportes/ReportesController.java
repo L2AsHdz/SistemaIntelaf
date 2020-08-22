@@ -43,7 +43,7 @@ public class ReportesController implements ActionListener, ItemListener {
             reportesV.setVisible(true);
             parent.add(reportesV);
             parent.validate();
-            //limpiarCampos();
+            limpiarCampos();
         } else {
             System.out.println("ya esta visible");
         }
@@ -59,7 +59,6 @@ public class ReportesController implements ActionListener, ItemListener {
         int state = evt.getStateChange();
         tiendaActual= PrincipalView.lblCodigo.getText();
         if (selccion(evt, 0, state)) {
-            System.out.println("Reporte 1");
             mostrarTabla(reportesV.getPnlTabla(), reporte1);
             pedidos = pedidoDAO.getPedidosEnRuta(tiendaActual);
             reporte1.getPedidoObservableList().clear();
@@ -67,7 +66,10 @@ public class ReportesController implements ActionListener, ItemListener {
             setEnableFiltros(false, false, false);
             
         } else if (selccion(evt, 1, state)) {
-            System.out.println("Reporte 2");
+            mostrarTabla(reportesV.getPnlTabla(), reporte1);
+            pedidos = pedidoDAO.getPedidosSinVerificar(tiendaActual);
+            reporte1.getPedidoObservableList().clear();
+            reporte1.getPedidoObservableList().addAll(pedidos);
             setEnableFiltros(false, false, false);
         
         } else if (selccion(evt, 2, state)) {
@@ -101,6 +103,16 @@ public class ReportesController implements ActionListener, ItemListener {
             setEnableFiltros(false, false, true);
             reportesV.getTxtCodTienda().requestFocus();
         }
+    }
+    
+    private void limpiarCampos() {
+        reportesV.getTxtNit().setText("");
+        reportesV.getTxtCodTienda().setText("");
+        reportesV.getTxtFechaInicio().setDate(null);
+        reportesV.getTxtFechaFinal().setDate(null);
+        reportesV.getCbReportes().setSelectedIndex(-1);
+        reportesV.getPnlTabla().removeAll();
+        reportesV.getPnlTabla().repaint();
     }
 
     private void setEnableFiltros(boolean nit, boolean fecha, boolean tienda) {

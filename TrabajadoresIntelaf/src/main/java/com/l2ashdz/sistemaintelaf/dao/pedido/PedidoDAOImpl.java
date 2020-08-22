@@ -164,7 +164,7 @@ public class PedidoDAOImpl implements PedidoDAO {
     }
 
     @Override
-    public List<Pedido> getPedidos(String codTD) {
+    public List<Pedido> getPedidosSinVerificar(String codTD) {
         String sql = "SELECT p.*, SUM(pp.precio*pp.cantidad) total, COUNT(pp.codigo_producto)"
                 + " cantProductos FROM pedido p INNER JOIN producto_pedido pp ON p.codigo=pp.codigo_pedido"
                 + " WHERE p.codigo_tienda_destino = ? AND p.estado < 3 AND DATE_ADD(p.fecha, INTERVAL "
@@ -253,7 +253,7 @@ public class PedidoDAOImpl implements PedidoDAO {
     public List<Pedido> getPedidosEnRuta(String codT) {
         String sql = "SELECT p.*, SUM(pp.precio*pp.cantidad) total, COUNT(pp.codigo_producto)"
                 + " cantProductos FROM pedido p INNER JOIN producto_pedido pp ON p.codigo = "
-                + "pp.codigo_pedido WHERE codigo_tienda_destino = ? AND estado = 0 "
+                + "pp.codigo_pedido WHERE codigo_tienda_destino = ? AND estado < 2 "
                 + "GROUP BY p.codigo";
         String fecha;
         List<Pedido> pedidos = null;
