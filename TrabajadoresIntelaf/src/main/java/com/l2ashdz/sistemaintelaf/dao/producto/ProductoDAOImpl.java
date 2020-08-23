@@ -251,7 +251,7 @@ public class ProductoDAOImpl implements ProductoDAO {
                 + "producto_venta pv ON v.id=pv.id_venta INNER JOIN producto p ON "
                 + "pv.codigo_producto=p.codigo WHERE v.codigo_tienda = ?";
         String intervalo = "AND v.fecha BETWEEN ? AND ? ";
-        String order = " GROUP BY pv.codigo_producto ORDER BY cantVentas DESC LIMIT 10";
+        String order = " GROUP BY pv.codigo_producto ORDER BY cantVentas DESC";
         PreparedStatement ps = null;
         List<Producto> productos = null;
 
@@ -294,7 +294,33 @@ public class ProductoDAOImpl implements ProductoDAO {
 
     @Override
     public List<Producto> getProductosSinVentas(String codTienda) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String sql = "SELECT p.*, e.existencias, e.codigo_tienda FROM producto p "
+                + "LEFT JOIN producto_venta pv ON p.codigo=pv.codigo_producto INNER JOIN "
+                + "existencia_producto e ON p.codigo=e.codigo_producto WHERE e.codigo_tienda = ? "
+                + "AND pv.id_venta IS NULL";
+        List<Producto> productos = null;
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setString(1, codTienda);
+            try (ResultSet rs = ps.executeQuery()) {
+                productos = new ArrayList();
+                while (rs.next()) {
+                    Producto producto = new Producto();
+                    producto.setCodigo(rs.getString("codigo"));
+                    producto.setNombre(rs.getString("nombre"));
+                    producto.setFabricante(rs.getString("fabricante"));
+                    producto.setPrecio(rs.getFloat("precio"));
+                    producto.setDescripcion(rs.getString("descripcion"));
+                    producto.setGarantiaMeses(rs.getInt("garantia_meses"));
+                    productos.add(producto);
+                }
+            }
+            System.out.println("Listado de productos obtenido");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace(System.out);
+        }
+        return productos;
     }
 
 }

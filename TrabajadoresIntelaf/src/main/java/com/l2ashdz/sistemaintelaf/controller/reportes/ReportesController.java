@@ -172,10 +172,23 @@ public class ReportesController implements ActionListener, ItemListener {
                     }
                     break;
                 case 8:
-
+                    if (codTienda.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "No se ha ingresado codigo de tienda",
+                                "Info", JOptionPane.ERROR_MESSAGE);
+                        reportesV.getTxtCodTienda().requestFocus();
+                    } else if (tiendaDAO.getObject(codTienda) == null) {
+                        JOptionPane.showMessageDialog(null, "La tienda no existe",
+                                "Info", JOptionPane.ERROR_MESSAGE);
+                        reportesV.getTxtCodTienda().requestFocus();
+                    } else {
+                        mostrarTabla(reportesV.getPnlTabla(), reporteProductos);
+                        productos = productoDAO.getProductosSinVentas(codTienda);
+                        reporteProductos.getProductoObservableList().clear();
+                        reporteProductos.getProductoObservableList().addAll(productos);
+                        limpiarCampos();
+                    }
                     break;
             }
-            
 
         } else if (reportesV.getBtnExportar() == e.getSource()) {
 
