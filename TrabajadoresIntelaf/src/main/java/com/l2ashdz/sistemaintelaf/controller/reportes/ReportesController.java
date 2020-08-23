@@ -1,5 +1,6 @@
 package com.l2ashdz.sistemaintelaf.controller.reportes;
 
+import static com.l2ashdz.sistemaintelaf.model.Archivo.crearReporte;
 import com.l2ashdz.sistemaintelaf.dao.CRUD;
 import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAO;
@@ -191,7 +192,28 @@ public class ReportesController implements ActionListener, ItemListener {
             }
 
         } else if (reportesV.getBtnExportar() == e.getSource()) {
+            switch (reportesV.getCbReportes().getSelectedIndex()) {
+                case 0:
+                    String[] titulos = {"Codigo", "Nit", "Tienda Origen", "Tienda Destino",
+                        "Fecha", "CantidadProductos", "Total", "Estado"};
+                    crearReporte("Reporte1", titulos, pedidos);
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
 
+            }
         }
 
     }

@@ -4,8 +4,6 @@
  * and open the template in the editor.
  */
 package com.l2ashdz.sistemaintelaf.ui.reportes;
-
-import com.l2ashdz.sistemaintelaf.model.Pedido;
 import com.l2ashdz.sistemaintelaf.model.Venta;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,11 +40,11 @@ public class ReportesVenta extends javax.swing.JPanel {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblReporte1 = new javax.swing.JTable();
+        tblReporteVenta = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(39, 44, 52));
 
-        tblReporte1.setModel(new javax.swing.table.DefaultTableModel(
+        tblReporteVenta.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -56,7 +54,7 @@ public class ReportesVenta extends javax.swing.JPanel {
         ));
 
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${ventaObservableList}");
-        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, tblReporte1);
+        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, tblReporteVenta);
         org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${idVenta}"));
         columnBinding.setColumnName("Id Venta");
         columnBinding.setColumnClass(Integer.class);
@@ -77,7 +75,7 @@ public class ReportesVenta extends javax.swing.JPanel {
         columnBinding.setColumnClass(Float.class);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
-        jScrollPane1.setViewportView(tblReporte1);
+        jScrollPane1.setViewportView(tblReporteVenta);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -98,12 +96,12 @@ public class ReportesVenta extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tblReporte1;
+    private javax.swing.JTable tblReporteVenta;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
-    public JTable getTblReporte1() {
-        return tblReporte1;
+    public JTable getTblReporteVenta() {
+        return tblReporteVenta;
     }
 
     public ObservableList<Venta> getVentaObservableList() {

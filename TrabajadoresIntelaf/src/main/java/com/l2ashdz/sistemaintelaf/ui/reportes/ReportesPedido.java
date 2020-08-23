@@ -41,11 +41,11 @@ public class ReportesPedido extends javax.swing.JPanel {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblReporte1 = new javax.swing.JTable();
+        tblReportePedido = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(39, 44, 52));
 
-        tblReporte1.setModel(new javax.swing.table.DefaultTableModel(
+        tblReportePedido.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -55,7 +55,7 @@ public class ReportesPedido extends javax.swing.JPanel {
         ));
 
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${pedidoObservableList}");
-        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, tblReporte1);
+        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, tblReportePedido);
         org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${codigo}"));
         columnBinding.setColumnName("Codigo");
         columnBinding.setColumnClass(Integer.class);
@@ -82,7 +82,7 @@ public class ReportesPedido extends javax.swing.JPanel {
         columnBinding.setColumnClass(String.class);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
-        jScrollPane1.setViewportView(tblReporte1);
+        jScrollPane1.setViewportView(tblReportePedido);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -103,7 +103,7 @@ public class ReportesPedido extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tblReporte1;
+    private javax.swing.JTable tblReportePedido;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
@@ -115,8 +115,8 @@ public class ReportesPedido extends javax.swing.JPanel {
         this.pedidoObservableList = pedidoObservableList;
     }
 
-    public JTable getTblReporte1() {
-        return tblReporte1;
+    public JTable getTbleRportePedido() {
+        return tblReportePedido;
     }
 
     
