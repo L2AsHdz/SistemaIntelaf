@@ -245,4 +245,56 @@ public class ProductoDAOImpl implements ProductoDAO {
         return productos;
     }
 
+    @Override
+    public List<Producto> getMostSelledProdPorTienda(String codT, LocalDate fechaInicial, LocalDate fechaFinal, int opcion) {
+        String sql = "SELECT p.*, COUNT(pv.codigo_producto) cantVentas FROM venta v INNER JOIN "
+                + "producto_venta pv ON v.id=pv.id_venta INNER JOIN producto p ON "
+                + "pv.codigo_producto=p.codigo WHERE v.codigo_tienda = ?";
+        String intervalo = "AND v.fecha BETWEEN ? AND ? ";
+        String order = " GROUP BY pv.codigo_producto ORDER BY cantVentas DESC LIMIT 10";
+        PreparedStatement ps = null;
+        List<Producto> productos = null;
+
+        try {
+            switch (opcion) {
+                case 1:
+                    ps = conexion.prepareStatement(sql + intervalo + order);
+                    ps.setString(1, codT);
+                    ps.setString(2, fechaInicial.toString());
+                    ps.setString(3, fechaFinal.toString());
+                    break;
+                case 2:
+                    ps = conexion.prepareStatement(sql+order);
+                    ps.setString(1, codT);
+                    break;
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                productos = new ArrayList();
+
+                while (rs.next()) {
+                    Producto producto = new Producto();
+                    producto.setCodigo(rs.getString("codigo"));
+                    producto.setNombre(rs.getString("nombre"));
+                    producto.setFabricante(rs.getString("fabricante"));
+                    producto.setPrecio(rs.getFloat("precio"));
+                    producto.setDescripcion(rs.getString("descripcion"));
+                    producto.setGarantiaMeses(rs.getInt("garantia_meses"));
+                    producto.setCantVentas(rs.getInt("cantVentas"));
+                    productos.add(producto);
+                }
+            }
+            System.out.println("Listado de productos obtenido");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace(System.out);
+        }
+        return productos;
+    }
+
+    @Override
+    public List<Producto> getProductosSinVentas(String codTienda) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

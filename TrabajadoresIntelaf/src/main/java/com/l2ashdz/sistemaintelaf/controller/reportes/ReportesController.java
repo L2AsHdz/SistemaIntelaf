@@ -1,13 +1,18 @@
 package com.l2ashdz.sistemaintelaf.controller.reportes;
 
+import com.l2ashdz.sistemaintelaf.dao.CRUD;
+import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAO;
 import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAO;
 import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAOImpl;
+import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.venta.VentaDAO;
 import com.l2ashdz.sistemaintelaf.dao.venta.VentaDAOImpl;
+import com.l2ashdz.sistemaintelaf.model.Cliente;
 import com.l2ashdz.sistemaintelaf.model.Pedido;
 import com.l2ashdz.sistemaintelaf.model.Producto;
+import com.l2ashdz.sistemaintelaf.model.Tienda;
 import com.l2ashdz.sistemaintelaf.model.Venta;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
 import com.l2ashdz.sistemaintelaf.ui.reportes.ReportesVenta;
@@ -46,12 +51,17 @@ public class ReportesController implements ActionListener, ItemListener {
     private List<Producto> productos;
     private ProductoDAO productoDAO;
 
+    private CRUD<Cliente> clienteDAO;
+    private CRUD<Tienda> tiendaDAO;
+
     private String tiendaActual;
 
     public ReportesController(ReportesView reportesV) {
         pedidoDAO = PedidoDAOImpl.getPedidoDAO();
         ventaDAO = VentaDAOImpl.getVentaDAO();
         productoDAO = ProductoDAOImpl.getProductoDAO();
+        clienteDAO = ClienteDAOImpl.getClienteDAO();
+        tiendaDAO = TiendaDAOImpl.getTiendaDAO();
         this.reportesV = reportesV;
         this.reportesV.getCbReportes().addItemListener(this);
         this.reportesV.getBtnCargarReporte().addActionListener(this);
@@ -79,32 +89,45 @@ public class ReportesController implements ActionListener, ItemListener {
 
         if (reportesV.getBtnCargarReporte() == e.getSource()) {
             String nit = reportesV.getTxtNit().getText();
+            String codTienda = reportesV.getTxtCodTienda().getText();
             Date input = reportesV.getTxtFechaInicio().getDate();
             Date input2 = reportesV.getTxtFechaFinal().getDate();
             LocalDate fechaInicial = null;
             LocalDate fechaFinal = null;
             switch (reportesV.getCbReportes().getSelectedIndex()) {
                 case 4:
-                    if (!nit.isEmpty()) {
+                    if (nit.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "El nit del cliente es necesario",
+                                "Info", JOptionPane.ERROR_MESSAGE);
+                        reportesV.getTxtNit().requestFocus();
+                    } else if (clienteDAO.getObject(nit) == null) {
+                        JOptionPane.showMessageDialog(null, "El cliente no existe",
+                                "Info", JOptionPane.ERROR_MESSAGE);
+                        reportesV.getTxtNit().requestFocus();
+                    } else {
                         mostrarTabla(reportesV.getPnlTabla(), reporteVentas);
                         ventas = ventaDAO.getComprasDeUnCliente(nit);
                         reporteVentas.getVentaObservableList().clear();
                         reporteVentas.getVentaObservableList().addAll(ventas);
-                    } else {
-                        JOptionPane.showMessageDialog(null, "El nit del cliente es necesario",
-                                "Info", JOptionPane.ERROR_MESSAGE);
                     }
+                    limpiarCampos();
                     break;
                 case 5:
-                    if (!nit.isEmpty()) {
+                    if (nit.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "El nit del cliente es necesario",
+                                "Info", JOptionPane.ERROR_MESSAGE);
+                        reportesV.getTxtNit().requestFocus();
+                    } else if (clienteDAO.getObject(nit) == null) {
+                        JOptionPane.showMessageDialog(null, "El cliente no existe",
+                                "Info", JOptionPane.ERROR_MESSAGE);
+                        reportesV.getTxtNit().requestFocus();
+                    } else {
                         mostrarTabla(reportesV.getPnlTabla(), reportePedidos);
                         pedidos = pedidoDAO.getPedidosDeUnCliente(nit);
                         reportePedidos.getPedidoObservableList().clear();
                         reportePedidos.getPedidoObservableList().addAll(pedidos);
-                    } else {
-                        JOptionPane.showMessageDialog(null, "El nit del cliente es necesario",
-                                "Info", JOptionPane.ERROR_MESSAGE);
                     }
+                    limpiarCampos();
                     break;
                 case 6:
                     try {
@@ -123,13 +146,36 @@ public class ReportesController implements ActionListener, ItemListener {
                     }
                     break;
                 case 7:
-                    
+                    if (codTienda.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "No se ha ingresado codigo de tienda",
+                                "Info", JOptionPane.ERROR_MESSAGE);
+                        reportesV.getTxtCodTienda().requestFocus();
+                    } else if (tiendaDAO.getObject(codTienda) == null) {
+                        JOptionPane.showMessageDialog(null, "La tienda no existe",
+                                "Info", JOptionPane.ERROR_MESSAGE);
+                        reportesV.getTxtCodTienda().requestFocus();
+                    } else {
+                        try {
+                            fechaInicial = input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                            fechaFinal = input2.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                            mostrarTabla(reportesV.getPnlTabla(), reporteProductos);
+                            productos = productoDAO.getMostSelledProdPorTienda(codTienda, fechaInicial, fechaFinal, 1);
+                            reporteProductos.getProductoObservableList().clear();
+                            reporteProductos.getProductoObservableList().addAll(productos);
+
+                        } catch (Exception ex) {
+                            mostrarTabla(reportesV.getPnlTabla(), reporteProductos);
+                            productos = productoDAO.getMostSelledProdPorTienda(codTienda, fechaInicial, fechaFinal, 2);
+                            reporteProductos.getProductoObservableList().clear();
+                            reporteProductos.getProductoObservableList().addAll(productos);
+                        }
+                    }
                     break;
                 case 8:
-                    
+
                     break;
             }
-            limpiarCampos();
+            
 
         } else if (reportesV.getBtnExportar() == e.getSource()) {
 
@@ -141,6 +187,7 @@ public class ReportesController implements ActionListener, ItemListener {
     public void itemStateChanged(ItemEvent evt) {
         int state = evt.getStateChange();
         tiendaActual = PrincipalView.lblCodigo.getText();
+        limpiarCampos();
         if (selccion(evt, 0, state)) {
             mostrarTabla(reportesV.getPnlTabla(), reportePedidos);
             pedidos = pedidoDAO.getPedidosEnRuta(tiendaActual);
@@ -190,6 +237,7 @@ public class ReportesController implements ActionListener, ItemListener {
             limpiarTabla();
             setEnableFiltros(false, true, true);
             reportesV.getBtnCargarReporte().setEnabled(true);
+            reportesV.getTxtCodTienda().requestFocus();
 
         } else if (selccion(evt, 8, state)) {
             limpiarTabla();
