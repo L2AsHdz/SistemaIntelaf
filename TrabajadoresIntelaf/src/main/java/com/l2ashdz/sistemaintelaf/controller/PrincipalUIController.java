@@ -33,23 +33,23 @@ public class PrincipalUIController extends MouseAdapter {
     //Vista y controlador para interfaz productos
     private AddProductoView productoV = new AddProductoView();
     private AddProductoController productoC = new AddProductoController(productoV);
-    
+
     //Vista y controlador para interfaz empleados
     private AddEmpleadoView empleadoV = new AddEmpleadoView();
     private AddEmpleadoController empleadoC = new AddEmpleadoController(empleadoV);
-    
+
     //Vista y controlador para interfaz clientes
     private AddClienteView clienteV = new AddClienteView();
     private AddClienteController clienteC = new AddClienteController(clienteV);
-    
+
     //Vista y controlador para interfaz Ventas
     private AddVentaView ventaV = new AddVentaView();
     private AddVentaController ventaC = new AddVentaController(ventaV);
-    
+
     //Vista y controlador para interfaz Pedidos
     private PedidoView pedidoV = new PedidoView();
     private PedidoController pedidoC = new PedidoController(pedidoV);
-    
+
     //Vista y controlador para interfaz reportes
     private ReportesView reporteV = new ReportesView();
     private ReportesController reporteC = new ReportesController(reporteV);
@@ -127,7 +127,6 @@ public class PrincipalUIController extends MouseAdapter {
             reporteV.setEnabled(false);
             pedidoC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnReportes() == e.getSource()) {
-tiendaV.setEnabled(false);
             tiendaV.setEnabled(false);
             productoV.setEnabled(false);
             empleadoV.setEnabled(false);

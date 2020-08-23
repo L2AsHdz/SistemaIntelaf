@@ -41,8 +41,10 @@ public class PedidoController extends MouseAdapter {
             pedidoV.setEnabled(true);
             parent.add(pedidoV);
             parent.validate();
+            
             pedidoV.setColor(pedidoV.getOpAddPedido());
             pedidoV.resetColor(pedidoV.getOpVerificar());
+            addPedidoV.setEnabled(false);
             addPedidoC.iniciar(pedidoV.getPnlDesk());
         } else {
             System.out.println("Menu pedido visible");

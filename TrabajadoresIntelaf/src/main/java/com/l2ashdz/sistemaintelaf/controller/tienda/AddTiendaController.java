@@ -64,7 +64,7 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
             parent.validate();
             limpiarCampos();
         } else {
-            System.out.println("ya esta visible");
+            System.out.println("Interaz Add ya esta visible");
         }
     }
 
