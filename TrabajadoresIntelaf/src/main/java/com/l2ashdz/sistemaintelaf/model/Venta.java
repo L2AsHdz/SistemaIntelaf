@@ -14,6 +14,8 @@ public class Venta {
     private LocalDate fecha;
     private float porcentCredito;
     private float porcentEfectivo;
+    private float total;
+    private int cantProductos;
 
     public Venta() {
     }
@@ -64,5 +66,21 @@ public class Venta {
 
     public void setPorcentEfectivo(float porcentEfectivo) {
         this.porcentEfectivo = porcentEfectivo;
+    }
+
+    public float getTotal() {
+        return total;
+    }
+
+    public void setTotal(float total) {
+        this.total = total;
+    }
+
+    public int getCantProductos() {
+        return cantProductos;
+    }
+
+    public void setCantProductos(int cantProductos) {
+        this.cantProductos = cantProductos;
     }
 }

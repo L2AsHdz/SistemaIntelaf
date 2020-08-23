@@ -2,8 +2,12 @@ package com.l2ashdz.sistemaintelaf.controller.reportes;
 
 import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAO;
 import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAOImpl;
+import com.l2ashdz.sistemaintelaf.dao.venta.VentaDAO;
+import com.l2ashdz.sistemaintelaf.dao.venta.VentaDAOImpl;
 import com.l2ashdz.sistemaintelaf.model.Pedido;
+import com.l2ashdz.sistemaintelaf.model.Venta;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
+import com.l2ashdz.sistemaintelaf.ui.reportes.ReporteVenta;
 import com.l2ashdz.sistemaintelaf.ui.reportes.ReportesPedido;
 import com.l2ashdz.sistemaintelaf.ui.reportes.ReportesView;
 import java.awt.event.ActionEvent;
@@ -11,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -21,17 +26,24 @@ public class ReportesController implements ActionListener, ItemListener {
 
     private ReportesView reportesV;
 
-    private ReportesPedido reporte1 = new ReportesPedido();
-    
+    private ReportesPedido reportePedidos = new ReportesPedido();
+    private ReporteVenta reporteVenta = new ReporteVenta();
+
     private List<Pedido> pedidos;
     private PedidoDAO pedidoDAO;
+    
+    private List<Venta> ventas;
+    private VentaDAO ventaDAO;
 
     private String tiendaActual;
-    
+
     public ReportesController(ReportesView reportesV) {
         pedidoDAO = PedidoDAOImpl.getPedidoDAO();
+        ventaDAO = VentaDAOImpl.getVentaDAO();
         this.reportesV = reportesV;
         this.reportesV.getCbReportes().addItemListener(this);
+        this.reportesV.getBtnCargarReporte().addActionListener(this);
+        this.reportesV.getBtnExportar().addActionListener(this);
     }
 
     public void iniciar(JPanel parent) {
@@ -51,59 +63,79 @@ public class ReportesController implements ActionListener, ItemListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        if (reportesV.getBtnCargarReporte() == e.getSource()) {
+
+            if (reportesV.getCbReportes().getSelectedIndex() == 4) {
+                String nit = reportesV.getTxtNit().getText();
+                if (!nit.isEmpty()) {
+                    mostrarTabla(reportesV.getPnlTabla(), reporteVenta);
+                    ventas = ventaDAO.getComprasDeUnCliente(nit);
+                    reportePedidos.getPedidoObservableList().clear();
+                    reporteVenta.getVentaObservableList().addAll(ventas);
+                    reportesV.getBtnCargarReporte().setEnabled(false);
+                } else {
+                    JOptionPane.showMessageDialog(null, "El nit del cliente es necesario",
+                            "Info", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+        } else if (reportesV.getBtnExportar() == e.getSource()) {
+
+        }
+
     }
 
     @Override
     public void itemStateChanged(ItemEvent evt) {
         int state = evt.getStateChange();
-        tiendaActual= PrincipalView.lblCodigo.getText();
+        tiendaActual = PrincipalView.lblCodigo.getText();
         if (selccion(evt, 0, state)) {
-            mostrarTabla(reportesV.getPnlTabla(), reporte1);
+            mostrarTabla(reportesV.getPnlTabla(), reportePedidos);
             pedidos = pedidoDAO.getPedidosEnRuta(tiendaActual);
-            reporte1.getPedidoObservableList().clear();
-            reporte1.getPedidoObservableList().addAll(pedidos);
+            reportePedidos.getPedidoObservableList().clear();
+            reportePedidos.getPedidoObservableList().addAll(pedidos);
             setEnableFiltros(false, false, false);
-            
+
         } else if (selccion(evt, 1, state)) {
-            mostrarTabla(reportesV.getPnlTabla(), reporte1);
+            mostrarTabla(reportesV.getPnlTabla(), reportePedidos);
             pedidos = pedidoDAO.getPedidosSinVerificar(tiendaActual);
-            reporte1.getPedidoObservableList().clear();
-            reporte1.getPedidoObservableList().addAll(pedidos);
+            reportePedidos.getPedidoObservableList().clear();
+            reportePedidos.getPedidoObservableList().addAll(pedidos);
             setEnableFiltros(false, false, false);
-        
+
         } else if (selccion(evt, 2, state)) {
-            mostrarTabla(reportesV.getPnlTabla(), reporte1);
+            mostrarTabla(reportesV.getPnlTabla(), reportePedidos);
             pedidos = pedidoDAO.getPedidosAtrasados(tiendaActual);
-            reporte1.getPedidoObservableList().clear();
-            reporte1.getPedidoObservableList().addAll(pedidos);
+            reportePedidos.getPedidoObservableList().clear();
+            reportePedidos.getPedidoObservableList().addAll(pedidos);
             setEnableFiltros(false, false, false);
-        
+
         } else if (selccion(evt, 3, state)) {
-            mostrarTabla(reportesV.getPnlTabla(), reporte1);
+            mostrarTabla(reportesV.getPnlTabla(), reportePedidos);
             pedidos = pedidoDAO.getPedidosOutOfHere(tiendaActual);
-            reporte1.getPedidoObservableList().clear();
-            reporte1.getPedidoObservableList().addAll(pedidos);
+            reportePedidos.getPedidoObservableList().clear();
+            reportePedidos.getPedidoObservableList().addAll(pedidos);
             setEnableFiltros(false, false, false);
-        
+
         } else if (selccion(evt, 4, state)) {
-            System.out.println("Reporte 5");
             setEnableFiltros(true, false, false);
+            reportesV.getBtnCargarReporte().setEnabled(true);
             reportesV.getTxtNit().requestFocus();
-        
+
         } else if (selccion(evt, 5, state)) {
             System.out.println("Reporte 6");
             setEnableFiltros(true, false, false);
             reportesV.getTxtNit().requestFocus();
-        
+
         } else if (selccion(evt, 6, state)) {
             System.out.println("Reporte 7");
             setEnableFiltros(false, true, false);
-        
+
         } else if (selccion(evt, 7, state)) {
             System.out.println("Reporte 8");
             setEnableFiltros(false, true, true);
-        
+
         } else if (selccion(evt, 8, state)) {
             System.out.println("Reporte 9");
             setEnableFiltros(false, false, true);
@@ -111,7 +143,7 @@ public class ReportesController implements ActionListener, ItemListener {
         }
         reportesV.getBtnExportar().setEnabled(true);
     }
-    
+
     private void limpiarCampos() {
         reportesV.getTxtNit().setText("");
         reportesV.getTxtCodTienda().setText("");
