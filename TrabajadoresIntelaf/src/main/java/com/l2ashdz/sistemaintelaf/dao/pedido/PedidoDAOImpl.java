@@ -335,4 +335,46 @@ public class PedidoDAOImpl implements PedidoDAO {
         return pedidos;
     }
 
+    @Override
+    public List<Pedido> getPedidosOutOfHere(String codT) {
+        String sql = "SELECT p.*, SUM(pp.precio*pp.cantidad) total, COUNT(pp.codigo_producto)"
+                + " cantProductos FROM pedido p INNER JOIN producto_pedido pp ON p.codigo = "
+                + "pp.codigo_pedido WHERE codigo_tienda_origen = ? AND estado < 2 "
+                + "GROUP BY p.codigo";
+        String fecha;
+        List<Pedido> pedidos = null;
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setString(1, codT);
+            try (ResultSet rs = ps.executeQuery()) {
+                pedidos = new ArrayList();
+
+                while (rs.next()) {
+                    Pedido pedido = new Pedido();
+                    pedido.setCodigo(rs.getInt("codigo"));
+                    pedido.setNitCliente(rs.getString("nit_cliente"));
+                    pedido.setTiendaOrigen(rs.getString("codigo_tienda_origen"));
+                    pedido.setTiendaDestino(rs.getString("codigo_tienda_destino"));
+                    pedido.setFecha(LocalDate.parse(rs.getString("fecha")));
+                    fecha = rs.getString("fecha_verificacion");
+                    pedido.setFechaVerificacion((fecha == null) ? null : LocalDate.parse(fecha));
+                    fecha = rs.getString("fecha_retiro");
+                    pedido.setFechaRetiro((fecha == null) ? null : LocalDate.parse(fecha));
+                    pedido.setPorcentajeEfectivo(rs.getFloat("porcentaje_efectivo"));
+                    pedido.setPorcentajeCredito(rs.getFloat("porcentaje_credito"));
+                    pedido.setPorcentajePagado(rs.getFloat("porcentaje_pagado"));
+                    pedido.setTotal(rs.getFloat("total"));
+                    pedido.setCantProductos(rs.getInt("cantProductos"));
+                    pedido.setEstadoP(rs.getInt("estado"));
+                    pedidos.add(pedido);
+                }
+            }
+            System.out.println("Listado de pedidos obtenido");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace(System.out);
+        }
+        return pedidos;
+    }
+
 }

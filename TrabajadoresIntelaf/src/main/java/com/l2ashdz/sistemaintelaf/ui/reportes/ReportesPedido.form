@@ -58,6 +58,9 @@
               <Subbinding sourcePath="${tiendaOrigen}">
                 <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="String.class"/>
               </Subbinding>
+              <Subbinding sourcePath="${tiendaDestino}">
+                <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="String.class"/>
+              </Subbinding>
               <Subbinding sourcePath="${fecha}">
                 <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="java.time.LocalDate.class"/>
               </Subbinding>

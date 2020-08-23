@@ -16,7 +16,7 @@ import org.jdesktop.observablecollections.ObservableList;
  *
  * @author asael
  */
-public class Reporte1 extends javax.swing.JPanel {
+public class ReportesPedido extends javax.swing.JPanel {
     
     private List<Pedido> pedidoList;
     private ObservableList<Pedido> pedidoObservableList;
@@ -24,7 +24,7 @@ public class Reporte1 extends javax.swing.JPanel {
     /**
      * Creates new form Reporte1
      */
-    public Reporte1() {
+    public ReportesPedido() {
         pedidoList = new ArrayList();
         pedidoObservableList = ObservableCollections.observableList(pedidoList);
         initComponents();
@@ -64,6 +64,9 @@ public class Reporte1 extends javax.swing.JPanel {
         columnBinding.setColumnClass(String.class);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${tiendaOrigen}"));
         columnBinding.setColumnName("Tienda Origen");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${tiendaDestino}"));
+        columnBinding.setColumnName("Tienda Destino");
         columnBinding.setColumnClass(String.class);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${fecha}"));
         columnBinding.setColumnName("Fecha");

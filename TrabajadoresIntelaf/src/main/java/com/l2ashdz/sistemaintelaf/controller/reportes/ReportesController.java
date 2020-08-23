@@ -4,7 +4,7 @@ import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAO;
 import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAOImpl;
 import com.l2ashdz.sistemaintelaf.model.Pedido;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
-import com.l2ashdz.sistemaintelaf.ui.reportes.Reporte1;
+import com.l2ashdz.sistemaintelaf.ui.reportes.ReportesPedido;
 import com.l2ashdz.sistemaintelaf.ui.reportes.ReportesView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +21,7 @@ public class ReportesController implements ActionListener, ItemListener {
 
     private ReportesView reportesV;
 
-    private Reporte1 reporte1 = new Reporte1();
+    private ReportesPedido reporte1 = new ReportesPedido();
     
     private List<Pedido> pedidos;
     private PedidoDAO pedidoDAO;
@@ -80,7 +80,10 @@ public class ReportesController implements ActionListener, ItemListener {
             setEnableFiltros(false, false, false);
         
         } else if (selccion(evt, 3, state)) {
-            System.out.println("Reporte 4");
+            mostrarTabla(reportesV.getPnlTabla(), reporte1);
+            pedidos = pedidoDAO.getPedidosOutOfHere(tiendaActual);
+            reporte1.getPedidoObservableList().clear();
+            reporte1.getPedidoObservableList().addAll(pedidos);
             setEnableFiltros(false, false, false);
         
         } else if (selccion(evt, 4, state)) {

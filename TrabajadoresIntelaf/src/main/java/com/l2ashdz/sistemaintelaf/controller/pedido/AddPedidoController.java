@@ -19,7 +19,6 @@ import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
 import com.l2ashdz.sistemaintelaf.excepciones.UserInputException;
 import com.l2ashdz.sistemaintelaf.model.Cliente;
-import com.l2ashdz.sistemaintelaf.model.Conexion;
 import com.l2ashdz.sistemaintelaf.model.Pedido;
 import com.l2ashdz.sistemaintelaf.model.Producto;
 import com.l2ashdz.sistemaintelaf.model.ProductoPedido;
@@ -33,8 +32,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -121,7 +118,7 @@ public class AddPedidoController extends MouseAdapter implements ActionListener,
             limpiarCampos();
 
         } else {
-            System.out.println("Interfaz pedido ya esta visible");
+            System.out.println("Interfaz addpedido ya esta visible");
         }
     }
 
@@ -244,9 +241,8 @@ public class AddPedidoController extends MouseAdapter implements ActionListener,
         productosP.removeAll(productosP);
         addPedidoV.getProdPedidoObservableList().clear();
         addPedidoV.getCbBusquedaProducto().setSelectedIndex(-1);
-        setEditableCamposPedido(false);
         addPedidoV.getCbBusquedaTienda().setSelectedIndex(-1);
-        addPedidoV.getCbBusquedaTienda().requestFocus();
+        setEditableCamposPedido(false);
     }
 
     private void limpiarCamposCliente() {

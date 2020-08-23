@@ -17,7 +17,7 @@ public class PedidoController extends MouseAdapter {
 
     //Vista y controlador para agregar pedidos
     private AddPedidoView addPedidoV = new AddPedidoView();
-    private AddPedidoController addTiendaC = new AddPedidoController(addPedidoV);
+    private AddPedidoController addPedidoC = new AddPedidoController(addPedidoV);
 
     //Vista y controlador para verificar pedidos
     private VerificarPedidoView verificarPedV = new VerificarPedidoView();
@@ -43,7 +43,7 @@ public class PedidoController extends MouseAdapter {
             parent.validate();
             pedidoV.setColor(pedidoV.getOpAddPedido());
             pedidoV.resetColor(pedidoV.getOpVerificar());
-            addTiendaC.iniciar(pedidoV.getPnlDesk());
+            addPedidoC.iniciar(pedidoV.getPnlDesk());
         } else {
             System.out.println("Menu pedido visible");
         }
@@ -55,7 +55,7 @@ public class PedidoController extends MouseAdapter {
         //muestra la interfaz para agregar un pedido
         if (pedidoV.getOpAddPedido()== e.getSource()) {
             verificarPedV.setEnabled(false);
-            addTiendaC.iniciar(pedidoV.getPnlDesk());
+            addPedidoC.iniciar(pedidoV.getPnlDesk());
         } else if (pedidoV.getOpVerificar()== e.getSource()) {
             addPedidoV.setEnabled(false);
             verificarPedC.iniciar(pedidoV.getPnlDesk());

@@ -18,7 +18,6 @@ import com.l2ashdz.sistemaintelaf.dao.venta.VentaDAO;
 import com.l2ashdz.sistemaintelaf.dao.venta.VentaDAOImpl;
 import com.l2ashdz.sistemaintelaf.excepciones.UserInputException;
 import com.l2ashdz.sistemaintelaf.model.Cliente;
-import com.l2ashdz.sistemaintelaf.model.Conexion;
 import com.l2ashdz.sistemaintelaf.model.Pedido;
 import com.l2ashdz.sistemaintelaf.model.ProductoPedido;
 import com.l2ashdz.sistemaintelaf.model.ProductoVenta;
@@ -32,8 +31,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -254,10 +251,14 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
         } else {
             tiempo = tiempoDAO.getTiempoT(pedido.getTiendaDestino(), pedido.getTiendaOrigen());
         }
+        
+        //Se le suma a la fecha los dias de traslado
+        fecha = pedido.getFecha();
+        fecha = fecha.plusDays(tiempo.getTiempo());
 
         //informacion del pedido
         verificarPV.getLblCodPedido().setText(String.valueOf(pedido.getCodigo()));
-        verificarPV.getLblFechaP().setText(pedido.getFecha().toString());
+        verificarPV.getLblFechaP().setText(fecha.toString());
         verificarPV.getLblCantProd().setText(String.valueOf(pedido.getCantProductos()));
         verificarPV.getLblAnticipo().setText(String.valueOf(anticipo));
         verificarPV.getLblTotal().setText(String.valueOf(pedido.getTotal()));
@@ -280,9 +281,6 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
         verificarPV.getLblNameTD().setText(tiendaD.getNombre());
         verificarPV.getLblTelTD().setText(tiendaD.getTelefono1());
 
-        //Se le suma a la fecha los dias de traslado
-        fecha = pedido.getFecha();
-        fecha = fecha.plusDays(tiempo.getTiempo());
 
         setEnableBtn(pedido.getEstadoP());
 
