@@ -73,7 +73,10 @@ public class ReportesController implements ActionListener, ItemListener {
             setEnableFiltros(false, false, false);
         
         } else if (selccion(evt, 2, state)) {
-            System.out.println("Reporte 3");
+            mostrarTabla(reportesV.getPnlTabla(), reporte1);
+            pedidos = pedidoDAO.getPedidosAtrasados(tiendaActual);
+            reporte1.getPedidoObservableList().clear();
+            reporte1.getPedidoObservableList().addAll(pedidos);
             setEnableFiltros(false, false, false);
         
         } else if (selccion(evt, 3, state)) {
@@ -103,6 +106,7 @@ public class ReportesController implements ActionListener, ItemListener {
             setEnableFiltros(false, false, true);
             reportesV.getTxtCodTienda().requestFocus();
         }
+        reportesV.getBtnExportar().setEnabled(true);
     }
     
     private void limpiarCampos() {
@@ -111,6 +115,8 @@ public class ReportesController implements ActionListener, ItemListener {
         reportesV.getTxtFechaInicio().setDate(null);
         reportesV.getTxtFechaFinal().setDate(null);
         reportesV.getCbReportes().setSelectedIndex(-1);
+        reportesV.getBtnCargarReporte().setEnabled(false);
+        reportesV.getBtnExportar().setEnabled(false);
         reportesV.getPnlTabla().removeAll();
         reportesV.getPnlTabla().repaint();
     }

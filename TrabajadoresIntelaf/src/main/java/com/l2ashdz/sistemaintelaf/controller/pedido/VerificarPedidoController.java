@@ -51,7 +51,6 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
 
     private VerificarPedidoView verificarPV;
     private RecogerPedidoView recogerPedidoV;
-    private Connection conexion;
 
     private Pedido pedido;
     private List<Pedido> pedidos;
@@ -83,10 +82,8 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
     float anticipo;
     float pagoPendiente;
     float credito;
-    
 
     public VerificarPedidoController(VerificarPedidoView verificarPV) {
-        conexion = Conexion.getConexion();
         pedidoDAO = PedidoDAOImpl.getPedidoDAO();
         clienteDAO = ClienteDAOImpl.getClienteDAO();
         tiendaDAO = TiendaDAOImpl.getTiendaDAO();
@@ -146,43 +143,30 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
              *
              * cambiar estado pedido a 3 registrar venta
              */
-
-            try {
-                conexion.setAutoCommit(false);
-                if (pedido.getFechaVerificacion().isAfter(fecha)) {
-                    if (pedido.getPorcentajePagado() == 1) {
-                        float add = (float) (pedido.getTotal() * 0.05) * -1;
-                        clienteDAO.restarCredito(pedido.getNitCliente(), add);
-                    } else {
-                        float add = (float) (pedido.getTotal() * 0.02) * -1;
-                        clienteDAO.restarCredito(pedido.getNitCliente(), add);
-                    }
-                }
-
-                int idVenta= ventaDAO.getIdVenta();
-                ventaDAO.create(nuevaVenta(pedido.getNitCliente(), fechaRetiro, getPorcCredito(),
-                        getPorcEfectivo(), pedido.getTiendaDestino()));
-
-                productosP = prodPedidoDAO.getProductosInPedido(pedido.getCodigo());
-                productosP.forEach(pp -> {
-                    prodVentaDAO.create(new ProductoVenta(pp, String.valueOf(idVenta),
-                            String.valueOf(pp.getCantidad())));
-                });
-                clienteDAO.restarCredito(pedido.getNitCliente(), credito);
-                pedidoDAO.setEstado(pedido.getCodigo(), 3);
-                pedidoDAO.setFecha(pedido.getCodigo(), fechaRetiro, 2);
-                limpiarCampos();
-                JOptionPane.showMessageDialog(null, "Pedido completado", "Info", JOptionPane.INFORMATION_MESSAGE);
-                conexion.commit();
-
-            } catch (SQLException ex) {
-                try {
-                    conexion.rollback();
-                    conexion.setAutoCommit(true);
-                } catch (SQLException ex2) {
-                    ex2.printStackTrace(System.out);
+            if (pedido.getFechaVerificacion().isAfter(fecha)) {
+                if (pedido.getPorcentajePagado() == 1) {
+                    float add = (float) (pedido.getTotal() * 0.05) * -1;
+                    clienteDAO.restarCredito(pedido.getNitCliente(), add);
+                } else {
+                    float add = (float) (pedido.getTotal() * 0.02) * -1;
+                    clienteDAO.restarCredito(pedido.getNitCliente(), add);
                 }
             }
+
+            int idVenta = ventaDAO.getIdVenta();
+            ventaDAO.create(nuevaVenta(pedido.getNitCliente(), fechaRetiro, getPorcCredito(),
+                    getPorcEfectivo(), pedido.getTiendaDestino()));
+
+            productosP = prodPedidoDAO.getProductosInPedido(pedido.getCodigo());
+            productosP.forEach(pp -> {
+                prodVentaDAO.create(new ProductoVenta(pp, String.valueOf(idVenta),
+                        String.valueOf(pp.getCantidad())));
+            });
+            clienteDAO.restarCredito(pedido.getNitCliente(), credito);
+            pedidoDAO.setEstado(pedido.getCodigo(), 3);
+            pedidoDAO.setFecha(pedido.getCodigo(), fechaRetiro, 2);
+            limpiarCampos();
+            JOptionPane.showMessageDialog(null, "Pedido completado", "Info", JOptionPane.INFORMATION_MESSAGE);
 
             //Cierra interfaz recoger pedido
         } else if (recogerPedidoV.getBtnFinalizar() == e.getSource()) {

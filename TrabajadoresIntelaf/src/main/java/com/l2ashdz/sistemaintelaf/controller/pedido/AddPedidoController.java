@@ -64,7 +64,6 @@ public class AddPedidoController extends MouseAdapter implements ActionListener,
     private ProductoDAO productoDAO;
     private ClienteDAO clienteDAO;
     private ExistenciaProductoDAO existenciaDAO;
-    private Connection conexion;
 
     //datos cliente
     private String nitCliente;
@@ -89,7 +88,6 @@ public class AddPedidoController extends MouseAdapter implements ActionListener,
     private String cantidad;
 
     public AddPedidoController(AddPedidoView addPedidoView) {
-        conexion = Conexion.getConexion();
         productosP = new ArrayList<>();
         pedidoDAO = PedidoDAOImpl.getPedidoDAO();
         tiendaDAO = TiendaDAOImpl.getTiendaDAO();
@@ -212,7 +210,6 @@ public class AddPedidoController extends MouseAdapter implements ActionListener,
             obtenerDatosP();
 
             try {
-                conexion.setAutoCommit(false);
                 validarAddCliente2(nombre, nitCliente, telefono);
                 validarPedido(porcentajeEfectivo, porcentajeCredito, porcentajePagado);
                 if (clienteDAO.getObject(nitCliente) == null) {
@@ -228,14 +225,6 @@ public class AddPedidoController extends MouseAdapter implements ActionListener,
                 generarFactura();
                 actualizarProductos(tiendaOrigen);
                 limpiarCampos();
-                conexion.commit();
-            } catch (SQLException ex) {
-                try {
-                    conexion.rollback();
-                    conexion.setAutoCommit(true);
-                } catch (SQLException ex2) {
-                    ex2.printStackTrace(System.out);
-                }
             } catch (UserInputException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
             }

@@ -55,7 +55,6 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
     private ProductoDAO productoDAO;
     private ClienteDAO clienteDAO;
     private ExistenciaProductoDAO existenciaDAO;
-    private Connection conexion;
 
     //datos cliente
     private String nitCliente;
@@ -76,7 +75,6 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
     private String cantidad;
 
     public AddVentaController(AddVentaView addVentaV) {
-        conexion = Conexion.getConexion();
         productosV = new ArrayList<>();
         ventaDAO = VentaDAOImpl.getVentaDAO();
         productoVDAO = ProductoVentaDAOImpl.getProductoVentaDAO();
@@ -187,7 +185,6 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
             obtenerDatosC();
 
             try {
-                conexion.setAutoCommit(false);
                 validarAddCliente2(nombre, nitCliente, telefono);
                 validarVenta(fecha, porcentajeEfectivo, porcentajeCredito);
                 if (clienteDAO.getObject(nitCliente) == null) {
@@ -199,8 +196,6 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
                         pv.getCodigo(), pv.getCantidad()));
 
                 clienteDAO.restarCredito(nitCliente, credito);
-                conexion.commit();
-                conexion.setAutoCommit(true);
 
                 generarFactura();
                 actualizarDatosP();
@@ -208,12 +203,6 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
 
             } catch (UserInputException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
-            } catch (SQLException ex) {
-                try {
-                    conexion.rollback();
-                } catch (SQLException ex2) {
-                    ex2.printStackTrace(System.out);
-                }
             }
 
         }
@@ -334,9 +323,9 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
 
     private void generarFactura() {
         facturaV = new FacturaView();
-        insertarTextfactura("Factura No. "+idVenta);
-        insertarTextfactura("\nFecha: "+fecha);
-        
+        insertarTextfactura("Factura No. " + idVenta);
+        insertarTextfactura("\nFecha: " + fecha);
+
         insertarTextfactura("\nCliente:");
         insertarTextfactura("\nNombre:\t" + nombre);
         insertarTextfactura("\nNit:\t" + nitCliente);
@@ -354,7 +343,7 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
         facturaV.setLocationRelativeTo(null);
         facturaV.setVisible(true);
     }
-    
+
     private void insertarTextfactura(String text) {
         facturaV.getTxtAFactura().append(text);
     }
