@@ -80,10 +80,9 @@ public class ReportesController implements ActionListener, ItemListener {
         if (reportesV.getBtnCargarReporte() == e.getSource()) {
             String nit = reportesV.getTxtNit().getText();
             Date input = reportesV.getTxtFechaInicio().getDate();
-            LocalDate fechaInicial = input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            input = reportesV.getTxtFechaFinal().getDate();
-            LocalDate fechaFinal = input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
+            Date input2 = reportesV.getTxtFechaFinal().getDate();
+            LocalDate fechaInicial = null;
+            LocalDate fechaFinal = null;
             switch (reportesV.getCbReportes().getSelectedIndex()) {
                 case 4:
                     if (!nit.isEmpty()) {
@@ -108,15 +107,26 @@ public class ReportesController implements ActionListener, ItemListener {
                     }
                     break;
                 case 6:
-                    //if (!nit.isEmpty()) {
+                    try {
+                        fechaInicial = input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                        fechaFinal = input2.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                         mostrarTabla(reportesV.getPnlTabla(), reporteProductos);
-                        productos = productoDAO.getMostSelledProducts(fechaInicial, fechaFinal);
+                        productos = productoDAO.getMostSelledProducts(fechaInicial, fechaFinal, 1);
                         reporteProductos.getProductoObservableList().clear();
                         reporteProductos.getProductoObservableList().addAll(productos);
-                    //} else {
-                     //   JOptionPane.showMessageDialog(null, "El nit del cliente es necesario",
-                        //        "Info", JOptionPane.ERROR_MESSAGE);
-                    //}
+
+                    } catch (Exception ex) {
+                        mostrarTabla(reportesV.getPnlTabla(), reporteProductos);
+                        productos = productoDAO.getMostSelledProducts(fechaInicial, fechaFinal, 2);
+                        reporteProductos.getProductoObservableList().clear();
+                        reporteProductos.getProductoObservableList().addAll(productos);
+                    }
+                    break;
+                case 7:
+                    
+                    break;
+                case 8:
+                    
                     break;
             }
             limpiarCampos();
@@ -160,26 +170,31 @@ public class ReportesController implements ActionListener, ItemListener {
             setEnableFiltros(false, false, false);
 
         } else if (selccion(evt, 4, state)) {
+            limpiarTabla();
             setEnableFiltros(true, false, false);
             reportesV.getBtnCargarReporte().setEnabled(true);
             reportesV.getTxtNit().requestFocus();
 
         } else if (selccion(evt, 5, state)) {
+            limpiarTabla();
             setEnableFiltros(true, false, false);
             reportesV.getBtnCargarReporte().setEnabled(true);
             reportesV.getTxtNit().requestFocus();
 
         } else if (selccion(evt, 6, state)) {
+            limpiarTabla();
             setEnableFiltros(false, true, false);
             reportesV.getBtnCargarReporte().setEnabled(true);
 
         } else if (selccion(evt, 7, state)) {
+            limpiarTabla();
             setEnableFiltros(false, true, true);
             reportesV.getBtnCargarReporte().setEnabled(true);
 
         } else if (selccion(evt, 8, state)) {
-            System.out.println("Reporte 9");
+            limpiarTabla();
             setEnableFiltros(false, false, true);
+            reportesV.getBtnCargarReporte().setEnabled(true);
             reportesV.getTxtCodTienda().requestFocus();
         }
         reportesV.getBtnExportar().setEnabled(true);
@@ -189,14 +204,18 @@ public class ReportesController implements ActionListener, ItemListener {
     private void limpiarCampos() {
         reportesV.getTxtNit().setText("");
         reportesV.getTxtCodTienda().setText("");
-        reportesV.getTxtFechaInicio().setDate(new Date());
-        reportesV.getTxtFechaFinal().setDate(new Date());
+        reportesV.getTxtFechaInicio().setDate(null);
+        reportesV.getTxtFechaFinal().setDate(null);
     }
 
     private void limpiarInterfaz() {
         reportesV.getCbReportes().setSelectedIndex(-1);
         reportesV.getBtnCargarReporte().setEnabled(false);
         reportesV.getBtnExportar().setEnabled(false);
+        limpiarTabla();
+    }
+
+    private void limpiarTabla() {
         reportesV.getPnlTabla().removeAll();
         reportesV.getPnlTabla().repaint();
     }

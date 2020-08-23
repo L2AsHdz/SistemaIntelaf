@@ -12,5 +12,5 @@ import java.util.List;
 public interface ProductoDAO extends CRUD<Producto>{
     List<Producto> getFilteredList(String fitro, int opcion);
     Producto getProducto(String codT, String codP);
-    List<Producto> getMostSelledProducts(LocalDate fechaInicial, LocalDate fechaFinal);
+    List<Producto> getMostSelledProducts(LocalDate fechaInicial, LocalDate fechaFinal, int opcion);
 }

@@ -201,16 +201,27 @@ public class ProductoDAOImpl implements ProductoDAO {
     }
 
     @Override
-    public List<Producto> getMostSelledProducts(LocalDate fechaInicial, LocalDate fechaFinal) {
+    public List<Producto> getMostSelledProducts(LocalDate fechaInicial, LocalDate fechaFinal, int opcion) {
         String sql = "SELECT p.*, COUNT(pv.codigo_producto) cantVentas FROM venta v INNER JOIN "
                 + "producto_venta pv ON v.id=pv.id_venta INNER JOIN producto p ON "
-                + "pv.codigo_producto=p.codigo WHERE v.fecha BETWEEN ? AND ? GROUP BY "
-                + "pv.codigo_producto ORDER BY cantVentas DESC LIMIT 10";
+                + "pv.codigo_producto=p.codigo ";
+        String where = "WHERE v.fecha BETWEEN ? AND ? ";
+        String order = "GROUP BY pv.codigo_producto ORDER BY cantVentas DESC LIMIT 10";
+        PreparedStatement ps = null;
         List<Producto> productos = null;
 
-        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
-            ps.setString(1, fechaInicial.toString());
-            ps.setString(2, fechaFinal.toString());
+        try {
+            switch (opcion) {
+                case 1:
+                    ps = conexion.prepareStatement(sql + where + order);
+                    ps.setString(1, fechaInicial.toString());
+                    ps.setString(2, fechaFinal.toString());
+                    break;
+                case 2:
+                    ps = conexion.prepareStatement(sql+order);
+                    break;
+            }
+
             try (ResultSet rs = ps.executeQuery()) {
                 productos = new ArrayList();
 
