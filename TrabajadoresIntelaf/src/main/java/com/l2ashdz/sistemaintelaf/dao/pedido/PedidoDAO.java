@@ -16,4 +16,5 @@ public interface PedidoDAO extends CRUD<Pedido>{
     List<Pedido> getPedidosEnRuta(String codT);
     List<Pedido> getPedidosAtrasados(String codT);
     List<Pedido> getPedidosOutOfHere(String codT);
+    List<Pedido> getPedidosDeUnCliente(String nit);
 }

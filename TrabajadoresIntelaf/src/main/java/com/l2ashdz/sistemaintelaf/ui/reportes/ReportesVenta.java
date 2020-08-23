@@ -17,7 +17,7 @@ import org.jdesktop.observablecollections.ObservableList;
  *
  * @author asael
  */
-public class ReporteVenta extends javax.swing.JPanel {
+public class ReportesVenta extends javax.swing.JPanel {
     
     private List<Venta> ventaList;
     private ObservableList<Venta> ventaObservableList;
@@ -25,7 +25,7 @@ public class ReporteVenta extends javax.swing.JPanel {
     /**
      * Creates new form Reporte1
      */
-    public ReporteVenta() {
+    public ReportesVenta() {
         ventaList = new ArrayList();
         ventaObservableList = ObservableCollections.observableList(ventaList);
         initComponents();

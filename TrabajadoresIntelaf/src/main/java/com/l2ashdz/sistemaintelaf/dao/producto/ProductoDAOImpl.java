@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -174,7 +175,7 @@ public class ProductoDAOImpl implements ProductoDAO {
                 + "INNER JOIN existencia_producto e ON p.codigo=e.codigo_producto "
                 + "WHERE e.codigo_tienda = ? AND p.codigo = ?";
         Producto p = null;
-        
+
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, codT);
             ps.setString(2, codP);
@@ -197,6 +198,40 @@ public class ProductoDAOImpl implements ProductoDAO {
             ex.printStackTrace(System.out);
         }
         return p;
+    }
+
+    @Override
+    public List<Producto> getMostSelledProducts(LocalDate fechaInicial, LocalDate fechaFinal) {
+        String sql = "SELECT p.*, COUNT(pv.codigo_producto) cantVentas FROM venta v INNER JOIN "
+                + "producto_venta pv ON v.id=pv.id_venta INNER JOIN producto p ON "
+                + "pv.codigo_producto=p.codigo WHERE v.fecha BETWEEN ? AND ? GROUP BY "
+                + "pv.codigo_producto ORDER BY cantVentas DESC LIMIT 10";
+        List<Producto> productos = null;
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setString(1, fechaInicial.toString());
+            ps.setString(2, fechaFinal.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                productos = new ArrayList();
+
+                while (rs.next()) {
+                    Producto producto = new Producto();
+                    producto.setCodigo(rs.getString("codigo"));
+                    producto.setNombre(rs.getString("nombre"));
+                    producto.setFabricante(rs.getString("fabricante"));
+                    producto.setPrecio(rs.getFloat("precio"));
+                    producto.setDescripcion(rs.getString("descripcion"));
+                    producto.setGarantiaMeses(rs.getInt("garantia_meses"));
+                    producto.setCantVentas(rs.getInt("cantVentas"));
+                    productos.add(producto);
+                }
+            }
+            System.out.println("Listado de productos obtenido");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace(System.out);
+        }
+        return productos;
     }
 
 }

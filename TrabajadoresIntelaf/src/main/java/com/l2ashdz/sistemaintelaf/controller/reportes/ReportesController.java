@@ -2,18 +2,25 @@ package com.l2ashdz.sistemaintelaf.controller.reportes;
 
 import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAO;
 import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAOImpl;
+import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAO;
+import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.venta.VentaDAO;
 import com.l2ashdz.sistemaintelaf.dao.venta.VentaDAOImpl;
 import com.l2ashdz.sistemaintelaf.model.Pedido;
+import com.l2ashdz.sistemaintelaf.model.Producto;
 import com.l2ashdz.sistemaintelaf.model.Venta;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
-import com.l2ashdz.sistemaintelaf.ui.reportes.ReporteVenta;
+import com.l2ashdz.sistemaintelaf.ui.reportes.ReportesVenta;
 import com.l2ashdz.sistemaintelaf.ui.reportes.ReportesPedido;
+import com.l2ashdz.sistemaintelaf.ui.reportes.ReportesProducto;
 import com.l2ashdz.sistemaintelaf.ui.reportes.ReportesView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -27,19 +34,24 @@ public class ReportesController implements ActionListener, ItemListener {
     private ReportesView reportesV;
 
     private ReportesPedido reportePedidos = new ReportesPedido();
-    private ReporteVenta reporteVenta = new ReporteVenta();
+    private ReportesVenta reporteVentas = new ReportesVenta();
+    private ReportesProducto reporteProductos = new ReportesProducto();
 
     private List<Pedido> pedidos;
     private PedidoDAO pedidoDAO;
-    
+
     private List<Venta> ventas;
     private VentaDAO ventaDAO;
+
+    private List<Producto> productos;
+    private ProductoDAO productoDAO;
 
     private String tiendaActual;
 
     public ReportesController(ReportesView reportesV) {
         pedidoDAO = PedidoDAOImpl.getPedidoDAO();
         ventaDAO = VentaDAOImpl.getVentaDAO();
+        productoDAO = ProductoDAOImpl.getProductoDAO();
         this.reportesV = reportesV;
         this.reportesV.getCbReportes().addItemListener(this);
         this.reportesV.getBtnCargarReporte().addActionListener(this);
@@ -56,6 +68,7 @@ public class ReportesController implements ActionListener, ItemListener {
             parent.add(reportesV);
             parent.validate();
             limpiarCampos();
+            limpiarInterfaz();
         } else {
             System.out.println("ya esta visible");
         }
@@ -65,20 +78,48 @@ public class ReportesController implements ActionListener, ItemListener {
     public void actionPerformed(ActionEvent e) {
 
         if (reportesV.getBtnCargarReporte() == e.getSource()) {
+            String nit = reportesV.getTxtNit().getText();
+            Date input = reportesV.getTxtFechaInicio().getDate();
+            LocalDate fechaInicial = input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            input = reportesV.getTxtFechaFinal().getDate();
+            LocalDate fechaFinal = input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-            if (reportesV.getCbReportes().getSelectedIndex() == 4) {
-                String nit = reportesV.getTxtNit().getText();
-                if (!nit.isEmpty()) {
-                    mostrarTabla(reportesV.getPnlTabla(), reporteVenta);
-                    ventas = ventaDAO.getComprasDeUnCliente(nit);
-                    reportePedidos.getPedidoObservableList().clear();
-                    reporteVenta.getVentaObservableList().addAll(ventas);
-                    reportesV.getBtnCargarReporte().setEnabled(false);
-                } else {
-                    JOptionPane.showMessageDialog(null, "El nit del cliente es necesario",
-                            "Info", JOptionPane.ERROR_MESSAGE);
-                }
+            switch (reportesV.getCbReportes().getSelectedIndex()) {
+                case 4:
+                    if (!nit.isEmpty()) {
+                        mostrarTabla(reportesV.getPnlTabla(), reporteVentas);
+                        ventas = ventaDAO.getComprasDeUnCliente(nit);
+                        reporteVentas.getVentaObservableList().clear();
+                        reporteVentas.getVentaObservableList().addAll(ventas);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "El nit del cliente es necesario",
+                                "Info", JOptionPane.ERROR_MESSAGE);
+                    }
+                    break;
+                case 5:
+                    if (!nit.isEmpty()) {
+                        mostrarTabla(reportesV.getPnlTabla(), reportePedidos);
+                        pedidos = pedidoDAO.getPedidosDeUnCliente(nit);
+                        reportePedidos.getPedidoObservableList().clear();
+                        reportePedidos.getPedidoObservableList().addAll(pedidos);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "El nit del cliente es necesario",
+                                "Info", JOptionPane.ERROR_MESSAGE);
+                    }
+                    break;
+                case 6:
+                    //if (!nit.isEmpty()) {
+                        mostrarTabla(reportesV.getPnlTabla(), reporteProductos);
+                        productos = productoDAO.getMostSelledProducts(fechaInicial, fechaFinal);
+                        reporteProductos.getProductoObservableList().clear();
+                        reporteProductos.getProductoObservableList().addAll(productos);
+                    //} else {
+                     //   JOptionPane.showMessageDialog(null, "El nit del cliente es necesario",
+                        //        "Info", JOptionPane.ERROR_MESSAGE);
+                    //}
+                    break;
             }
+            limpiarCampos();
 
         } else if (reportesV.getBtnExportar() == e.getSource()) {
 
@@ -124,17 +165,17 @@ public class ReportesController implements ActionListener, ItemListener {
             reportesV.getTxtNit().requestFocus();
 
         } else if (selccion(evt, 5, state)) {
-            System.out.println("Reporte 6");
             setEnableFiltros(true, false, false);
+            reportesV.getBtnCargarReporte().setEnabled(true);
             reportesV.getTxtNit().requestFocus();
 
         } else if (selccion(evt, 6, state)) {
-            System.out.println("Reporte 7");
             setEnableFiltros(false, true, false);
+            reportesV.getBtnCargarReporte().setEnabled(true);
 
         } else if (selccion(evt, 7, state)) {
-            System.out.println("Reporte 8");
             setEnableFiltros(false, true, true);
+            reportesV.getBtnCargarReporte().setEnabled(true);
 
         } else if (selccion(evt, 8, state)) {
             System.out.println("Reporte 9");
@@ -142,13 +183,17 @@ public class ReportesController implements ActionListener, ItemListener {
             reportesV.getTxtCodTienda().requestFocus();
         }
         reportesV.getBtnExportar().setEnabled(true);
+
     }
 
     private void limpiarCampos() {
         reportesV.getTxtNit().setText("");
         reportesV.getTxtCodTienda().setText("");
-        reportesV.getTxtFechaInicio().setDate(null);
-        reportesV.getTxtFechaFinal().setDate(null);
+        reportesV.getTxtFechaInicio().setDate(new Date());
+        reportesV.getTxtFechaFinal().setDate(new Date());
+    }
+
+    private void limpiarInterfaz() {
         reportesV.getCbReportes().setSelectedIndex(-1);
         reportesV.getBtnCargarReporte().setEnabled(false);
         reportesV.getBtnExportar().setEnabled(false);

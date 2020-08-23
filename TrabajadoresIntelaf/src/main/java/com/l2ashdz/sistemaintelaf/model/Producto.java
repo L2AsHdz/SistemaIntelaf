@@ -13,6 +13,7 @@ public class Producto {
     private int garantiaMeses;
     private String codTienda;
     private int existencias;
+    private int cantVentas;
 
     public Producto() {
     }
@@ -79,6 +80,14 @@ public class Producto {
 
     public void setExistencias(int existencias) {
         this.existencias = existencias;
+    }
+
+    public int getCantVentas() {
+        return cantVentas;
+    }
+
+    public void setCantVentas(int cantVentas) {
+        this.cantVentas = cantVentas;
     }
 
     @Override
