@@ -1,6 +1,6 @@
 package com.l2ashdz.sistemaintelaf.controller.reportes;
 
-import static com.l2ashdz.sistemaintelaf.model.Archivo.crearReporte;
+import static com.l2ashdz.sistemaintelaf.model.Archivo.*;
 import com.l2ashdz.sistemaintelaf.dao.CRUD;
 import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAO;
@@ -36,6 +36,12 @@ import javax.swing.JPanel;
  * @author asael
  */
 public class ReportesController implements ActionListener, ItemListener {
+
+    private final String[] TITULOS_RVENTAS = {"Id", "Nit", "Tienda", "Fecha", "CantProductos", "Total"};
+    private final String[] TITULOS_RPEDIDOS = {"Codigo", "Nit", "Tienda Origen", "Tienda Destino",
+        "Fecha", "CantidadProductos", "Total", "Estado"};
+    private final String[] TITULOS_RPRODUCTOS = {"Codigo", "Nombre", "Descripcion", "Fabricante",
+        "Precio", "Garantia", "CantVentas"};
 
     private ReportesView reportesV;
 
@@ -110,6 +116,7 @@ public class ReportesController implements ActionListener, ItemListener {
                         ventas = ventaDAO.getComprasDeUnCliente(nit);
                         reporteVentas.getVentaObservableList().clear();
                         reporteVentas.getVentaObservableList().addAll(ventas);
+                        reportesV.getBtnExportar().setEnabled(true);
                     }
                     limpiarCampos();
                     break;
@@ -127,6 +134,7 @@ public class ReportesController implements ActionListener, ItemListener {
                         pedidos = pedidoDAO.getPedidosDeUnCliente(nit);
                         reportePedidos.getPedidoObservableList().clear();
                         reportePedidos.getPedidoObservableList().addAll(pedidos);
+                        reportesV.getBtnExportar().setEnabled(true);
                     }
                     limpiarCampos();
                     break;
@@ -145,6 +153,7 @@ public class ReportesController implements ActionListener, ItemListener {
                         reporteProductos.getProductoObservableList().clear();
                         reporteProductos.getProductoObservableList().addAll(productos);
                     }
+                    reportesV.getBtnExportar().setEnabled(true);
                     break;
                 case 7:
                     if (codTienda.isEmpty()) {
@@ -170,6 +179,7 @@ public class ReportesController implements ActionListener, ItemListener {
                             reporteProductos.getProductoObservableList().clear();
                             reporteProductos.getProductoObservableList().addAll(productos);
                         }
+                        reportesV.getBtnExportar().setEnabled(true);
                     }
                     break;
                 case 8:
@@ -186,31 +196,36 @@ public class ReportesController implements ActionListener, ItemListener {
                         productos = productoDAO.getProductosSinVentas(codTienda);
                         reporteProductos.getProductoObservableList().clear();
                         reporteProductos.getProductoObservableList().addAll(productos);
-                        limpiarCampos();
+                        reportesV.getBtnExportar().setEnabled(true);
                     }
+                    limpiarCampos();
                     break;
             }
 
         } else if (reportesV.getBtnExportar() == e.getSource()) {
+            String nombreR = guardarReporte();
+
             switch (reportesV.getCbReportes().getSelectedIndex()) {
                 case 0:
-                    String[] titulos = {"Codigo", "Nit", "Tienda Origen", "Tienda Destino",
-                        "Fecha", "CantidadProductos", "Total", "Estado"};
-                    crearReporte("Reporte1", titulos, pedidos);
-                    break;
                 case 1:
-                    break;
                 case 2:
-                    break;
                 case 3:
+                case 5:
+                    if (!nombreR.isEmpty()) {
+                        crearReportePedido(nombreR, TITULOS_RPEDIDOS, pedidos);
+                    }
                     break;
                 case 4:
-                    break;
-                case 5:
+                    if (!nombreR.isEmpty()) {
+                        crearReporteVenta(nombreR, TITULOS_RVENTAS, ventas);
+                    }
                     break;
                 case 6:
-                    break;
                 case 7:
+                case 8:
+                    if (!nombreR.isEmpty()) {
+                        crearReporteProducto(nombreR, TITULOS_RPRODUCTOS, productos);
+                    }
                     break;
 
             }
@@ -224,64 +239,71 @@ public class ReportesController implements ActionListener, ItemListener {
         tiendaActual = PrincipalView.lblCodigo.getText();
         limpiarCampos();
         if (selccion(evt, 0, state)) {
+            setEnableFiltros(false, false, false);
             mostrarTabla(reportesV.getPnlTabla(), reportePedidos);
             pedidos = pedidoDAO.getPedidosEnRuta(tiendaActual);
             reportePedidos.getPedidoObservableList().clear();
             reportePedidos.getPedidoObservableList().addAll(pedidos);
-            setEnableFiltros(false, false, false);
+            reportesV.getBtnExportar().setEnabled(true);
 
         } else if (selccion(evt, 1, state)) {
+            setEnableFiltros(false, false, false);
             mostrarTabla(reportesV.getPnlTabla(), reportePedidos);
             pedidos = pedidoDAO.getPedidosSinVerificar(tiendaActual);
             reportePedidos.getPedidoObservableList().clear();
             reportePedidos.getPedidoObservableList().addAll(pedidos);
-            setEnableFiltros(false, false, false);
+            reportesV.getBtnExportar().setEnabled(true);
 
         } else if (selccion(evt, 2, state)) {
+            setEnableFiltros(false, false, false);
             mostrarTabla(reportesV.getPnlTabla(), reportePedidos);
             pedidos = pedidoDAO.getPedidosAtrasados(tiendaActual);
             reportePedidos.getPedidoObservableList().clear();
             reportePedidos.getPedidoObservableList().addAll(pedidos);
-            setEnableFiltros(false, false, false);
+            reportesV.getBtnExportar().setEnabled(true);
 
         } else if (selccion(evt, 3, state)) {
+            setEnableFiltros(false, false, false);
             mostrarTabla(reportesV.getPnlTabla(), reportePedidos);
             pedidos = pedidoDAO.getPedidosOutOfHere(tiendaActual);
             reportePedidos.getPedidoObservableList().clear();
             reportePedidos.getPedidoObservableList().addAll(pedidos);
-            setEnableFiltros(false, false, false);
+            reportesV.getBtnExportar().setEnabled(true);
 
         } else if (selccion(evt, 4, state)) {
-            limpiarTabla();
             setEnableFiltros(true, false, false);
+            limpiarTabla();
             reportesV.getBtnCargarReporte().setEnabled(true);
+            reportesV.getBtnExportar().setEnabled(false);
             reportesV.getTxtNit().requestFocus();
 
         } else if (selccion(evt, 5, state)) {
-            limpiarTabla();
             setEnableFiltros(true, false, false);
+            limpiarTabla();
             reportesV.getBtnCargarReporte().setEnabled(true);
+            reportesV.getBtnExportar().setEnabled(false);
             reportesV.getTxtNit().requestFocus();
 
         } else if (selccion(evt, 6, state)) {
-            limpiarTabla();
             setEnableFiltros(false, true, false);
+            limpiarTabla();
             reportesV.getBtnCargarReporte().setEnabled(true);
+            reportesV.getBtnExportar().setEnabled(false);
 
         } else if (selccion(evt, 7, state)) {
-            limpiarTabla();
             setEnableFiltros(false, true, true);
+            limpiarTabla();
             reportesV.getBtnCargarReporte().setEnabled(true);
+            reportesV.getBtnExportar().setEnabled(false);
             reportesV.getTxtCodTienda().requestFocus();
 
         } else if (selccion(evt, 8, state)) {
-            limpiarTabla();
             setEnableFiltros(false, false, true);
+            limpiarTabla();
             reportesV.getBtnCargarReporte().setEnabled(true);
+            reportesV.getBtnExportar().setEnabled(false);
             reportesV.getTxtCodTienda().requestFocus();
         }
-        reportesV.getBtnExportar().setEnabled(true);
-
     }
 
     private void limpiarCampos() {

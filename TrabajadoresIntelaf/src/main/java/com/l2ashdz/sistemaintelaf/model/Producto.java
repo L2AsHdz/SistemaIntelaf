@@ -51,6 +51,9 @@ public class Producto {
     }
 
     public String getDescripcion() {
+        if (descripcion == null) {
+            descripcion = "";
+        }
         return descripcion;
     }
 
