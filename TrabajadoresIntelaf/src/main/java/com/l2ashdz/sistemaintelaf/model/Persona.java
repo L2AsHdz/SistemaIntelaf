@@ -57,6 +57,7 @@ public class Persona {
     }
 
     public String getDireccion() {
+        if (direccion == null) direccion ="";
         return direccion;
     }
 

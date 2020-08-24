@@ -8,6 +8,7 @@ package com.l2ashdz.sistemaintelaf.ui.reportes;
 import com.toedter.calendar.JDateChooser;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -60,7 +61,7 @@ public class ReportesView extends javax.swing.JPanel {
         );
         pnlTablaLayout.setVerticalGroup(
             pnlTablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 298, Short.MAX_VALUE)
+            .addGap(0, 319, Short.MAX_VALUE)
         );
 
         btnCargarReporte.setText("Ver reporte");
@@ -162,9 +163,9 @@ public class ReportesView extends javax.swing.JPanel {
                     .addComponent(txtCodTienda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCargarReporte)
                     .addComponent(btnExportar))
-                .addGap(12, 12, 12)
-                .addComponent(pnlTabla, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(18, 18, 18)
+                .addComponent(pnlTabla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(42, 42, 42))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -220,6 +221,4 @@ public class ReportesView extends javax.swing.JPanel {
     public JTextField getTxtCodTienda() {
         return txtCodTienda;
     }
-
-
 }

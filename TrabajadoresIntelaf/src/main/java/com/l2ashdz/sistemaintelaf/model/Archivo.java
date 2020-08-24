@@ -19,6 +19,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class Archivo {
 
+    //Obtiene la ruta del archivo a leer
     public static String obtenerRutaArchivo() {
         String path = "";
         JFileChooser fc = new JFileChooser();
@@ -35,13 +36,14 @@ public class Archivo {
         return path;
     }
 
+    //Obtiene el nombre del archivo a guardar
     public static String guardarReporte() {
         String path = "";
         JFileChooser fc = new JFileChooser();
         fc.setDialogTitle("Guardar Como");
         try {
             if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-                path = fc.getSelectedFile().getAbsolutePath() + ".html";
+                path = fc.getSelectedFile().getAbsolutePath();
             }
         } catch (HeadlessException ex) {
             ex.printStackTrace(System.out);
@@ -71,7 +73,7 @@ public class Archivo {
 
     //Crea un archivo (Reporte) con el nombre y contenido recbido
     private static void crearArchivo(String nombreArchivo, String reporte) {
-        File archivo = new File(nombreArchivo);
+        File archivo = new File(nombreArchivo+".html");
         try (PrintWriter salida = new PrintWriter(new FileWriter(archivo, true))) {
             salida.println(reporte);
             salida.close();
@@ -84,27 +86,34 @@ public class Archivo {
     }
 
     //Encargado de crear el archivo de los reportes de pedidos
-    public static void crearReportePedido(String nombreArchivo, String[] titulos, List<Pedido> pedidos) {
-        crearArchivo(nombreArchivo, cuerpoReporte(titulos, contenidoTblPedido(pedidos)));
+    public static void crearReportePedido(String nombreArchivo, String[] titulos, 
+            String nombreReporte, String detalle, List<Pedido> pedidos) {
+        crearArchivo(nombreArchivo, cuerpoReporte(titulos, nombreReporte, detalle,
+                contenidoTblPedido(pedidos)));
     }
 
     //Encargado de crear el archivo de los reportes de ventas
-    public static void crearReporteVenta(String nombreArchivo, String[] titulos, List<Venta> ventas) {
-        crearArchivo(nombreArchivo, cuerpoReporte(titulos, contenidoTblVenta(ventas)));
+    public static void crearReporteVenta(String nombreArchivo, String[] titulos, 
+            String nombreReporte, String detalle, List<Venta> ventas) {
+        crearArchivo(nombreArchivo, cuerpoReporte(titulos, nombreReporte, detalle,
+                contenidoTblVenta(ventas)));
     }
 
     //Encargado de crear el archivo de los reportes de productos
-    public static void crearReporteProducto(String nombreArchivo, String[] titulos, List<Producto> productos) {
-        crearArchivo(nombreArchivo, cuerpoReporte(titulos, contenidoTblProducto(productos)));
+    public static void crearReporteProducto(String nombreArchivo, String[] titulos, 
+            String nombreReporte, String detalle, List<Producto> productos) {
+        crearArchivo(nombreArchivo, cuerpoReporte(titulos, nombreReporte, detalle,
+                contenidoTblProducto(productos)));
     }
 
     //Genera el cuerpo del reporte
-    private static String cuerpoReporte(String[] titulos, String contenido) {
+    private static String cuerpoReporte(String[] titulos, String nombreReporte, 
+            String detalle, String contenido) {
         String pagina = "";
         pagina += "<html>\n";
-        pagina += "<head>\n";
         pagina += "<body>\n";
-        pagina += "<h2>Tabla</h2>\n";
+        pagina += "<h3>"+nombreReporte+"</h3>\n";
+        pagina += "<p>"+detalle+"</p>\n";
         pagina += "<table>\n";
         pagina += "<tr>\n";
         for (String titulo : titulos) {
@@ -114,7 +123,6 @@ public class Archivo {
         pagina += contenido;
         pagina += "</table>\n";
         pagina += "</body>\n";
-        pagina += "</head>\n";
         pagina += "</html>";
 
         return pagina;
