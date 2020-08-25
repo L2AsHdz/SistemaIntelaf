@@ -11,17 +11,17 @@ import java.sql.SQLException;
  *
  * @author asael
  */
-public class TiempoTrasladoDAOImpl {
+public class TiempoTrasladoDAO {
 
-    private static TiempoTrasladoDAOImpl tiempoDAO = null;
+    private static TiempoTrasladoDAO tiempoDAO = null;
     private Connection conexion = Conexion.getConexion();
 
-    private TiempoTrasladoDAOImpl() {
+    private TiempoTrasladoDAO() {
     }
 
-    public static TiempoTrasladoDAOImpl getTiempoDAO() {
+    public static TiempoTrasladoDAO getTiempoDAO() {
         if (tiempoDAO == null) {
-            tiempoDAO = new TiempoTrasladoDAOImpl();
+            tiempoDAO = new TiempoTrasladoDAO();
         }
         return tiempoDAO;
     }

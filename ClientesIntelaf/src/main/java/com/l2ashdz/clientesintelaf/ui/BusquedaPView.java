@@ -5,16 +5,32 @@
  */
 package com.l2ashdz.clientesintelaf.ui;
 
+import com.l2ashdz.clientesintelaf.model.Producto;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import org.jdesktop.observablecollections.ObservableCollections;
+import org.jdesktop.observablecollections.ObservableList;
+
 /**
  *
  * @author asael
  */
 public class BusquedaPView extends javax.swing.JPanel {
+    
+    private List<Producto> productosList;
+    private ObservableList<Producto> productoObservableList;
 
     /**
      * Creates new form BusquedaPView
      */
     public BusquedaPView() {
+        productosList = new ArrayList<>();
+        productoObservableList = ObservableCollections.observableList(productosList);
         initComponents();
     }
 
@@ -26,36 +42,60 @@ public class BusquedaPView extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jCheckBox2 = new javax.swing.JCheckBox();
-        jCheckBox3 = new javax.swing.JCheckBox();
-        jTextField3 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        txtCodigo = new javax.swing.JTextField();
+        txtNombre = new javax.swing.JTextField();
+        chbCodigo = new javax.swing.JCheckBox();
+        chbNombre = new javax.swing.JCheckBox();
+        chbFabricante = new javax.swing.JCheckBox();
+        txtFabricante = new javax.swing.JTextField();
+        btnBuscar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProductos = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(39, 44, 52));
+        setEnabled(false);
 
-        jCheckBox1.setBackground(new java.awt.Color(39, 44, 52));
-        jCheckBox1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        jCheckBox1.setForeground(new java.awt.Color(255, 255, 255));
-        jCheckBox1.setText("Codigo");
+        txtCodigo.setEditable(false);
 
-        jCheckBox2.setBackground(new java.awt.Color(39, 44, 52));
-        jCheckBox2.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        jCheckBox2.setForeground(new java.awt.Color(255, 255, 255));
-        jCheckBox2.setText("Nombre");
+        txtNombre.setEditable(false);
 
-        jCheckBox3.setBackground(new java.awt.Color(39, 44, 52));
-        jCheckBox3.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        jCheckBox3.setForeground(new java.awt.Color(255, 255, 255));
-        jCheckBox3.setText("Fabricante");
+        chbCodigo.setBackground(new java.awt.Color(39, 44, 52));
+        chbCodigo.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chbCodigo.setForeground(new java.awt.Color(255, 255, 255));
+        chbCodigo.setText("Codigo");
+        chbCodigo.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chbCodigoItemStateChanged(evt);
+            }
+        });
 
-        jButton1.setText("Buscar productos");
+        chbNombre.setBackground(new java.awt.Color(39, 44, 52));
+        chbNombre.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chbNombre.setForeground(new java.awt.Color(255, 255, 255));
+        chbNombre.setText("Nombre");
+        chbNombre.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chbNombreItemStateChanged(evt);
+            }
+        });
 
+        chbFabricante.setBackground(new java.awt.Color(39, 44, 52));
+        chbFabricante.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chbFabricante.setForeground(new java.awt.Color(255, 255, 255));
+        chbFabricante.setText("Fabricante");
+        chbFabricante.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chbFabricanteItemStateChanged(evt);
+            }
+        });
+
+        txtFabricante.setEditable(false);
+
+        btnBuscar.setText("Buscar productos");
+
+        tblProductos.setAutoCreateRowSorter(true);
         tblProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -64,6 +104,35 @@ public class BusquedaPView extends javax.swing.JPanel {
 
             }
         ));
+
+        org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${productoObservableList}");
+        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, tblProductos);
+        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${codigo}"));
+        columnBinding.setColumnName("Codigo");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${codTienda}"));
+        columnBinding.setColumnName("Cod Tienda");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nombre}"));
+        columnBinding.setColumnName("Nombre");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${fabricante}"));
+        columnBinding.setColumnName("Fabricante");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${descripcion}"));
+        columnBinding.setColumnName("Descripcion");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${precio}"));
+        columnBinding.setColumnName("Precio");
+        columnBinding.setColumnClass(Float.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${existencias}"));
+        columnBinding.setColumnName("Existencias");
+        columnBinding.setColumnClass(Integer.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${garantiaMeses}"));
+        columnBinding.setColumnName("Garantia Meses");
+        columnBinding.setColumnClass(Integer.class);
+        bindingGroup.addBinding(jTableBinding);
+        jTableBinding.bind();
         jScrollPane1.setViewportView(tblProductos);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -72,54 +141,120 @@ public class BusquedaPView extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jCheckBox1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jCheckBox3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jCheckBox2)
-                        .addGap(18, 18, 18)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(chbCodigo)
+                            .addGap(18, 18, 18)
+                            .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(chbFabricante)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(txtFabricante, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(chbNombre)
+                            .addGap(18, 18, 18)
+                            .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(btnBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 580, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jCheckBox3)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(chbCodigo)
+                    .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chbFabricante)
+                    .addComponent(txtFabricante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox2)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(chbNombre)
+                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBuscar))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(79, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(100, Short.MAX_VALUE))
         );
+
+        bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void chbCodigoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chbCodigoItemStateChanged
+        cambioFiltro(txtCodigo);
+    }//GEN-LAST:event_chbCodigoItemStateChanged
+
+    private void chbFabricanteItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chbFabricanteItemStateChanged
+        cambioFiltro(txtFabricante);
+    }//GEN-LAST:event_chbFabricanteItemStateChanged
+
+    private void chbNombreItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chbNombreItemStateChanged
+        cambioFiltro(txtNombre);
+    }//GEN-LAST:event_chbNombreItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JCheckBox jCheckBox3;
+    private javax.swing.JButton btnBuscar;
+    private javax.swing.JCheckBox chbCodigo;
+    private javax.swing.JCheckBox chbFabricante;
+    private javax.swing.JCheckBox chbNombre;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JTable tblProductos;
+    private javax.swing.JTextField txtCodigo;
+    private javax.swing.JTextField txtFabricante;
+    private javax.swing.JTextField txtNombre;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
+
+    private void cambioFiltro(JTextField jText){
+        if (jText.isEditable()) {
+            jText.setEditable(false);
+        } else {
+            jText.setEditable(true);
+            jText.requestFocus();
+        }
+        jText.setText("");
+    }
+    
+    public JButton getBtnBuscar() {
+        return btnBuscar;
+    }
+
+    public JCheckBox getChbCodigo() {
+        return chbCodigo;
+    }
+
+    public JCheckBox getChbFabricante() {
+        return chbFabricante;
+    }
+
+    public JCheckBox getChbNombre() {
+        return chbNombre;
+    }
+
+    public JTable getTblProductos() {
+        return tblProductos;
+    }
+
+    public JTextField getTxtCodigo() {
+        return txtCodigo;
+    }
+
+    public JTextField getTxtFabricante() {
+        return txtFabricante;
+    }
+
+    public JTextField getTxtNombre() {
+        return txtNombre;
+    }
+
+    public ObservableList<Producto> getProductoObservableList() {
+        return productoObservableList;
+    }
+
+    public void setProductoObservableList(ObservableList<Producto> productoObservableList) {
+        this.productoObservableList = productoObservableList;
+    }
 }

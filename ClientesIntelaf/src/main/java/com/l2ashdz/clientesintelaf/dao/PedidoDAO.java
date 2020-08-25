@@ -12,17 +12,17 @@ import java.time.LocalDate;
  *
  * @author asael
  */
-public class PedidoDAOImpl  {
+public class PedidoDAO  {
 
-    private static PedidoDAOImpl pedidoDAO = null;
+    private static PedidoDAO pedidoDAO = null;
     private Connection conexion = Conexion.getConexion();
 
-    private PedidoDAOImpl() {
+    private PedidoDAO() {
     }
 
-    public static PedidoDAOImpl getPedidoDAO() {
+    public static PedidoDAO getPedidoDAO() {
         if (pedidoDAO == null) {
-            pedidoDAO = new PedidoDAOImpl();
+            pedidoDAO = new PedidoDAO();
         }
         return pedidoDAO;
     }
