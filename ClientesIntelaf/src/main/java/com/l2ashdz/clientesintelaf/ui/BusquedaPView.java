@@ -6,7 +6,6 @@
 package com.l2ashdz.clientesintelaf.ui;
 
 import com.l2ashdz.clientesintelaf.model.Producto;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
@@ -104,6 +103,7 @@ public class BusquedaPView extends javax.swing.JPanel {
 
             }
         ));
+        tblProductos.getTableHeader().setReorderingAllowed(false);
 
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${productoObservableList}");
         org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, tblProductos);

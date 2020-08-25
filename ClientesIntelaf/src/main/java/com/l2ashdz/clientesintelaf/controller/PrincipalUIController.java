@@ -2,6 +2,7 @@ package com.l2ashdz.clientesintelaf.controller;
 
 import com.l2ashdz.clientesintelaf.ui.BusquedaPView;
 import com.l2ashdz.clientesintelaf.ui.PrincipalUI;
+import com.l2ashdz.clientesintelaf.ui.RastreoPedidoView;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -16,6 +17,10 @@ public class PrincipalUIController extends MouseAdapter {
     //Vista y controlador para catalogo de productos
     private BusquedaPView busquedaV = new BusquedaPView();
     private BusquedaPController busqquedaC = new BusquedaPController(busquedaV);
+    
+    //Vista y controlador para rastreo de pedido
+    private RastreoPedidoView rastreoV = new RastreoPedidoView();
+    private RastreoPedidoController rastreoC = new RastreoPedidoController(rastreoV);
 
     public PrincipalUIController(PrincipalUI principalUI) {
         this.principalUI = principalUI;
@@ -33,9 +38,11 @@ public class PrincipalUIController extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
         if (principalUI.getBtnBuscar() == e.getSource()) {
+            rastreoV.setEnabled(false);
             busqquedaC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnRastrear() == e.getSource()) {
-            
+            busquedaV.setEnabled(false);
+            rastreoC.iniciar(principalUI.getPnlDesk());
         }
     }
 }

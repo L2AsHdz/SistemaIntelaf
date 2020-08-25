@@ -37,7 +37,7 @@ public class VentaDAOImpl implements VentaDAO {
 
     @Override
     public void create(Venta v) {
-        String sql = "INSERT INTO venta (nit_cliente, codigo_tienda, fecha, porcentaje_efectivo,"
+        String sql = "INSERT INTO venta (nit_cliente, codigo_tienda, fecha, porcentaje_efectivo, "
                 + "porcentaje_credito) VALUES (?,?,?,?,?)";
 
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {

@@ -157,7 +157,7 @@ public class Pedido {
                 this.estado = "Atrasado";
                 break;
             case 2:
-                this.estado = "En espera";
+                this.estado = "En tienda";
                 break;
             case 3:
                 this.estado = "Retirado";
