@@ -34,7 +34,7 @@ public class PrincipalView extends javax.swing.JFrame {
         pnlPrincipal = new javax.swing.JPanel();
         pnlDesk = new javax.swing.JPanel();
         pnlMenu = new javax.swing.JPanel();
-        jLabel14 = new javax.swing.JLabel();
+        btnInicio = new javax.swing.JLabel();
         Opciones = new javax.swing.JPanel();
         btnTiendas = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -83,7 +83,7 @@ public class PrincipalView extends javax.swing.JFrame {
 
         pnlMenu.setBackground(new java.awt.Color(239, 121, 34));
 
-        jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Empresa-iloveimg-cropped.png"))); // NOI18N
+        btnInicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Empresa-iloveimg-cropped.png"))); // NOI18N
 
         Opciones.setBackground(new java.awt.Color(214, 100, 15));
 
@@ -361,20 +361,17 @@ public class PrincipalView extends javax.swing.JFrame {
         pnlMenu.setLayout(pnlMenuLayout);
         pnlMenuLayout.setHorizontalGroup(
             pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(Opciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(pnlMenuLayout.createSequentialGroup()
-                .addGroup(pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlMenuLayout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(jLabel14))
-                    .addComponent(Opciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, 0))
+                .addGap(36, 36, 36)
+                .addComponent(btnInicio))
         );
         pnlMenuLayout.setVerticalGroup(
             pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMenuLayout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(jLabel14)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(24, 24, 24)
+                .addComponent(btnInicio)
+                .addGap(18, 18, 18)
                 .addComponent(Opciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -521,6 +518,7 @@ public class PrincipalView extends javax.swing.JFrame {
     private javax.swing.JPanel Opciones;
     private javax.swing.JPanel btnClientes;
     private javax.swing.JPanel btnEmpleados;
+    private javax.swing.JLabel btnInicio;
     private javax.swing.JPanel btnPedidos;
     private javax.swing.JPanel btnProductos;
     private javax.swing.JPanel btnReportes;
@@ -531,7 +529,6 @@ public class PrincipalView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
@@ -604,6 +601,10 @@ public class PrincipalView extends javax.swing.JFrame {
 
     public JLabel getLblNombreT() {
         return lblNombreT;
+    }
+
+    public JLabel getBtnInicio() {
+        return btnInicio;
     }
     
 }

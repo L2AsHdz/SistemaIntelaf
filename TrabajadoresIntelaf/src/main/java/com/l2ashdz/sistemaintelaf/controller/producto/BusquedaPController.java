@@ -1,8 +1,9 @@
-package com.l2ashdz.clientesintelaf.controller;
+package com.l2ashdz.sistemaintelaf.controller.producto;
 
-import com.l2ashdz.clientesintelaf.dao.ProductoDAO;
-import com.l2ashdz.clientesintelaf.model.Producto;
-import com.l2ashdz.clientesintelaf.ui.BusquedaPView;
+import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAO;
+import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAOImpl;
+import com.l2ashdz.sistemaintelaf.model.Producto;
+import com.l2ashdz.sistemaintelaf.ui.producto.BusquedaPView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -19,7 +20,7 @@ public class BusquedaPController implements ActionListener {
     private ProductoDAO productoDAO;
     
     public BusquedaPController(BusquedaPView busquedaV) {
-        productoDAO = ProductoDAO.getProductoDAO();
+        productoDAO = ProductoDAOImpl.getProductoDAO();
         this.busquedaV = busquedaV;
         this.busquedaV.getBtnBuscar().addActionListener(this);
     }

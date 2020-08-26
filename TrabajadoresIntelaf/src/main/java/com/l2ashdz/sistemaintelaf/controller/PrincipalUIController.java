@@ -4,6 +4,7 @@ import com.l2ashdz.sistemaintelaf.controller.cliente.AddClienteController;
 import com.l2ashdz.sistemaintelaf.controller.empleado.AddEmpleadoController;
 import com.l2ashdz.sistemaintelaf.controller.pedido.PedidoController;
 import com.l2ashdz.sistemaintelaf.controller.producto.AddProductoController;
+import com.l2ashdz.sistemaintelaf.controller.producto.BusquedaPController;
 import com.l2ashdz.sistemaintelaf.controller.reportes.ReportesController;
 import com.l2ashdz.sistemaintelaf.controller.tienda.TiendaController;
 import com.l2ashdz.sistemaintelaf.controller.venta.AddVentaController;
@@ -12,6 +13,7 @@ import com.l2ashdz.sistemaintelaf.ui.cliente.AddClienteView;
 import com.l2ashdz.sistemaintelaf.ui.empleado.AddEmpleadoView;
 import com.l2ashdz.sistemaintelaf.ui.pedido.PedidoView;
 import com.l2ashdz.sistemaintelaf.ui.producto.AddProductoView;
+import com.l2ashdz.sistemaintelaf.ui.producto.BusquedaPView;
 import com.l2ashdz.sistemaintelaf.ui.reportes.ReportesView;
 import com.l2ashdz.sistemaintelaf.ui.tienda.TiendaView;
 import com.l2ashdz.sistemaintelaf.ui.venta.AddVentaView;
@@ -25,6 +27,10 @@ import java.awt.event.MouseEvent;
 public class PrincipalUIController extends MouseAdapter {
 
     private PrincipalView principalUI;
+
+    //Vista y controlador para busqueda de productos
+    private BusquedaPView busquedaV = new BusquedaPView();
+    private BusquedaPController busqquedaC = new BusquedaPController(busquedaV);
 
     //Vista y controlador para interfaz tienda
     private TiendaView tiendaV = new TiendaView();
@@ -65,6 +71,7 @@ public class PrincipalUIController extends MouseAdapter {
         this.principalUI.getBtnPedidos().addMouseListener(this);
         this.principalUI.getBtnVentas().addMouseListener(this);
         this.principalUI.getBtnReportes().addMouseListener(this);
+        this.principalUI.getBtnInicio().addMouseListener(this);
     }
 
     public void iniciar() {
@@ -72,6 +79,7 @@ public class PrincipalUIController extends MouseAdapter {
         principalUI.setResizable(false);
         principalUI.setLocationRelativeTo(null);
         principalUI.setVisible(true);
+        mostrarBusqueda();
     }
 
     @Override
@@ -84,6 +92,7 @@ public class PrincipalUIController extends MouseAdapter {
             ventaV.setEnabled(false);
             pedidoV.setEnabled(false);
             reporteV.setEnabled(false);
+            busquedaV.setEnabled(false);
             tiendaC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnProductos() == e.getSource()) {
             tiendaV.setEnabled(false);
@@ -92,6 +101,7 @@ public class PrincipalUIController extends MouseAdapter {
             ventaV.setEnabled(false);
             pedidoV.setEnabled(false);
             reporteV.setEnabled(false);
+            busquedaV.setEnabled(false);
             productoC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnEmpleados() == e.getSource()) {
             tiendaV.setEnabled(false);
@@ -100,6 +110,7 @@ public class PrincipalUIController extends MouseAdapter {
             ventaV.setEnabled(false);
             pedidoV.setEnabled(false);
             reporteV.setEnabled(false);
+            busquedaV.setEnabled(false);
             empleadoC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnClientes() == e.getSource()) {
             tiendaV.setEnabled(false);
@@ -108,6 +119,7 @@ public class PrincipalUIController extends MouseAdapter {
             ventaV.setEnabled(false);
             pedidoV.setEnabled(false);
             reporteV.setEnabled(false);
+            busquedaV.setEnabled(false);
             clienteC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnVentas() == e.getSource()) {
             tiendaV.setEnabled(false);
@@ -116,6 +128,7 @@ public class PrincipalUIController extends MouseAdapter {
             clienteV.setEnabled(false);
             pedidoV.setEnabled(false);
             reporteV.setEnabled(false);
+            busquedaV.setEnabled(false);
             ventaC.iniciar(principalUI.getPnlDesk());
 
         } else if (principalUI.getBtnPedidos() == e.getSource()) {
@@ -125,6 +138,7 @@ public class PrincipalUIController extends MouseAdapter {
             clienteV.setEnabled(false);
             ventaV.setEnabled(false);
             reporteV.setEnabled(false);
+            busquedaV.setEnabled(false);
             pedidoC.iniciar(principalUI.getPnlDesk());
         } else if (principalUI.getBtnReportes() == e.getSource()) {
             tiendaV.setEnabled(false);
@@ -133,7 +147,21 @@ public class PrincipalUIController extends MouseAdapter {
             clienteV.setEnabled(false);
             ventaV.setEnabled(false);
             pedidoV.setEnabled(false);
+            busquedaV.setEnabled(false);
             reporteC.iniciar(principalUI.getPnlDesk());
+        } else if (principalUI.getBtnInicio() == e.getSource()) {
+            mostrarBusqueda();
         }
+    }
+
+    private void mostrarBusqueda() {
+        tiendaV.setEnabled(false);
+        productoV.setEnabled(false);
+        empleadoV.setEnabled(false);
+        clienteV.setEnabled(false);
+        ventaV.setEnabled(false);
+        pedidoV.setEnabled(false);
+        reporteV.setEnabled(false);
+        busqquedaC.iniciar(principalUI.getPnlDesk());
     }
 }
