@@ -3,8 +3,6 @@ package com.l2ashdz.sistemaintelaf.clasesAuxiliares;
 import com.l2ashdz.sistemaintelaf.dao.CRUD;
 import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.empleado.EmpleadoDAOImpl;
-import com.l2ashdz.sistemaintelaf.dao.pedido.ProductoPedidoDAO;
-import com.l2ashdz.sistemaintelaf.dao.pedido.ProductoPedidoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.producto.ExistenciaProductoDAO;
 import com.l2ashdz.sistemaintelaf.dao.producto.ExistenciaProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAOImpl;
@@ -33,7 +31,6 @@ public class Verificaciones {
     private static CRUD<Producto> productoDAO = ProductoDAOImpl.getProductoDAO();
     private static CRUD<Cliente> clienteDAO = ClienteDAOImpl.getClienteDAO();
     private static CRUD<Empleado> empleadoDAO = EmpleadoDAOImpl.getEmpleadoDAO();
-    private static ProductoPedidoDAO productoPedDAO = ProductoPedidoDAOImpl.getProductoPDAO();
 
     //Realiza las verificaciones correspondientes con los paramtros obtenidos
     public static boolean verificarTienda(String[] parametros) throws UserInputException {

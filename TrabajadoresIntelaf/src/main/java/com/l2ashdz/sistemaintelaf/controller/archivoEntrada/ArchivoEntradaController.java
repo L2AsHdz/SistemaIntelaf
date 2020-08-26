@@ -48,8 +48,6 @@ public class ArchivoEntradaController implements ActionListener {
     private LoginView loginV;
     private LoginController loginC;
 
-    private Connection conexion;
-
     private CRUD<Empleado> empleadoDAO;
     private CRUD<Tienda> tiendaDAO;
     private CRUD<TiempoTraslado> tiempoDAO;
@@ -71,7 +69,6 @@ public class ArchivoEntradaController implements ActionListener {
     public ArchivoEntradaController(ArchivoEntradaView archivoEView) {
         pedidos = new ArrayList<>();
         productosP = new ArrayList<>();
-        conexion = Conexion.getConexion();
         empleadoDAO = EmpleadoDAOImpl.getEmpleadoDAO();
         tiendaDAO = TiendaDAOImpl.getTiendaDAO();
         tiempoDAO = TiempoTrasladoDAOImpl.getTiempoDAO();

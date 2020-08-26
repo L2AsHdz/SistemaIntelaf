@@ -108,23 +108,22 @@ public class TiempoTrasladoController extends MouseAdapter implements ActionList
             String tmpo = "";
             tiendas = tiendaDAO.getListado();
             for (Tienda t : tiendas) {
-                if (!t.getCodigo().equals(tiendaActual)) {
-                    if (tiempoDAO.getTiempoT(t.getCodigo(), tiendaActual) == null
-                            && tiempoDAO.getTiempoT(tiendaActual, t.getCodigo()) == null) {
-                        tmpo = JOptionPane.showInputDialog(null, mensaje + t.toString(), "Tiempo traslado",
-                                JOptionPane.QUESTION_MESSAGE);
-                        while (!isInt(tmpo) && !isMayorACero(tmpo)) {
-                            tmpo = JOptionPane.showInputDialog(null, "Debe ser un numero entero mayor a cero\n"
-                                    + mensaje + t.getNombre(), "Tiempo traslado", JOptionPane.ERROR_MESSAGE);
-                        }
-
-                        tiempoDAO.create(nuevoTiempo(tiendaActual, t.getCodigo(), Integer.parseInt(tmpo)));
+                if (!t.getCodigo().equals(tiendaActual)
+                        && tiempoDAO.getTiempoT(t.getCodigo(), tiendaActual) == null
+                        && tiempoDAO.getTiempoT(tiendaActual, t.getCodigo()) == null) {
+                    tmpo = JOptionPane.showInputDialog(null, mensaje + t.toString(), "Tiempo traslado",
+                            JOptionPane.QUESTION_MESSAGE);
+                    while (!isInt(tmpo) && !isMayorACero(tmpo)) {
+                        tmpo = JOptionPane.showInputDialog(null, "Debe ser un numero entero mayor a cero\n"
+                                + mensaje + t.getNombre(), "Tiempo traslado", JOptionPane.ERROR_MESSAGE);
                     }
+
+                    tiempoDAO.create(nuevoTiempo(tiendaActual, t.getCodigo(), Integer.parseInt(tmpo)));
                 }
             }
             if (tmpo.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Todos los tiempos estan registrados",
-                                "Info", JOptionPane.INFORMATION_MESSAGE);
+                        "Info", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

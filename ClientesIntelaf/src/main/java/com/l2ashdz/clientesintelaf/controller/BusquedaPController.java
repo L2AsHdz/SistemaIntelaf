@@ -91,13 +91,11 @@ public class BusquedaPController implements ActionListener {
         }
     }
     
+    //Reinicia la interfaz
     private void limpiarCampos() {
         busquedaV.getTxtCodigo().setText("");
         busquedaV.getTxtFabricante().setText("");
         busquedaV.getTxtNombre().setText("");
-//        busquedaV.getTxtCodigo().setEditable(false);
-//        busquedaV.getTxtFabricante().setEditable(false);
-//        busquedaV.getTxtNombre().setEditable(false);
         busquedaV.getChbCodigo().setSelected(false);
         busquedaV.getChbFabricante().setSelected(false);
         busquedaV.getChbNombre().setSelected(false);

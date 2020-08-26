@@ -20,7 +20,6 @@ import com.l2ashdz.sistemaintelaf.model.Tienda;
 import com.l2ashdz.sistemaintelaf.model.Venta;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
 import com.l2ashdz.sistemaintelaf.ui.reportes.ProductosPds;
-import com.l2ashdz.sistemaintelaf.ui.reportes.ProductosVts;
 import com.l2ashdz.sistemaintelaf.ui.reportes.ReportesVenta;
 import com.l2ashdz.sistemaintelaf.ui.reportes.ReportesPedido;
 import com.l2ashdz.sistemaintelaf.ui.reportes.ReportesProducto;
@@ -289,6 +288,7 @@ public class ReportesController extends MouseAdapter implements ActionListener, 
         int state = evt.getStateChange();
         tiendaActual = PrincipalView.lblCodigo.getText();
         limpiarCampos();
+        reportesV.getBtnCargarReporte().setEnabled(false);
         if (selccion(evt, 0, state)) {
             setEnableFiltros(false, false, false);
             mostrarTabla(reportesV.getPnlTabla(), reportePedidos);

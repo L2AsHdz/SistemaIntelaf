@@ -39,6 +39,7 @@ public class RastreoPedidoController implements ActionListener {
         this.rastreoV.getBtnVerInfo().addActionListener(this);
     }
 
+    //Inicia la interfaz
     public void iniciar(JPanel parent) {
         if (!rastreoV.isEnabled()) {
             parent.removeAll();
@@ -56,6 +57,7 @@ public class RastreoPedidoController implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        //Muetra la informacion del pedido
         if (rastreoV.getBtnVerInfo() == e.getSource()) {
             String codigo = rastreoV.getTxtCodigo().getText();
             if (!codigo.isEmpty()) {
@@ -83,6 +85,7 @@ public class RastreoPedidoController implements ActionListener {
         }
     }
 
+    //Limpia la interfaz de datos anteriores
     private void limpiarCampos() {
         rastreoV.getTxtCodigo().setText("");
         rastreoV.getLblAnticipo().setText("");
@@ -96,6 +99,7 @@ public class RastreoPedidoController implements ActionListener {
         rastreoV.getTxtCodigo().requestFocus();
     }
 
+    //Hace los calculos necesarios para desplegar la informacion
     private void mostrarInformacion() {
         float anticipo = pedido.getTotal() * pedido.getPorcentajePagado();
         float pagoRestante = pedido.getTotal() - anticipo;

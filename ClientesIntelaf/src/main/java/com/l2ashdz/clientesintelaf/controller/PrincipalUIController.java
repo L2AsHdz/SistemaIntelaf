@@ -37,9 +37,12 @@ public class PrincipalUIController extends MouseAdapter {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        //Muestra la intefaz catalogo de productos
         if (principalUI.getBtnBuscar() == e.getSource()) {
             rastreoV.setEnabled(false);
             busqquedaC.iniciar(principalUI.getPnlDesk());
+            
+            //Mustra la interfaz de rastreo de pedido
         } else if (principalUI.getBtnRastrear() == e.getSource()) {
             busquedaV.setEnabled(false);
             rastreoC.iniciar(principalUI.getPnlDesk());
