@@ -72,6 +72,7 @@ public class RecogerPedidoView extends javax.swing.JDialog {
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("%");
 
+        txtPorcentajeC.setText("0");
         txtPorcentajeC.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtPorcentajeCFocusLost(evt);
@@ -82,6 +83,7 @@ public class RecogerPedidoView extends javax.swing.JDialog {
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("%");
 
+        txtPorcentajeE.setText("0");
         txtPorcentajeE.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtPorcentajeEFocusLost(evt);
@@ -92,6 +94,7 @@ public class RecogerPedidoView extends javax.swing.JDialog {
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("Q.");
 
+        txtCredito.setText("0");
         txtCredito.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtCreditoFocusLost(evt);
@@ -102,6 +105,7 @@ public class RecogerPedidoView extends javax.swing.JDialog {
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Q.");
 
+        txtEfectivo.setText("0");
         txtEfectivo.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtEfectivoFocusLost(evt);
@@ -252,7 +256,7 @@ public class RecogerPedidoView extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtPorcentajeCFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtPorcentajeCFocusLost
-        if (!lblPagoPendiente.getText().isEmpty() && !txtPorcentajeC.getText().isEmpty()) {
+        if (Float.parseFloat(lblPagoPendiente.getText()) > 0 && !txtPorcentajeC.getText().isEmpty()) {
             float pagoPendiente = Float.parseFloat(lblPagoPendiente.getText());
             float creditoCompra = Float.parseFloat(lblCreditoCompra.getText());
             float porcentajeC = Float.parseFloat(txtPorcentajeC.getText());
@@ -276,7 +280,7 @@ public class RecogerPedidoView extends javax.swing.JDialog {
     }//GEN-LAST:event_txtPorcentajeCFocusLost
 
     private void txtCreditoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCreditoFocusLost
-        if (!lblPagoPendiente.getText().isEmpty() && !txtCredito.getText().isEmpty()) {
+        if (Float.parseFloat(lblPagoPendiente.getText()) > 0 && !txtCredito.getText().isEmpty()) {
             float pagoPendiente = Float.parseFloat(lblPagoPendiente.getText());
             float creditoCompra = Float.parseFloat(lblCreditoCompra.getText());
             float credito = Float.parseFloat(txtCredito.getText());
@@ -300,7 +304,7 @@ public class RecogerPedidoView extends javax.swing.JDialog {
     }//GEN-LAST:event_txtCreditoFocusLost
 
     private void txtPorcentajeEFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtPorcentajeEFocusLost
-        if (!lblPagoPendiente.getText().isEmpty() && !txtPorcentajeE.getText().isEmpty()) {
+        if (Float.parseFloat(lblPagoPendiente.getText()) > 0 && !txtPorcentajeE.getText().isEmpty()) {
             float anticipo = Float.parseFloat(lblPagoPendiente.getText());
             float creditoCompra = Float.parseFloat(lblCreditoCompra.getText());
             float porcentajeE = Float.parseFloat(txtPorcentajeE.getText());
@@ -324,7 +328,7 @@ public class RecogerPedidoView extends javax.swing.JDialog {
     }//GEN-LAST:event_txtPorcentajeEFocusLost
 
     private void txtEfectivoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtEfectivoFocusLost
-        if (!lblPagoPendiente.getText().isEmpty() && !txtEfectivo.getText().isEmpty()) {
+        if (Float.parseFloat(lblPagoPendiente.getText()) > 0 && !txtEfectivo.getText().isEmpty()) {
             float anticipo = Float.parseFloat(lblPagoPendiente.getText());
             float creditoCompra = Float.parseFloat(lblCreditoCompra.getText());
             float efectivo = Float.parseFloat(txtEfectivo.getText());

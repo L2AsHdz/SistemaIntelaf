@@ -5,6 +5,8 @@ import com.l2ashdz.sistemaintelaf.dao.CRUD;
 import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAO;
 import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAOImpl;
+import com.l2ashdz.sistemaintelaf.dao.pedido.ProductoPedidoDAO;
+import com.l2ashdz.sistemaintelaf.dao.pedido.ProductoPedidoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAO;
 import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
@@ -13,9 +15,12 @@ import com.l2ashdz.sistemaintelaf.dao.venta.VentaDAOImpl;
 import com.l2ashdz.sistemaintelaf.model.Cliente;
 import com.l2ashdz.sistemaintelaf.model.Pedido;
 import com.l2ashdz.sistemaintelaf.model.Producto;
+import com.l2ashdz.sistemaintelaf.model.ProductoPedido;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
 import com.l2ashdz.sistemaintelaf.model.Venta;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
+import com.l2ashdz.sistemaintelaf.ui.reportes.ProductosPds;
+import com.l2ashdz.sistemaintelaf.ui.reportes.ProductosVts;
 import com.l2ashdz.sistemaintelaf.ui.reportes.ReportesVenta;
 import com.l2ashdz.sistemaintelaf.ui.reportes.ReportesPedido;
 import com.l2ashdz.sistemaintelaf.ui.reportes.ReportesProducto;
@@ -24,6 +29,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -36,13 +43,17 @@ import javax.swing.JPanel;
  *
  * @author asael
  */
-public class ReportesController implements ActionListener, ItemListener {
+public class ReportesController extends MouseAdapter implements ActionListener, ItemListener {
 
     private ReportesView reportesV;
 
     private ReportesPedido reportePedidos = new ReportesPedido();
     private ReportesVenta reporteVentas = new ReportesVenta();
     private ReportesProducto reporteProductos = new ReportesProducto();
+    private ProductosPds productosPV;
+
+    private List<ProductoPedido> productosP;
+    private ProductoPedidoDAO productoPDAO;
 
     private List<Pedido> pedidos;
     private PedidoDAO pedidoDAO;
@@ -59,7 +70,7 @@ public class ReportesController implements ActionListener, ItemListener {
     private String tiendaActual;
     private String nit;
     private String codTienda;
-    private LocalDate fechaInicial ;
+    private LocalDate fechaInicial;
     private LocalDate fechaFinal;
     private LocalDateTime fechaHora = LocalDateTime.now();
 
@@ -69,10 +80,12 @@ public class ReportesController implements ActionListener, ItemListener {
         productoDAO = ProductoDAOImpl.getProductoDAO();
         clienteDAO = ClienteDAOImpl.getClienteDAO();
         tiendaDAO = TiendaDAOImpl.getTiendaDAO();
+        productoPDAO = ProductoPedidoDAOImpl.getProductoPDAO();
         this.reportesV = reportesV;
         this.reportesV.getCbReportes().addItemListener(this);
         this.reportesV.getBtnCargarReporte().addActionListener(this);
         this.reportesV.getBtnExportar().addActionListener(this);
+        this.reportePedidos.getTbleRportePedido().addMouseListener(this);
     }
 
     //Inicia la interfaz
@@ -261,7 +274,7 @@ public class ReportesController implements ActionListener, ItemListener {
                     case 8:
                         crearReporteProducto(nombreR, TITULOS_RPRODUCTOS, REPORTE9,
                                 detalleReporteProdNoVendidos(tiendaDAO.getObject(codTienda)),
-                                 productos);
+                                productos);
                         break;
                 }
             }
@@ -388,6 +401,18 @@ public class ReportesController implements ActionListener, ItemListener {
         reporte.setVisible(true);
         parent.add(reporte);
         parent.validate();
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+            int fila = reportePedidos.getTbleRportePedido().getSelectedRow();
+            String codPedido = reportePedidos.getTbleRportePedido().getValueAt(fila, 0).toString();
+            productosP = productoPDAO.getProductosInPedido(Integer.parseInt(codPedido));
+            productosPV = new ProductosPds();
+            productosPV.getProductosObservableList().clear();
+            productosPV.getProductosObservableList().addAll(productosP);
+            productosPV.setLocationRelativeTo(null);
+            productosPV.setVisible(true);
     }
 
     private String detalleReporteCliente(Cliente c, int opcion) {
