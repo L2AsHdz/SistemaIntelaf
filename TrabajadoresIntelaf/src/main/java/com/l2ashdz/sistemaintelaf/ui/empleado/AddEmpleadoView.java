@@ -163,7 +163,7 @@ public class AddEmpleadoView extends javax.swing.JPanel {
             }
         });
 
-        btnListarEmpleados.setText("Listar empleados");
+        btnListarEmpleados.setText("Listar");
 
         tblEmpleados.getTableHeader().setReorderingAllowed(false);
 

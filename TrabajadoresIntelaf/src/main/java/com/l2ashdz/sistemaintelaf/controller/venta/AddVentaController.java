@@ -16,7 +16,6 @@ import com.l2ashdz.sistemaintelaf.dao.venta.VentaDAO;
 import com.l2ashdz.sistemaintelaf.dao.venta.VentaDAOImpl;
 import com.l2ashdz.sistemaintelaf.excepciones.UserInputException;
 import com.l2ashdz.sistemaintelaf.model.Cliente;
-import com.l2ashdz.sistemaintelaf.model.Conexion;
 import com.l2ashdz.sistemaintelaf.model.Producto;
 import com.l2ashdz.sistemaintelaf.model.ProductoVenta;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
@@ -28,8 +27,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -184,25 +181,30 @@ public class AddVentaController extends MouseAdapter implements ActionListener, 
             obtenerDatosV();
             obtenerDatosC();
 
-            try {
-                validarAddCliente2(nombre, nitCliente, telefono);
-                validarVenta(fecha, porcentajeEfectivo, porcentajeCredito);
-                if (clienteDAO.getObject(nitCliente) == null) {
-                    clienteDAO.create(nuevoCliente(nitCliente, nombre, cui, direccion, telefono, correo));
+            if (!productosV.isEmpty()) {
+                try {
+                    validarAddCliente2(nombre, nitCliente, telefono);
+                    validarVenta(fecha, porcentajeEfectivo, porcentajeCredito);
+                    if (clienteDAO.getObject(nitCliente) == null) {
+                        clienteDAO.create(nuevoCliente(nitCliente, nombre, cui, direccion, telefono, correo));
+                    }
+                    ventaDAO.create(nuevaVenta(nitCliente, fecha, porcentajeCredito, porcentajeEfectivo, tiendaActual));
+                    productosV.forEach(pv -> productoVDAO.create(pv));
+                    productosV.forEach(pv -> existenciaDAO.restarExistencias(tiendaActual,
+                            pv.getCodigo(), pv.getCantidad()));
+
+                    clienteDAO.restarCredito(nitCliente, credito);
+
+                    generarFactura();
+                    actualizarDatosP();
+                    limpiarCampos();
+
+                } catch (UserInputException ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
                 }
-                ventaDAO.create(nuevaVenta(nitCliente, fecha, porcentajeCredito, porcentajeEfectivo, tiendaActual));
-                productosV.forEach(pv -> productoVDAO.create(pv));
-                productosV.forEach(pv -> existenciaDAO.restarExistencias(tiendaActual,
-                        pv.getCodigo(), pv.getCantidad()));
-
-                clienteDAO.restarCredito(nitCliente, credito);
-
-                generarFactura();
-                actualizarDatosP();
-                limpiarCampos();
-
-            } catch (UserInputException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "No hay ningun producto agregado a la venta",
+                        "Advertencia", JOptionPane.ERROR_MESSAGE);
             }
 
         }
