@@ -81,7 +81,28 @@ public class ProductoDAOImpl implements ProductoDAO {
 
     @Override
     public Producto getObject(String codigo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String sql = "SELECT * FROM producto WHERE codigo = ?";
+        Producto p = null;
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setString(1, codigo);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    p = new Producto();
+                    p.setCodigo(rs.getString("codigo"));
+                    p.setNombre(rs.getString("nombre"));
+                    p.setFabricante(rs.getString("fabricante"));
+                    p.setPrecio(rs.getFloat("precio"));
+                    p.setDescripcion(rs.getString("descripcion"));
+                    p.setGarantiaMeses(rs.getInt("garantia_meses"));
+                }
+            }
+            System.out.println("Producto obtenido de la BD");
+        } catch (SQLException ex) {
+            System.out.println("No se pudo leer el producto");
+            ex.printStackTrace(System.out);
+        }
+        return p;
     }
 
     @Override
@@ -218,7 +239,7 @@ public class ProductoDAOImpl implements ProductoDAO {
                     ps.setString(2, fechaFinal.toString());
                     break;
                 case 2:
-                    ps = conexion.prepareStatement(sql+order);
+                    ps = conexion.prepareStatement(sql + order);
                     break;
             }
 
@@ -264,7 +285,7 @@ public class ProductoDAOImpl implements ProductoDAO {
                     ps.setString(3, fechaFinal.toString());
                     break;
                 case 2:
-                    ps = conexion.prepareStatement(sql+order);
+                    ps = conexion.prepareStatement(sql + order);
                     ps.setString(1, codT);
                     break;
             }

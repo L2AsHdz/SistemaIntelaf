@@ -92,9 +92,10 @@ public class PedidoDAOImpl implements PedidoDAO {
     public Pedido getObject(String codigo) {
         String sql = "SELECT p.*, SUM(pp.precio*pp.cantidad) total, COUNT(pp.codigo_producto)"
                 + " cantProductos FROM pedido p INNER JOIN producto_pedido pp ON p.codigo=pp.codigo_pedido"
-                + " WHERE p.codigo = ?";
+                + " WHERE p.codigo = ? GROUP BY p.codigo";
         String fecha;
         Pedido p = null;
+        
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setInt(1, Integer.parseInt(codigo));
             try (ResultSet rs = ps.executeQuery()) {
@@ -416,6 +417,20 @@ public class PedidoDAOImpl implements PedidoDAO {
             e.printStackTrace(System.out);
         }
         return pedidos;
+    }
+
+    @Override
+    public void setNextCodigo(int nextCodigo) {
+        String sql = "ALTER TABLE pedido AUTO_INCREMENT = ?";
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, nextCodigo);
+            ps.executeUpdate();
+            System.out.println("Se actualizo el auto increment");
+        } catch (SQLException ex) {
+            System.out.println("No se actualizo el auto increment");
+            ex.printStackTrace(System.out);
+        }
     }
 
 }

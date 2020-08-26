@@ -10,6 +10,7 @@ import java.util.List;
  */
 public interface PedidoDAO extends CRUD<Pedido>{
     int getCodigoPedido();
+    void setNextCodigo(int nextCodigo);
     List<Pedido> getPedidosSinVerificar(String codTD);
     void setEstado(int codigo, int estado);
     void setFecha(int codigo, String fecha, int opcion);

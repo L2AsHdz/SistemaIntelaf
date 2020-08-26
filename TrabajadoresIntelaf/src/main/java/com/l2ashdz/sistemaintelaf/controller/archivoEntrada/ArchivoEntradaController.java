@@ -9,6 +9,8 @@ import com.l2ashdz.sistemaintelaf.ui.ArchivoEntradaView;
 import com.l2ashdz.sistemaintelaf.ui.LoginView;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.*;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.EntidadFabrica.*;
+import static com.l2ashdz.sistemaintelaf.model.Archivo.leerArchivo;
+import static com.l2ashdz.sistemaintelaf.model.Archivo.obtenerRutaArchivo;
 import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.pedido.ProductoPedidoDAO;
@@ -17,28 +19,21 @@ import com.l2ashdz.sistemaintelaf.dao.producto.ExistenciaProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.producto.ProductoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tiempoTraslado.TiempoTrasladoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
+import com.l2ashdz.sistemaintelaf.excepciones.UserInputException;
 import com.l2ashdz.sistemaintelaf.model.Cliente;
 import com.l2ashdz.sistemaintelaf.model.Conexion;
 import com.l2ashdz.sistemaintelaf.model.ExistenciaProducto;
 import com.l2ashdz.sistemaintelaf.model.Pedido;
 import com.l2ashdz.sistemaintelaf.model.Producto;
-import com.l2ashdz.sistemaintelaf.model.ProductoPedido;
 import com.l2ashdz.sistemaintelaf.model.TiempoTraslado;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -47,6 +42,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class ArchivoEntradaController implements ActionListener {
 
     private ArchivoEntradaView archivoEV;
+
+    //Vista y controlador para login
     private LoginView loginV;
     private LoginController loginC;
 
@@ -93,11 +90,8 @@ public class ArchivoEntradaController implements ActionListener {
             archivoEV.setLocationRelativeTo(null);
             archivoEV.setVisible(true);
         } else {
-            //loginC = new LoginController(loginV);
-            //loginC.iniciar();
-            archivoEV.pack();
-            archivoEV.setLocationRelativeTo(null);
-            archivoEV.setVisible(true);
+            loginC = new LoginController(loginV);
+            loginC.iniciar();
         }
     }
 
@@ -114,20 +108,24 @@ public class ArchivoEntradaController implements ActionListener {
         } else if (archivoEV.getBtnIniciar() == ae.getSource()) {
             if (!path.isEmpty()) {
                 entrada = leerArchivo(path);
-                noseComoLlamarlo(entrada);
+                iniciarAnalisis(entrada);
                 archivoEV.getBtnContinuar().setEnabled(true);
             }
         } else if (archivoEV.getBtnContinuar() == ae.getSource()) {
-            try {
-                conexion.commit();
-                conexion.setAutoCommit(true);
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
+            if (verificarInfoSistema()) {
+                limpiarInterfaz();
+            } else {
+                try {
+                    conexion.commit();
+                    conexion.setAutoCommit(true);
+                } catch (SQLException ex) {
+                    ex.printStackTrace(System.out);
+                }
             }
         }
     }
 
-    private void noseComoLlamarlo(List<String> entrada) {
+    private void iniciarAnalisis(List<String> entrada) {
         String[] parametros;
         errores = new ArrayList();
         JTextArea textA = archivoEV.getTxtAreaInformacion();
@@ -188,24 +186,20 @@ public class ArchivoEntradaController implements ActionListener {
                                 textA.append("Se registrara el producto: " + parametros[6]
                                         + " en el pedido: " + parametros[1] + "\n");
                             }
-                            //Crear una lista de pedidos y productosPedido ir agregando objetos al
-                            //mismo tiempo que se crea en la base de datos, luego verificar si 
-                            //los datos del pedido son iguales en todos los registros, si no es asi
-                            //borrar los productos y pedidos de la base de datos
                             break;
                         default:
                             mensaje = "Linea " + (i + 1) + ": No coincide con el inicio de alguna estructura\n";
                             errores.add(mensaje);
                     }
-                } catch (Exception e) {
+                } catch (UserInputException e) {
                     mensaje = "Linea " + (i + 1) + ": " + e.getMessage() + "\n";
                     errores.add(mensaje);
                     e.printStackTrace(System.out);
-                    
+
                     if (!pedidoDAO.getListado().isEmpty()) {
                         productoPDAO.deleteProductosDePedido(parametros[1]);
                         pedidoDAO.delete(parametros[1]);
-                        mensaje = "Se elimino el pedido: "+parametros[1]+ " y sus productos debido a errores\n";
+                        mensaje = "Se registrara el pedido: " + parametros[1] + " y sus productos debido a errores\n";
                         errores.add(mensaje);
                     }
                 }
@@ -214,6 +208,9 @@ public class ArchivoEntradaController implements ActionListener {
             if (!errores.isEmpty()) {
                 textA.append("\n\nSe detectaron los siguientes errores en el archivo: \n");
                 errores.forEach(error -> textA.append(error));
+            } else {
+                textA.append("\n\nNo se detectaron errores en el archio de entrada\n"
+                        + "Presione el boton continuar para registrar los datos\n");
             }
 
         } catch (SQLException e) {
@@ -239,40 +236,11 @@ public class ArchivoEntradaController implements ActionListener {
         return verificacion;
     }
 
-    private String obtenerRutaArchivo() {
-        String path = "";
-        JFileChooser fc = new JFileChooser();
-        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fc.addChoosableFileFilter(new FileNameExtensionFilter("TXT Documents", "txt"));
-        fc.setAcceptAllFileFilterUsed(false);
-        fc.showOpenDialog(null);
-        try {
-            path = fc.getSelectedFile().getAbsolutePath();
-        } catch (Exception e) {
-            System.out.println("se cancelo");
-            e.printStackTrace(System.out);
-        }
-        return path;
-    }
-
-    private List<String> leerArchivo(String path) {
-        File archivo = new File(path);
-        List<String> textoArchivo = null;
-        try {
-            BufferedReader entrada = new BufferedReader(new FileReader(archivo));
-
-            textoArchivo = new ArrayList();
-            String lineaArchivo = entrada.readLine();
-            while (lineaArchivo != null) {
-                textoArchivo.add(lineaArchivo);
-                lineaArchivo = entrada.readLine();
-            }
-            entrada.close();
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace(System.out);
-        } catch (IOException ex) {
-            ex.printStackTrace(System.out);
-        }
-        return textoArchivo;
+    private void limpiarInterfaz() {
+        archivoEV.getLblNombreArchivo().setText("*No se ha escogido un archio");
+        archivoEV.getTxtAreaInformacion().setText("");
+        archivoEV.getBtnContinuar().setEnabled(false);
+        archivoEV.getBtnIniciar().setEnabled(false);
+        path = "";
     }
 }

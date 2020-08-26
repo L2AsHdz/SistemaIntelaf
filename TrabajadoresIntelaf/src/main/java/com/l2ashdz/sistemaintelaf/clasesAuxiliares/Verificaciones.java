@@ -17,6 +17,7 @@ import com.l2ashdz.sistemaintelaf.model.Empleado;
 import com.l2ashdz.sistemaintelaf.model.Producto;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  *
@@ -355,12 +356,7 @@ public class Verificaciones {
                 flag = false;
                 throw new UserInputException("La cantidad, el total y el anticipo deben ser datos mayores a cero");
 
-                //Si el total dado no coincide con los datos en el sistema lanza una excepcion
-            } else if (!verificarTotalProducto(codP, cantidad, total)) {
-                flag = false;
-                throw new UserInputException("El total proporcionado no coincide con los datos en el sistema");
-
-                //Si la tienda origen es la misma que el destino lanza una excepcion
+//                //Si la tienda origen es la misma que el destino lanza una excepcion
             } else if (codTO.equals(codTD)) {
                 flag = false;
                 throw new UserInputException("La tienda origen no puede ser la misma que la tienda destino");
@@ -370,7 +366,6 @@ public class Verificaciones {
         } else {
             flag = false;
             throw new UserInputException("El numero de parametros no coincide con la estructura");
-
         }
         return flag;
     }
@@ -388,7 +383,7 @@ public class Verificaciones {
     //Verifica si la cadena es un entero
     public static boolean isInt(String s) {
         try {
-            Integer.parseInt(s);
+            Long.parseLong(s);
             return true;
         } catch (NumberFormatException e) {
             return false;
@@ -410,10 +405,10 @@ public class Verificaciones {
         return (Float.parseFloat(s) > 0);
     }
 
-    public static boolean verificarTotalProducto(String codigo, String cantidad, String total) {
-        float precioDB = productoDAO.getObject(codigo).getPrecio();
-        float totalReal = (Integer.parseInt(cantidad) * precioDB);
-        System.out.println(total + " - "+totalReal);
-        return Float.parseFloat(total) == totalReal;
-    }
+//    public static boolean verificarTotalProducto(String codigo, String cantidad, String total) {
+//        float precioDB = productoDAO.getObject(codigo).getPrecio();
+//        float totalReal = (Integer.parseInt(cantidad) * precioDB);
+//        System.out.println(total + " - "+totalReal);
+//        return Float.parseFloat(total) == totalReal;
+//    }
 }
