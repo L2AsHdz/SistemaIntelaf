@@ -76,7 +76,7 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
             obtenerDatos();
             try {
                 validarAddTienda(codigo, nombre, direccion, tel1);
-                    tiendaDAO.create(nuevaTienda(codigo, nombre, tel1, direccion, tel2, correo, horario));
+                tiendaDAO.create(nuevaTienda(codigo, nombre, tel1, direccion, tel2, correo, horario));
                 registrarTiempos();
                 JOptionPane.showMessageDialog(null, "Tienda registrada", "Info", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
@@ -90,7 +90,7 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
             obtenerDatos();
             try {
                 validarUpdateTienda(nombre, direccion, tel1);
-                    tiendaDAO.update(nuevaTienda(codigo, nombre, tel1, direccion, tel2, correo, horario));
+                tiendaDAO.update(nuevaTienda(codigo, nombre, tel1, direccion, tel2, correo, horario));
                 JOptionPane.showMessageDialog(null, "Tienda actualizada", "Info", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
             } catch (UserInputException ex) {
@@ -127,18 +127,23 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
 
     private void registrarTiempos() {
         String mensaje = "Ingrese el tiempo de traslado hacia la tienda: ";
+        String mensaje1 = "Desea ingresar los tiempos de traslado\nhacia las otras tiendas?";
         String tiempo;
-        tiendas = tiendaDAO.getListado();
-        for (Tienda t : tiendas) {
-            if (!t.getCodigo().equals(codigo)) {
-                tiempo = JOptionPane.showInputDialog(null, mensaje + t.getNombre(), "Tiempo traslado",
-                        JOptionPane.QUESTION_MESSAGE);
-                while (!isInt(tiempo) && !isMayorACero(tiempo)) {
-                    tiempo = JOptionPane.showInputDialog(null, "Debe ser un numero entero mayor a cero\n"
-                            + mensaje + t.getNombre(), "Tiempo traslado", JOptionPane.ERROR_MESSAGE);
-                }
+        int opcion = JOptionPane.showConfirmDialog(null, mensaje1,
+                "Informacion", JOptionPane.YES_NO_OPTION);
+        if (opcion == 0) {
+            tiendas = tiendaDAO.getListado();
+            for (Tienda t : tiendas) {
+                if (!t.getCodigo().equals(codigo)) {
+                    tiempo = JOptionPane.showInputDialog(null, mensaje + t.toString(), "Tiempo traslado",
+                            JOptionPane.QUESTION_MESSAGE);
+                    while (!isInt(tiempo) && !isMayorACero(tiempo)) {
+                        tiempo = JOptionPane.showInputDialog(null, "Debe ser un numero entero mayor a cero\n"
+                                + mensaje + t.getNombre(), "Tiempo traslado", JOptionPane.ERROR_MESSAGE);
+                    }
 
-                tiempoDAO.create(nuevoTiempo(codigo, t.getCodigo(), Integer.parseInt(tiempo)));
+                    tiempoDAO.create(nuevoTiempo(codigo, t.getCodigo(), Integer.parseInt(tiempo)));
+                }
             }
         }
     }
