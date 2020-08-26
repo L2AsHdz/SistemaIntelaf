@@ -122,6 +122,10 @@ public class ArchivoEntradaController implements ActionListener {
                 entrada = leerArchivo(path);
                 analizarArchivo(entrada);
                 archivoEV.getBtnContinuar().setEnabled(true);
+                archivoEV.getBtnCancelar().setEnabled(false);
+            } else {
+                JOptionPane.showMessageDialog(null, "No se ha seleccionado un archivo",
+                        "Advertencia", JOptionPane.ERROR_MESSAGE);
             }
 
             //Si ya existe al menos un empleado muestra el login de lo contrario
@@ -143,7 +147,7 @@ public class ArchivoEntradaController implements ActionListener {
         errores = new ArrayList();
         JTextArea textA = archivoEV.getTxtAreaInformacion();
         String mensaje;
-        
+
         for (int i = 0; i < entrada.size(); i++) {
             String linea = entrada.get(i);
             parametros = linea.split(",");
@@ -152,13 +156,13 @@ public class ArchivoEntradaController implements ActionListener {
                     case "TIENDA":
                         if (verificarTienda(parametros)) {
                             tiendaDAO.create(nuevaTienda(parametros));
-                            textA.append("Se ingresara la tienda: " + parametros[3] + "\n");
+                            textA.append("Se registro la tienda: " + parametros[3] + "\n");
                         }
                         break;
                     case "TIEMPO":
                         if (verificarTiempo(parametros)) {
                             tiempoDAO.create(nuevoTiempo(parametros));
-                            textA.append("Se registrara el tiempo: " + parametros[3]
+                            textA.append("Se registro el tiempo: " + parametros[3]
                                     + " entre las tiendas: " + parametros[1] + " y "
                                     + parametros[2] + "\n");
                         }
@@ -167,24 +171,24 @@ public class ArchivoEntradaController implements ActionListener {
                         if (verificarProducto(parametros)) {
                             if (productoDAO.getObject(parametros[3]) == null) {
                                 productoDAO.create(nuevoProducto(parametros));
-                                textA.append("Se registrara el producto: " + parametros[1] + "\n");
+                                textA.append("Se registro el producto: " + parametros[1] + "\n");
                             }
                             existenciaPDAO.create(nuevaExistenciaProducto(parametros));
-                            textA.append("Se registraran las existencias del producto: "
+                            textA.append("Se registraron las existencias del producto: "
                                     + "" + parametros[1] + " en la tienda: " + parametros[6] + "\n");
                         }
                         break;
                     case "CLIENTE":
                         if (verificarCliente(parametros)) {
                             clienteDAO.create(nuevoCliente(parametros));
-                            textA.append("Se registrara el cliente con el nit: "
+                            textA.append("Se registro el cliente con el nit: "
                                     + parametros[2] + "\n");
                         }
                         break;
                     case "EMPLEADO":
                         if (verificarEmpleado(parametros)) {
                             empleadoDAO.create(nuevoEmpleado(parametros));
-                            textA.append("Se registrara el empleado con codigo: "
+                            textA.append("Se registro el empleado con codigo: "
                                     + parametros[2] + "\n");
                         }
                         break;
@@ -192,10 +196,10 @@ public class ArchivoEntradaController implements ActionListener {
                         if (verificarPedido(parametros, productosP) && !parametros[1].equals(pedidoConError)) {
                             if (!isExistPedido(pedidos, parametros[1])) {
                                 pedidos.add(nuevoPedido(parametros));
-                                textA.append("Se registrara el pedido: " + parametros[1] + "\n");
+                                textA.append("Se registro el pedido: " + parametros[1] + "\n");
                             }
                             productosP.add(nuevoProductoPedido(parametros));
-                            textA.append("Se registrara el producto: " + parametros[6]
+                            textA.append("Se registro el producto: " + parametros[6]
                                     + " en el pedido: " + parametros[1] + "\n");
                         }
                         break;
@@ -210,21 +214,27 @@ public class ArchivoEntradaController implements ActionListener {
                 eliminarPedidoConError(parametros[1]);
             }
         }
-        
+
+        //Verificar que el anticipo no sea mayor al total
         verificarTotalAnticipo();
-        
+
         if (!errores.isEmpty()) {
             textA.append("\n\nSe detectaron los siguientes errores en el archivo: \n");
             errores.forEach(error -> textA.append(error));
+            textA.append("\n\nPresione el boton continuar...");
         } else {
-            textA.append("\n\nNo se detectaron errores en el archio de entrada\n"
-                    + "Presione el boton continuar para registrar los datos\n");
+            textA.append("\n\nNo se detectaron errores en el archio de entrada\n\n"
+                    + "Presione el boton continuar...\n");
         }
+
+        //Registrar pedidos en bd
         pedidos.forEach(p -> pedidoDAO.create(p));
+
+        //Registrar productosPedid en db
         productosP.forEach(pp -> productoPDAO.create(pp));
+
+        //Actuaalizar el AutoIncrement
         pedidoDAO.setNextCodigo(pedidoDAO.getCodigoPedido());
-        pedidos.forEach(p -> System.out.println(p.getCodigo()));
-        productosP.forEach(pp -> System.out.println(pp.getCodigoPedido() + " - " + pp.getCodigo()));
         //}
     }
 
@@ -249,14 +259,16 @@ public class ArchivoEntradaController implements ActionListener {
 
     //Limpia la interfaz
     private void limpiarInterfaz() {
-        archivoEV.getLblNombreArchivo().setText("*No se ha escogido un archio");
+        archivoEV.getLblNombreArchivo().setText("*No se ha escogido un archio*");
         archivoEV.getTxtAreaInformacion().setText("");
         archivoEV.getBtnContinuar().setEnabled(false);
         archivoEV.getBtnIniciar().setEnabled(false);
+        archivoEV.getBtnCancelar().setEnabled(true);
         path = "";
         pedidoConError = "";
     }
 
+    //Elimina los pedidos y sus productos que contengan errores en el archivo de entrada
     private void eliminarPedidoConError(String codPedido) {
         if (!pedidos.isEmpty()) {
             for (int j = 0; j < productosP.size(); j++) {
@@ -273,12 +285,13 @@ public class ArchivoEntradaController implements ActionListener {
                     j--;
                 }
             }
-            String mensaje = "No se registrara el pedido " + codPedido + " y sus productos debido a errores\n";
+            String mensaje = "No se registro el pedido " + codPedido + " y sus productos debido a errores\n";
             errores.add(mensaje);
             pedidoConError = codPedido;
         }
     }
 
+    //Corrige el porcentagePagado
     private void verificarTotalAnticipo() {
         String codPedido = "";
         try {
@@ -292,7 +305,7 @@ public class ArchivoEntradaController implements ActionListener {
 
         } catch (UserInputException e) {
             e.printStackTrace(System.out);
-            errores.add(e.getMessage()+"\n");
+            errores.add(e.getMessage() + "\n");
             eliminarPedidoConError(codPedido);
         }
     }

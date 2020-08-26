@@ -76,12 +76,13 @@ public class AddProductoController extends MouseAdapter implements ActionListene
             obtenerDatos();
             try {
                 validarAddProducto(codigo, nombre, fabricante, existencias, precio, garantia, codTActual);
-                    //registra el producto en la base de datos
+                //registra el producto en la base de datos si no existe aun
+                if (productoDAO.getObject(codigo) == null) {
                     productoDAO.create(nuevoProducto(codigo, nombre, fabricante, precio,
                             existencias, descripcion, garantia, codTActual));
-
-                    //registra las existencias en la base de datos
-                    existenciaPDAO.create(nuevaExistenciaProducto(codTActual, codigo, existencias));
+                }
+                //registra las existencias en la base de datos
+                existenciaPDAO.create(nuevaExistenciaProducto(codTActual, codigo, existencias));
                 JOptionPane.showMessageDialog(null, "Producto registrado", "Info", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
                 limpiarFiltros();
@@ -95,9 +96,9 @@ public class AddProductoController extends MouseAdapter implements ActionListene
             obtenerDatos();
             try {
                 validarUpdateProducto(nombre, fabricante, existencias, precio, garantia);
-                    productoDAO.update(nuevoProducto(codigo, nombre, fabricante, precio,
-                            existencias, descripcion, garantia, codTActual));
-                    existenciaPDAO.update(nuevaExistenciaProducto(codTActual, codigo, existencias));
+                productoDAO.update(nuevoProducto(codigo, nombre, fabricante, precio,
+                        existencias, descripcion, garantia, codTActual));
+                existenciaPDAO.update(nuevaExistenciaProducto(codTActual, codigo, existencias));
                 JOptionPane.showMessageDialog(null, "Produto actualizado", "Info", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
                 limpiarFiltros();
@@ -132,6 +133,7 @@ public class AddProductoController extends MouseAdapter implements ActionListene
         }
     }
 
+    //Limpia los campos
     private void limpiarCampos() {
         addProductoV.getTxtCodigo().setText("");
         addProductoV.getTxtCodigo().setEditable(true);
@@ -145,6 +147,7 @@ public class AddProductoController extends MouseAdapter implements ActionListene
         addProductoV.getBtnActualizar().setEnabled(false);
     }
 
+    //limpia los filtros
     private void limpiarFiltros() {
         addProductoV.getProductoObservableList().clear();
         addProductoV.getBgFiltro().clearSelection();
@@ -153,6 +156,7 @@ public class AddProductoController extends MouseAdapter implements ActionListene
         addProductoV.getTxtFiltroNombre().setText("");
     }
 
+    //Obtiene los datos ingresados por el usuario
     private void obtenerDatos() {
         codigo = addProductoV.getTxtCodigo().getText();
         nombre = addProductoV.getTxtNombre().getText();
@@ -164,25 +168,27 @@ public class AddProductoController extends MouseAdapter implements ActionListene
         codTActual = PrincipalView.lblCodigo.getText();
     }
 
+    //Obtiene los datos de la fila seleccionada y los setea en los campos para
+    //actualizar sus datos
     @Override
     public void mouseClicked(MouseEvent e) {
         int fila = addProductoV.getTblProductos().getSelectedRow();
         codigo = addProductoV.getTblProductos().getValueAt(fila, 0).toString();
         codTienda = addProductoV.getTblProductos().getValueAt(fila, 3).toString();
         codTActual = PrincipalView.lblCodigo.getText();
+        producto = productoDAO.getProducto(codTienda, codigo);
+        addProductoV.getTxtCodigo().setText(producto.getCodigo());
+        addProductoV.getTxtCodigo().setEnabled(false);
+        addProductoV.getTxtNombre().setText(producto.getNombre());
+        addProductoV.getTxtFabricante().setText(producto.getFabricante());
+        addProductoV.getTxtExistencias().setText(String.valueOf(producto.getExistencias()));
+        addProductoV.getTxtPrecio().setText(String.valueOf(producto.getPrecio()));
+        addProductoV.getTxtDescricpcion().setText(producto.getDescripcion());
+        addProductoV.getTxtGarantia().setText(String.valueOf(producto.getGarantiaMeses()));
         if (codTienda.equals(codTActual)) {
-            producto = productoDAO.getProducto(codTienda, codigo);
-            addProductoV.getTxtCodigo().setText(producto.getCodigo());
-            addProductoV.getTxtCodigo().setEnabled(false);
-            addProductoV.getTxtNombre().setText(producto.getNombre());
-            addProductoV.getTxtFabricante().setText(producto.getFabricante());
-            addProductoV.getTxtExistencias().setText(String.valueOf(producto.getExistencias()));
-            addProductoV.getTxtPrecio().setText(String.valueOf(producto.getPrecio()));
-            addProductoV.getTxtDescricpcion().setText(producto.getDescripcion());
-            addProductoV.getTxtGarantia().setText(String.valueOf(producto.getGarantiaMeses()));
             addProductoV.getBtnActualizar().setEnabled(true);
         } else {
-            limpiarCampos();
+            addProductoV.getBtnActualizar().setEnabled(false);
         }
     }
 
