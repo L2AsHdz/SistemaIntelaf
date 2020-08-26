@@ -154,6 +154,8 @@ public class AddTiendaController extends MouseAdapter implements ActionListener 
         addTiendaV.getTxtTelefono().setText("");
         addTiendaV.getTxtTelefono2().setText("");
         addTiendaV.getTxtCodigo().requestFocus();
+        addTiendaV.getCbCodigo().setSelected(false);
+        addTiendaV.getCbNombre().setSelected(false);
         addTiendaV.getBtnActualizar().setEnabled(false);
     }
 

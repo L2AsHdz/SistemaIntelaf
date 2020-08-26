@@ -134,7 +134,7 @@ public class TiendaDAOImpl implements TiendaDAO {
     public List<Tienda> getFilteredList(String nombre, String codigo, int opcion) {
         String sql1 = "SELECT * FROM tienda WHERE codigo LIKE ? ORDER BY nombre";
         String sql2 = "SELECT * FROM tienda WHERE nombre LIKE ? ORDER BY nombre";
-        String sql3 = "SELECT * FROM tienda WHERE codigo LIKE ? OR nombre LIKE ? ORDER BY nombre";
+        String sql3 = "SELECT * FROM tienda WHERE codigo LIKE ? AND nombre LIKE ? ORDER BY nombre";
         PreparedStatement ps = null;
         List<Tienda> tiendas = null;
 

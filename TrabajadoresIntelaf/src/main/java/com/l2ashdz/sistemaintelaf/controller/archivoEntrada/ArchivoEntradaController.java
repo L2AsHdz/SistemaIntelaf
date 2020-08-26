@@ -60,6 +60,7 @@ public class ArchivoEntradaController implements ActionListener {
 
     private List<Empleado> empleados;
 
+    private String pedidoConError = "0";
     private String path = "";
     private List<String> entrada;
     private List<String> errores;
@@ -197,7 +198,7 @@ public class ArchivoEntradaController implements ActionListener {
                             }
                             break;
                         case "PEDIDO":
-                            if (verificarPedido(parametros)) {
+                            if (verificarPedido(parametros) && !parametros[1].equals(pedidoConError)) {
                                 if (pedidoDAO.getObject(parametros[1]) == null) {
                                     pedidoDAO.create(nuevoPedido(parametros));
                                     textA.append("Se registrara el pedido: " + parametros[1] + "\n");
@@ -221,6 +222,7 @@ public class ArchivoEntradaController implements ActionListener {
                         pedidoDAO.delete(parametros[1]);
                         mensaje = "No se registrara el pedido " + parametros[1] + " y sus productos debido a errores\n";
                         errores.add(mensaje);
+                        pedidoConError = parametros[1];
                     }
                 }
             }
@@ -265,5 +267,6 @@ public class ArchivoEntradaController implements ActionListener {
         archivoEV.getBtnContinuar().setEnabled(false);
         archivoEV.getBtnIniciar().setEnabled(false);
         path = "";
+        pedidoConError="";
     }
 }

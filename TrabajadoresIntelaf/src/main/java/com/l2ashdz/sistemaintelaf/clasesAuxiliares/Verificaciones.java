@@ -17,7 +17,6 @@ import com.l2ashdz.sistemaintelaf.model.Empleado;
 import com.l2ashdz.sistemaintelaf.model.Producto;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
 import java.time.LocalDate;
-import java.util.List;
 
 /**
  *
