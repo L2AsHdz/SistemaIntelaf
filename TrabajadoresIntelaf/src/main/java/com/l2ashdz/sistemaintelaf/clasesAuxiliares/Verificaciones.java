@@ -14,9 +14,12 @@ import com.l2ashdz.sistemaintelaf.dao.tienda.TiendaDAOImpl;
 import com.l2ashdz.sistemaintelaf.excepciones.*;
 import com.l2ashdz.sistemaintelaf.model.Cliente;
 import com.l2ashdz.sistemaintelaf.model.Empleado;
+import com.l2ashdz.sistemaintelaf.model.Pedido;
 import com.l2ashdz.sistemaintelaf.model.Producto;
+import com.l2ashdz.sistemaintelaf.model.ProductoPedido;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  *
@@ -278,7 +281,7 @@ public class Verificaciones {
         return flag;
     }
 
-    public static boolean verificarPedido(String[] parametros) throws UserInputException {
+    public static boolean verificarPedido(String[] parametros, List<ProductoPedido> productosP) throws UserInputException {
         boolean flag = true;
 
         if (parametros.length == 10) {
@@ -321,9 +324,9 @@ public class Verificaciones {
                 throw new UserInputException("El formato de la fecha no es correcto (yyyy-MM-dd)");
 
                 //Si la entidad con el codigo especificado ya esxiste lanza una excepcion
-            } else if (productoPedDAO.getProductoInPedido(Integer.parseInt(codigo), codP) != null) {
+            } else if (isProductoEnPedido(productosP, codigo, codP)) {
                 flag = false;
-                throw new UserInputException("El producto ya esta registrado en un pedido en el sistema");
+                throw new UserInputException("El producto ya esta registrado en el pedido actual");
 
                 //Si la entidad a la que hace referencia no existe lanza una excepcion
             } else if (tiendaDAO.getObject(codTD) == null || tiendaDAO.getObject(codTO) == null) {
@@ -403,11 +406,42 @@ public class Verificaciones {
     public static boolean isMayorACero(String s) {
         return (Float.parseFloat(s) > 0);
     }
-
-//    public static boolean verificarTotalProducto(String codigo, String cantidad, String total) {
-//        float precioDB = productoDAO.getObject(codigo).getPrecio();
-//        float totalReal = (Integer.parseInt(cantidad) * precioDB);
-//        System.out.println(total + " - "+totalReal);
-//        return Float.parseFloat(total) == totalReal;
-//    }
+    
+    private static boolean isProductoEnPedido(List<ProductoPedido> productosP, String codigo, String codP) {
+        boolean flag = false;
+        if (!productosP.isEmpty()) {
+            for (ProductoPedido pp : productosP) {
+                if (pp.getCodigoPedido() == Integer.parseInt(codigo) && pp.getCodigo().equals(codP)) {
+                    flag = true;
+                }
+            }
+        }
+        return flag;
+    }
+    
+    public static boolean isExistPedido(List<Pedido> pedidos, String cod) {
+        boolean flag = false;
+        if (!pedidos.isEmpty()) {
+            for (Pedido p : pedidos) {
+                if (p.getCodigo() == Integer.parseInt(cod)) {
+                    flag = true;
+                }
+            }
+        }
+        return flag;
+    }
+    
+    public static float validarAnticipo(List<ProductoPedido> productosP, int codPedido, float anticipo) throws UserInputException{
+        float total = 0;
+        for (ProductoPedido pp : productosP) {
+            if (pp.getCodigoPedido() == codPedido) {
+                total += (pp.getCantidad()*pp.getPrecio());
+            }
+        }
+        if (anticipo>total) {
+            throw new UserInputException("El anticipo sobrepasa al total en el pedido "+codPedido);
+        }
+        
+        return total;
+    }
 }

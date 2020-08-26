@@ -23,13 +23,14 @@ import com.l2ashdz.sistemaintelaf.excepciones.UserInputException;
 import com.l2ashdz.sistemaintelaf.model.Cliente;
 import com.l2ashdz.sistemaintelaf.model.Conexion;
 import com.l2ashdz.sistemaintelaf.model.ExistenciaProducto;
+import com.l2ashdz.sistemaintelaf.model.Pedido;
 import com.l2ashdz.sistemaintelaf.model.Producto;
+import com.l2ashdz.sistemaintelaf.model.ProductoPedido;
 import com.l2ashdz.sistemaintelaf.model.TiempoTraslado;
 import com.l2ashdz.sistemaintelaf.ui.LoginView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -59,6 +60,8 @@ public class ArchivoEntradaController implements ActionListener {
     private ProductoPedidoDAO productoPDAO;
 
     private List<Empleado> empleados;
+    private List<Pedido> pedidos;
+    private List<ProductoPedido> productosP;
 
     private String pedidoConError = "0";
     private String path = "";
@@ -66,6 +69,8 @@ public class ArchivoEntradaController implements ActionListener {
     private List<String> errores;
 
     public ArchivoEntradaController(ArchivoEntradaView archivoEView) {
+        pedidos = new ArrayList<>();
+        productosP = new ArrayList<>();
         conexion = Conexion.getConexion();
         empleadoDAO = EmpleadoDAOImpl.getEmpleadoDAO();
         tiendaDAO = TiendaDAOImpl.getTiendaDAO();
@@ -109,13 +114,6 @@ public class ArchivoEntradaController implements ActionListener {
             }
 
         } else if (archivoEV.getBtnCancelar() == ae.getSource()) {
-            try {
-                conexion.rollback();
-                conexion.close();
-                System.out.println("se hizo rollback");
-            } catch (SQLException e) {
-                e.printStackTrace(System.out);
-            }
             System.exit(0);
 
             //Empieza el analisis del archivo
@@ -129,12 +127,6 @@ public class ArchivoEntradaController implements ActionListener {
             //Si ya existe al menos un empleado muestra el login de lo contrario
             //limpia la interfaz para leer un nuevo archivo
         } else if (archivoEV.getBtnContinuar() == ae.getSource()) {
-            try {
-                conexion.commit();
-                conexion.setAutoCommit(true);
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
             if (verificarInfoSistema()) {
                 limpiarInterfaz();
             } else {
@@ -151,94 +143,89 @@ public class ArchivoEntradaController implements ActionListener {
         errores = new ArrayList();
         JTextArea textA = archivoEV.getTxtAreaInformacion();
         String mensaje;
-        try {
-            conexion.setAutoCommit(false);
-            for (int i = 0; i < entrada.size(); i++) {
-                String linea = entrada.get(i);
-                parametros = linea.split(",");
-                try {
-                    switch (parametros[0]) {
-                        case "TIENDA":
-                            if (verificarTienda(parametros)) {
-                                tiendaDAO.create(nuevaTienda(parametros));
-                                textA.append("Se ingresara la tienda: " + parametros[3] + "\n");
+        
+        for (int i = 0; i < entrada.size(); i++) {
+            String linea = entrada.get(i);
+            parametros = linea.split(",");
+            try {
+                switch (parametros[0]) {
+                    case "TIENDA":
+                        if (verificarTienda(parametros)) {
+                            tiendaDAO.create(nuevaTienda(parametros));
+                            textA.append("Se ingresara la tienda: " + parametros[3] + "\n");
+                        }
+                        break;
+                    case "TIEMPO":
+                        if (verificarTiempo(parametros)) {
+                            tiempoDAO.create(nuevoTiempo(parametros));
+                            textA.append("Se registrara el tiempo: " + parametros[3]
+                                    + " entre las tiendas: " + parametros[1] + " y "
+                                    + parametros[2] + "\n");
+                        }
+                        break;
+                    case "PRODUCTO":
+                        if (verificarProducto(parametros)) {
+                            if (productoDAO.getObject(parametros[3]) == null) {
+                                productoDAO.create(nuevoProducto(parametros));
+                                textA.append("Se registrara el producto: " + parametros[1] + "\n");
                             }
-                            break;
-                        case "TIEMPO":
-                            if (verificarTiempo(parametros)) {
-                                tiempoDAO.create(nuevoTiempo(parametros));
-                                textA.append("Se registrara el tiempo: " + parametros[3]
-                                        + " entre las tiendas: " + parametros[1] + " y "
-                                        + parametros[2] + "\n");
+                            existenciaPDAO.create(nuevaExistenciaProducto(parametros));
+                            textA.append("Se registraran las existencias del producto: "
+                                    + "" + parametros[1] + " en la tienda: " + parametros[6] + "\n");
+                        }
+                        break;
+                    case "CLIENTE":
+                        if (verificarCliente(parametros)) {
+                            clienteDAO.create(nuevoCliente(parametros));
+                            textA.append("Se registrara el cliente con el nit: "
+                                    + parametros[2] + "\n");
+                        }
+                        break;
+                    case "EMPLEADO":
+                        if (verificarEmpleado(parametros)) {
+                            empleadoDAO.create(nuevoEmpleado(parametros));
+                            textA.append("Se registrara el empleado con codigo: "
+                                    + parametros[2] + "\n");
+                        }
+                        break;
+                    case "PEDIDO":
+                        if (verificarPedido(parametros, productosP) && !parametros[1].equals(pedidoConError)) {
+                            if (!isExistPedido(pedidos, parametros[1])) {
+                                pedidos.add(nuevoPedido(parametros));
+                                textA.append("Se registrara el pedido: " + parametros[1] + "\n");
                             }
-                            break;
-                        case "PRODUCTO":
-                            if (verificarProducto(parametros)) {
-                                if (productoDAO.getObject(parametros[3]) == null) {
-                                    productoDAO.create(nuevoProducto(parametros));
-                                    textA.append("Se registrara el producto: " + parametros[1] + "\n");
-                                }
-                                existenciaPDAO.create(nuevaExistenciaProducto(parametros));
-                                textA.append("Se registraran las existencias del producto: "
-                                        + "" + parametros[1] + " en la tienda: " + parametros[6] + "\n");
-                            }
-                            break;
-                        case "CLIENTE":
-                            if (verificarCliente(parametros)) {
-                                clienteDAO.create(nuevoCliente(parametros));
-                                textA.append("Se registrara el cliente con el nit: "
-                                        + parametros[2] + "\n");
-                            }
-                            break;
-                        case "EMPLEADO":
-                            if (verificarEmpleado(parametros)) {
-                                empleadoDAO.create(nuevoEmpleado(parametros));
-                                textA.append("Se registrara el empleado con codigo: "
-                                        + parametros[2] + "\n");
-                            }
-                            break;
-                        case "PEDIDO":
-                            if (verificarPedido(parametros) && !parametros[1].equals(pedidoConError)) {
-                                if (pedidoDAO.getObject(parametros[1]) == null) {
-                                    pedidoDAO.create(nuevoPedido(parametros));
-                                    textA.append("Se registrara el pedido: " + parametros[1] + "\n");
-                                }
-                                productoPDAO.create(nuevoProductoPedido(parametros));
-                                textA.append("Se registrara el producto: " + parametros[6]
-                                        + " en el pedido: " + parametros[1] + "\n");
-                            }
-                            break;
-                        default:
-                            mensaje = "Linea " + (i + 1) + ": No coincide con el inicio de alguna estructura\n";
-                            errores.add(mensaje);
-                    }
-                } catch (UserInputException e) {
-                    mensaje = "Linea " + (i + 1) + ": " + e.getMessage() + "\n";
-                    errores.add(mensaje);
-                    e.printStackTrace(System.out);
-
-                    if (!pedidoDAO.getListado().isEmpty()) {
-                        productoPDAO.deleteProductosDePedido(parametros[1]);
-                        pedidoDAO.delete(parametros[1]);
-                        mensaje = "No se registrara el pedido " + parametros[1] + " y sus productos debido a errores\n";
+                            productosP.add(nuevoProductoPedido(parametros));
+                            textA.append("Se registrara el producto: " + parametros[6]
+                                    + " en el pedido: " + parametros[1] + "\n");
+                        }
+                        break;
+                    default:
+                        mensaje = "Linea " + (i + 1) + ": No coincide con el inicio de alguna estructura\n";
                         errores.add(mensaje);
-                        pedidoConError = parametros[1];
-                    }
                 }
+            } catch (UserInputException e) {
+                mensaje = "Linea " + (i + 1) + ": " + e.getMessage() + "\n";
+                errores.add(mensaje);
+                e.printStackTrace(System.out);
+                eliminarPedidoConError(parametros[1]);
             }
-
-            if (!errores.isEmpty()) {
-                textA.append("\n\nSe detectaron los siguientes errores en el archivo: \n");
-                errores.forEach(error -> textA.append(error));
-            } else {
-                textA.append("\n\nNo se detectaron errores en el archio de entrada\n"
-                        + "Presione el boton continuar para registrar los datos\n");
-            }
-            pedidoDAO.setNextCodigo(pedidoDAO.getCodigoPedido());
-
-        } catch (SQLException e) {
-            e.printStackTrace(System.out);
         }
+        
+        verificarTotalAnticipo();
+        
+        if (!errores.isEmpty()) {
+            textA.append("\n\nSe detectaron los siguientes errores en el archivo: \n");
+            errores.forEach(error -> textA.append(error));
+        } else {
+            textA.append("\n\nNo se detectaron errores en el archio de entrada\n"
+                    + "Presione el boton continuar para registrar los datos\n");
+        }
+        pedidos.forEach(p -> pedidoDAO.create(p));
+        productosP.forEach(pp -> productoPDAO.create(pp));
+        pedidoDAO.setNextCodigo(pedidoDAO.getCodigoPedido());
+        pedidos.forEach(p -> System.out.println(p.getCodigo()));
+        productosP.forEach(pp -> System.out.println(pp.getCodigoPedido() + " - " + pp.getCodigo()));
+        //}
     }
 
     //Verifica si existe al menos un empleado con el cual iniciar en el sistema
@@ -267,6 +254,46 @@ public class ArchivoEntradaController implements ActionListener {
         archivoEV.getBtnContinuar().setEnabled(false);
         archivoEV.getBtnIniciar().setEnabled(false);
         path = "";
-        pedidoConError="";
+        pedidoConError = "";
+    }
+
+    private void eliminarPedidoConError(String codPedido) {
+        if (!pedidos.isEmpty()) {
+            for (int j = 0; j < productosP.size(); j++) {
+                ProductoPedido pp = productosP.get(j);
+                if (pp.getCodigoPedido() == Integer.parseInt(codPedido)) {
+                    productosP.remove(j);
+                    j--;
+                }
+            }
+            for (int j = 0; j < pedidos.size(); j++) {
+                Pedido p = pedidos.get(j);
+                if (p.getCodigo() == Integer.parseInt(codPedido)) {
+                    pedidos.remove(j);
+                    j--;
+                }
+            }
+            String mensaje = "No se registrara el pedido " + codPedido + " y sus productos debido a errores\n";
+            errores.add(mensaje);
+            pedidoConError = codPedido;
+        }
+    }
+
+    private void verificarTotalAnticipo() {
+        String codPedido = "";
+        try {
+            for (Pedido p : pedidos) {
+                codPedido = String.valueOf(p.getCodigo());
+                float total = validarAnticipo(productosP, p.getCodigo(), p.getPorcentajePagado());
+                float anticipo = p.getPorcentajePagado();
+                float porcentajeP = anticipo / total;
+                p.setPorcentajePagado(porcentajeP);
+            }
+
+        } catch (UserInputException e) {
+            e.printStackTrace(System.out);
+            errores.add(e.getMessage()+"\n");
+            eliminarPedidoConError(codPedido);
+        }
     }
 }

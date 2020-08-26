@@ -143,7 +143,6 @@ public class EntidadFabrica {
     public static Pedido nuevoPedido(String[] parametros) {
         Float total = Float.parseFloat(parametros[8]);
         Float anticipo = Float.parseFloat(parametros[9]);
-        Float porcentajeP = anticipo / total;
 
         Pedido pedido = new Pedido();
         pedido.setCodigo(Integer.parseInt(parametros[1]));
@@ -151,7 +150,7 @@ public class EntidadFabrica {
         pedido.setTiendaOrigen(parametros[2]);
         pedido.setTiendaDestino(parametros[3]);
         pedido.setFecha(LocalDate.parse(parametros[4]));
-        pedido.setPorcentajePagado(porcentajeP);
+        pedido.setPorcentajePagado(anticipo);
         pedido.setPorcentajeEfectivo(1);
         pedido.setPorcentajeCredito(0);
         return pedido;
