@@ -6,6 +6,7 @@ import com.l2ashdz.sistemaintelaf.controller.pedido.PedidoController;
 import com.l2ashdz.sistemaintelaf.controller.producto.AddProductoController;
 import com.l2ashdz.sistemaintelaf.controller.producto.BusquedaPController;
 import com.l2ashdz.sistemaintelaf.controller.reportes.ReportesController;
+import com.l2ashdz.sistemaintelaf.controller.tienda.SeleccionTiendaController;
 import com.l2ashdz.sistemaintelaf.controller.tienda.TiendaController;
 import com.l2ashdz.sistemaintelaf.controller.venta.AddVentaController;
 import com.l2ashdz.sistemaintelaf.ui.PrincipalView;
@@ -15,8 +16,11 @@ import com.l2ashdz.sistemaintelaf.ui.pedido.PedidoView;
 import com.l2ashdz.sistemaintelaf.ui.producto.AddProductoView;
 import com.l2ashdz.sistemaintelaf.ui.producto.BusquedaPView;
 import com.l2ashdz.sistemaintelaf.ui.reportes.ReportesView;
+import com.l2ashdz.sistemaintelaf.ui.tienda.SeleccionTiendaView;
 import com.l2ashdz.sistemaintelaf.ui.tienda.TiendaView;
 import com.l2ashdz.sistemaintelaf.ui.venta.AddVentaView;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -24,7 +28,7 @@ import java.awt.event.MouseEvent;
  *
  * @author asael
  */
-public class PrincipalUIController extends MouseAdapter {
+public class PrincipalUIController extends MouseAdapter implements ActionListener{
 
     private PrincipalView principalUI;
 
@@ -72,6 +76,7 @@ public class PrincipalUIController extends MouseAdapter {
         this.principalUI.getBtnVentas().addMouseListener(this);
         this.principalUI.getBtnReportes().addMouseListener(this);
         this.principalUI.getBtnInicio().addMouseListener(this);
+        this.principalUI.getBtnCambiarTienda().addActionListener(this);
     }
 
     public void iniciar() {
@@ -163,5 +168,13 @@ public class PrincipalUIController extends MouseAdapter {
         pedidoV.setEnabled(false);
         reporteV.setEnabled(false);
         busqquedaC.iniciar(principalUI.getPnlDesk());
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        SeleccionTiendaView selectTV = new SeleccionTiendaView();
+        SeleccionTiendaController selectTC = new SeleccionTiendaController(selectTV);
+        selectTC.iniciar();
+        principalUI.dispose();
     }
 }
