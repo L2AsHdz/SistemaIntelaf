@@ -105,7 +105,7 @@ public class TiempoTrasladoController extends MouseAdapter implements ActionList
         } else if (tiempoV.getBtnAgregarTiempos() == e.getSource()) {
             String tiendaActual = PrincipalView.lblCodigo.getText();
             String mensaje = "Ingrese el tiempo de traslado hacia la tienda: ";
-            String tmpo;
+            String tmpo = "";
             tiendas = tiendaDAO.getListado();
             for (Tienda t : tiendas) {
                 if (!t.getCodigo().equals(tiendaActual)) {
@@ -119,12 +119,12 @@ public class TiempoTrasladoController extends MouseAdapter implements ActionList
                         }
 
                         tiempoDAO.create(nuevoTiempo(tiendaActual, t.getCodigo(), Integer.parseInt(tmpo)));
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Todos los tiempos estan registrados",
-                                "Info", JOptionPane.INFORMATION_MESSAGE);
-                        break;
                     }
                 }
+            }
+            if (tmpo.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Todos los tiempos estan registrados",
+                                "Info", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

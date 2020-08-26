@@ -65,20 +65,18 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
     private TiempoTraslado tiempo;
     private TiempoTrasladoDAO tiempoDAO;
 
-    private Venta venta;
     private VentaDAO ventaDAO;
 
-    private List<ProductoVenta> productosV;
     private CRUD<ProductoVenta> prodVentaDAO;
 
     private String tiendaActual;
-    LocalDate fecha;
-    String fechaRetiro;
-    String porcentajeC;
-    String porcentajeE;
-    float anticipo;
-    float pagoPendiente;
-    float credito;
+    private LocalDate fecha;
+    private String fechaRetiro;
+    private String porcentajeC;
+    private String porcentajeE;
+    private float anticipo;
+    private float pagoPendiente;
+    private float credito;
 
     public VerificarPedidoController(VerificarPedidoView verificarPV) {
         pedidoDAO = PedidoDAOImpl.getPedidoDAO();
@@ -95,6 +93,7 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
         this.verificarPV.getTblPedidos().addMouseListener(this);
     }
 
+    //Inicia la interfaz
     public void iniciar(JPanel parent) {
         if (!verificarPV.isEnabled()) {
             parent.removeAll();
@@ -116,30 +115,25 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
         //Marca el pedido a la espera del cliete
         if (verificarPV.getBtnEspera() == e.getSource()) {
             String fechaV = JOptionPane.showInputDialog(null, "Ingrese fecha de verificacion"
-                    + "\nejemplo(2020-04-09)", "Verificar Pedido", JOptionPane.INFORMATION_MESSAGE);
+                    + "\nejemplo(2020-09-04)", "Verificar Pedido", JOptionPane.INFORMATION_MESSAGE);
             while (!isFecha(fechaV)) {
                 fechaV = JOptionPane.showInputDialog(null, "El formato de la fecha no es correcto"
-                        + "\nejemplo(2020-04-09)", "Verificar Pedido", JOptionPane.ERROR_MESSAGE);
+                        + "\nejemplo(2020-09-04)", "Verificar Pedido", JOptionPane.ERROR_MESSAGE);
             }
 
             pedidoDAO.setEstado(pedido.getCodigo(), 2);
             pedidoDAO.setFecha(pedido.getCodigo(), fechaV, 1);
             limpiarCampos();
 
+            //Marca el pedido como retrasado
         } else if (verificarPV.getBtnRetrasado() == e.getSource()) {
             pedidoDAO.setEstado(pedido.getCodigo(), 1);
             limpiarCampos();
 
+            //Marca el pedido como recogido por el cliente
         } else if (verificarPV.getBtnRecogido() == e.getSource()) {
             setVisibleRecogerP();
-            /**
-             * Si fecha verificacion es mayor a fecha + tiempo traslado entonces
-             * si porcentaje pagado es igual a 1 añadir a credito compra
-             * total*0.05 si no agregar a credito total*0.02 si no cliente debe
-             * pagar total-anticipo
-             *
-             * cambiar estado pedido a 3 registrar venta
-             */
+
             if (pedido.getFechaVerificacion().isAfter(fecha)) {
                 if (pedido.getPorcentajePagado() == 1) {
                     float add = (float) (pedido.getTotal() * 0.05) * -1;
@@ -162,14 +156,16 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
             clienteDAO.restarCredito(pedido.getNitCliente(), credito);
             pedidoDAO.setEstado(pedido.getCodigo(), 3);
             pedidoDAO.setFecha(pedido.getCodigo(), fechaRetiro, 2);
+
             limpiarCampos();
             JOptionPane.showMessageDialog(null, "Pedido completado", "Info", JOptionPane.INFORMATION_MESSAGE);
 
             //Cierra interfaz recoger pedido
         } else if (recogerPedidoV.getBtnFinalizar() == e.getSource()) {
             obtenerDatos();
+            System.out.println("se presiono el boton finalizar");
             try {
-                validarRecogerPedido(fechaRetiro, porcentajeC, porcentajeE);
+                validarRecogerPedido(fechaRetiro, porcentajeC, porcentajeE, recogerPedidoV.getLblPagoPendiente().getText());
                 recogerPedidoV.dispose();
             } catch (UserInputException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Advertencia", JOptionPane.ERROR_MESSAGE);
@@ -177,6 +173,7 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
         }
     }
 
+    //Reinicia la interfaz
     private void limpiarCampos() {
         cargarPedidos();
         verificarPV.getLblAnticipo().setText("");
@@ -202,10 +199,11 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
         verificarPV.getBtnRetrasado().setEnabled(false);
     }
 
+    //Obtiene los datos del retiro de un pedido
     private void obtenerDatos() {
         Date input = recogerPedidoV.getTxtFecha().getDate();
         LocalDate date = input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        fechaRetiro = date.toString() == null ? "" : date.toString();
+        fechaRetiro = date.toString();
         porcentajeC = recogerPedidoV.getTxtPorcentajeC().getText();
         porcentajeE = recogerPedidoV.getTxtPorcentajeE().getText();
         if (!recogerPedidoV.getTxtCredito().getText().isEmpty()) {
@@ -213,13 +211,15 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
         }
     }
 
+    //Carga los pedidos a la tabla
     private void cargarPedidos() {
         tiendaActual = PrincipalView.lblCodigo.getText();
-        pedidos = pedidoDAO.getPedidosSinVerificar(tiendaActual);
+        pedidos = pedidoDAO.getPedidos(tiendaActual);
         verificarPV.getPedidosObservableList().clear();
         verificarPV.getPedidosObservableList().addAll(pedidos);
     }
 
+    //Calcula el porcentaje Credito para el registro de la venta
     private String getPorcCredito() {
         float porcAnticipo = pedido.getPorcentajeCredito() * pedido.getPorcentajePagado();
         float porcPendiente = Float.parseFloat(porcentajeC) * (pagoPendiente / pedido.getTotal());
@@ -227,6 +227,7 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
         return porcTotalC.toString();
     }
 
+    //Calcula el porcentaje Efectivo para el registro de la venta
     private String getPorcEfectivo() {
         float porcAnticipo = pedido.getPorcentajeEfectivo() * pedido.getPorcentajePagado();
         float porcPendiente = Float.parseFloat(porcentajeE) * (pagoPendiente / pedido.getTotal());
@@ -251,7 +252,7 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
         } else {
             tiempo = tiempoDAO.getTiempoT(pedido.getTiendaDestino(), pedido.getTiendaOrigen());
         }
-        
+
         //Se le suma a la fecha los dias de traslado
         fecha = pedido.getFecha();
         fecha = fecha.plusDays(tiempo.getTiempo());
@@ -281,7 +282,6 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
         verificarPV.getLblNameTD().setText(tiendaD.getNombre());
         verificarPV.getLblTelTD().setText(tiendaD.getTelefono1());
 
-
         setEnableBtn(pedido.getEstadoP());
 
         //Activa un aviso si el pedido ya esta atrasado        
@@ -298,13 +298,15 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
     private void setEnableBtn(int estado) {
         switch (estado) {
             case 0:
-                verificarPV.getBtnEspera().setEnabled(true);
-                break;
             case 1:
                 verificarPV.getBtnEspera().setEnabled(true);
+                verificarPV.getBtnRecogido().setEnabled(false);
+                verificarPV.getBtnRetrasado().setEnabled(false);
                 break;
             case 2:
                 verificarPV.getBtnRecogido().setEnabled(true);
+                verificarPV.getBtnEspera().setEnabled(false);
+                verificarPV.getBtnRetrasado().setEnabled(false);
         }
     }
 
@@ -312,13 +314,13 @@ public class VerificarPedidoController extends MouseAdapter implements ActionLis
         recogerPedidoV = new RecogerPedidoView();
         recogerPedidoV.getBtnFinalizar().addActionListener(this);
         String date = pedido.getFechaVerificacion().toString();
-        Date date2 = null;
+        Date fechaVerificacion = null;
         try {
 
-            date2 = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+            fechaVerificacion = new SimpleDateFormat("yyyy-MM-dd").parse(date);
         } catch (ParseException e) {
         }
-        recogerPedidoV.getTxtFecha().setDate(date2);
+        recogerPedidoV.getTxtFecha().setDate(fechaVerificacion);
         recogerPedidoV.getLblAnticipo().setText(String.valueOf(anticipo));
         recogerPedidoV.getLblCreditoCompra().setText(String.valueOf(cliente.getCreditoCompra()));
         recogerPedidoV.getLblTotal().setText(String.valueOf(pedido.getTotal()));

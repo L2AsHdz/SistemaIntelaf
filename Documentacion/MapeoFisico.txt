@@ -129,7 +129,7 @@ CREATE TABLE pedido (
   porcentaje_efectivo FLOAT NOT NULL,
   porcentaje_credito FLOAT NOT NULL,
   porcentaje_pagado FLOAT NOT NULL,
-  estado INT NULL DEFAULT 1,
+  estado INT NULL DEFAULT 0,
   CONSTRAINT PK_PEDIDO
     PRIMARY KEY (codigo),
   CONSTRAINT FK_PEDIDO_TO_CLIENTE_NIT

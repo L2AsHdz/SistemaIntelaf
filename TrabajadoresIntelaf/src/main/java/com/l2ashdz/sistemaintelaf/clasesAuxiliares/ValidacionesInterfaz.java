@@ -127,7 +127,7 @@ public class ValidacionesInterfaz {
             throw new UserInputException("El cliente ya existe en el sistema");
         }
     }
-    
+
     public static void validarAddCliente2(String nombre, String nit, String telefono) throws UserInputException {
         if (nombre.isEmpty() || nit.isEmpty() || telefono.isEmpty()) {
             throw new UserInputException("Los campos con * son obligatorios");
@@ -148,7 +148,7 @@ public class ValidacionesInterfaz {
             throw new UserInputException("La fecha no tiene el formato correcto");
         }
     }
-    
+
     public static void validarPedido(String porcentEfectivo,
             String porcentCredito, String porcentajePagado) throws UserInputException {
         if (porcentCredito.isEmpty() || porcentEfectivo.isEmpty() || porcentajePagado.isEmpty()) {
@@ -164,7 +164,7 @@ public class ValidacionesInterfaz {
             throw new UserInputException("El producto ya esta agregado");
         }
     }
-    
+
     public static void validarAddProducPedido(String cantidad, Producto p, List<ProductoPedido> pList) throws UserInputException {
         if (Integer.parseInt(cantidad) > p.getExistencias()) {
             throw new UserInputException("No hay existencias suficientes, unidades disponibles: "
@@ -180,10 +180,13 @@ public class ValidacionesInterfaz {
                     + p.getExistencias());
         }
     }
-    
-    public static void validarRecogerPedido(String fecha, String porcentajeC, String porcentajeE) throws UserInputException {
-        if (fecha.isEmpty() || porcentajeC.isEmpty() || porcentajeE.isEmpty()) {
-            throw new UserInputException("Todos los campos son obligatorios");
+
+    public static void validarRecogerPedido(String fecha, String porcentajeC, String porcentajeE,
+            String pagoPendiente) throws UserInputException {
+        if (Float.parseFloat(pagoPendiente) > 0) {
+            if (fecha.isEmpty() || porcentajeC.isEmpty() || porcentajeE.isEmpty()) {
+                throw new UserInputException("Todos los campos son obligatorios");
+            }
         }
     }
 
@@ -196,7 +199,7 @@ public class ValidacionesInterfaz {
         }
         return flag;
     }
-    
+
     private static boolean isProductoInPedido(List<ProductoPedido> pList, Producto p) {
         boolean flag = false;
         for (Producto pp : pList) {
