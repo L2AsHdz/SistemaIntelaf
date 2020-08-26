@@ -1,9 +1,11 @@
 package com.l2ashdz.sistemaintelaf.controller;
 
+import com.l2ashdz.sistemaintelaf.controller.tienda.SeleccionTiendaController;
 import com.l2ashdz.sistemaintelaf.dao.CRUD;
 import com.l2ashdz.sistemaintelaf.dao.empleado.EmpleadoDAOImpl;
 import com.l2ashdz.sistemaintelaf.model.Empleado;
 import com.l2ashdz.sistemaintelaf.ui.LoginView;
+import com.l2ashdz.sistemaintelaf.ui.tienda.SeleccionTiendaView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -22,7 +24,6 @@ public class LoginController implements ActionListener {
         this.login = log;
         empleadoDAO = EmpleadoDAOImpl.getEmpleadoDAO();
         login.getBtnLogin().addActionListener(this);
-        login.getBtnSalir().addActionListener(this);
     }
 
     //Iniciar interfaz login
@@ -41,10 +42,8 @@ public class LoginController implements ActionListener {
                         login.getTxtCodigoEmpleado().getText());
             } catch (Exception ex) {
                 System.out.println("Error al intentar validar");
-                ex.printStackTrace();
+                ex.printStackTrace(System.out);
             }
-        } else if (login.getBtnSalir() == e.getSource()) {
-            System.exit(0);
         }
     }
 
@@ -67,8 +66,8 @@ public class LoginController implements ActionListener {
             }
             switch (opcion) {
                 case 0:
-                    JOptionPane.showMessageDialog(null, "Codigo de empleado incorrecto", 
-                    "Error login", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Codigo de empleado incorrecto",
+                            "Error login", JOptionPane.WARNING_MESSAGE);
                     limpiarCampos();
                     break;
                 case 1:
@@ -77,10 +76,10 @@ public class LoginController implements ActionListener {
                     limpiarCampos();
                     break;
                 case 2:
-                    JOptionPane.showMessageDialog(null, "LoginCompleto",
-                            "Holi", JOptionPane.INFORMATION_MESSAGE);
-                    //iniciar interfaz
-                    limpiarCampos();
+                    SeleccionTiendaView selectTienda = new SeleccionTiendaView();
+                    SeleccionTiendaController selectTiendaC = new SeleccionTiendaController(selectTienda);
+                    selectTiendaC.iniciar();
+                    login.dispose();
                     break;
             }
         }

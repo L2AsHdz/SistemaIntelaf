@@ -1,3 +1,4 @@
+DROP DATABASE SistemaIntelaf;
 CREATE SCHEMA SistemaIntelaf;
 USE SistemaIntelaf;
 

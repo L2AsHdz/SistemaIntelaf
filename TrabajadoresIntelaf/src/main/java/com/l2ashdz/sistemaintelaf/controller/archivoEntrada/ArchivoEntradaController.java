@@ -6,12 +6,12 @@ import com.l2ashdz.sistemaintelaf.dao.empleado.EmpleadoDAOImpl;
 import com.l2ashdz.sistemaintelaf.model.Empleado;
 import com.l2ashdz.sistemaintelaf.model.Tienda;
 import com.l2ashdz.sistemaintelaf.ui.ArchivoEntradaView;
-import com.l2ashdz.sistemaintelaf.ui.LoginView;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.Verificaciones.*;
 import static com.l2ashdz.sistemaintelaf.clasesAuxiliares.EntidadFabrica.*;
 import static com.l2ashdz.sistemaintelaf.model.Archivo.leerArchivo;
 import static com.l2ashdz.sistemaintelaf.model.Archivo.obtenerRutaArchivo;
 import com.l2ashdz.sistemaintelaf.dao.cliente.ClienteDAOImpl;
+import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAO;
 import com.l2ashdz.sistemaintelaf.dao.pedido.PedidoDAOImpl;
 import com.l2ashdz.sistemaintelaf.dao.pedido.ProductoPedidoDAO;
 import com.l2ashdz.sistemaintelaf.dao.pedido.ProductoPedidoDAOImpl;
@@ -23,9 +23,9 @@ import com.l2ashdz.sistemaintelaf.excepciones.UserInputException;
 import com.l2ashdz.sistemaintelaf.model.Cliente;
 import com.l2ashdz.sistemaintelaf.model.Conexion;
 import com.l2ashdz.sistemaintelaf.model.ExistenciaProducto;
-import com.l2ashdz.sistemaintelaf.model.Pedido;
 import com.l2ashdz.sistemaintelaf.model.Producto;
 import com.l2ashdz.sistemaintelaf.model.TiempoTraslado;
+import com.l2ashdz.sistemaintelaf.ui.LoginView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -55,7 +55,7 @@ public class ArchivoEntradaController implements ActionListener {
     private CRUD<Producto> productoDAO;
     private CRUD<ExistenciaProducto> existenciaPDAO;
     private CRUD<Cliente> clienteDAO;
-    private CRUD<Pedido> pedidoDAO;
+    private PedidoDAO pedidoDAO;
     private ProductoPedidoDAO productoPDAO;
 
     private List<Empleado> empleados;
@@ -84,6 +84,7 @@ public class ArchivoEntradaController implements ActionListener {
 
     }
 
+    //inicia la interfaz para leer el archivo de entrada
     public void iniciar() {
         if (verificarInfoSistema()) {
             archivoEV.pack();
@@ -97,35 +98,54 @@ public class ArchivoEntradaController implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
+
+        //Obtiene la ruta del archivo
         if (archivoEV.getBtnBuscar() == ae.getSource()) {
             path = obtenerRutaArchivo();
             if (!path.isEmpty()) {
                 archivoEV.getLblNombreArchivo().setText(path);
                 archivoEV.getBtnIniciar().setEnabled(true);
             }
+
         } else if (archivoEV.getBtnCancelar() == ae.getSource()) {
+            try {
+                conexion.rollback();
+                conexion.close();
+                System.out.println("se hizo rollback");
+            } catch (SQLException e) {
+                e.printStackTrace(System.out);
+            }
             System.exit(0);
+
+            //Empieza el analisis del archivo
         } else if (archivoEV.getBtnIniciar() == ae.getSource()) {
             if (!path.isEmpty()) {
                 entrada = leerArchivo(path);
-                iniciarAnalisis(entrada);
+                analizarArchivo(entrada);
                 archivoEV.getBtnContinuar().setEnabled(true);
             }
+
+            //Si ya existe al menos un empleado muestra el login de lo contrario
+            //limpia la interfaz para leer un nuevo archivo
         } else if (archivoEV.getBtnContinuar() == ae.getSource()) {
+            try {
+                conexion.commit();
+                conexion.setAutoCommit(true);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
             if (verificarInfoSistema()) {
                 limpiarInterfaz();
             } else {
-                try {
-                    conexion.commit();
-                    conexion.setAutoCommit(true);
-                } catch (SQLException ex) {
-                    ex.printStackTrace(System.out);
-                }
+                archivoEV.dispose();
+                loginC = new LoginController(loginV);
+                loginC.iniciar();
             }
         }
     }
 
-    private void iniciarAnalisis(List<String> entrada) {
+    //Analiza el archivo
+    private void analizarArchivo(List<String> entrada) {
         String[] parametros;
         errores = new ArrayList();
         JTextArea textA = archivoEV.getTxtAreaInformacion();
@@ -199,7 +219,7 @@ public class ArchivoEntradaController implements ActionListener {
                     if (!pedidoDAO.getListado().isEmpty()) {
                         productoPDAO.deleteProductosDePedido(parametros[1]);
                         pedidoDAO.delete(parametros[1]);
-                        mensaje = "Se registrara el pedido: " + parametros[1] + " y sus productos debido a errores\n";
+                        mensaje = "No se registrara el pedido " + parametros[1] + " y sus productos debido a errores\n";
                         errores.add(mensaje);
                     }
                 }
@@ -212,12 +232,14 @@ public class ArchivoEntradaController implements ActionListener {
                 textA.append("\n\nNo se detectaron errores en el archio de entrada\n"
                         + "Presione el boton continuar para registrar los datos\n");
             }
+            pedidoDAO.setNextCodigo(pedidoDAO.getCodigoPedido());
 
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         }
     }
 
+    //Verifica si existe al menos un empleado con el cual iniciar en el sistema
     private boolean verificarInfoSistema() {
         boolean verificacion = false;
         String mensaje = "Actualmente no hay ningun empleado con el cual inciar en el\n"
@@ -236,6 +258,7 @@ public class ArchivoEntradaController implements ActionListener {
         return verificacion;
     }
 
+    //Limpia la interfaz
     private void limpiarInterfaz() {
         archivoEV.getLblNombreArchivo().setText("*No se ha escogido un archio");
         archivoEV.getTxtAreaInformacion().setText("");
